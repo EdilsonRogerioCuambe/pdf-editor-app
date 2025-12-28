@@ -14,7 +14,7 @@ export type AnnotationTool =
 
 export type HighlightStyle = 'solid' | 'underline' | 'strikethrough' | 'squiggly'
 
-export type ShapeType = 'rectangle' | 'circle' | 'line' | 'arrow' | 'polygon' | 'cloud'
+export type ShapeType = 'rectangle' | 'circle' | 'triangle' | 'line' | 'arrow' | 'polygon' | 'cloud'
 
 export type BorderStyle = 'solid' | 'dashed' | 'dotted'
 

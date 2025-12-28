@@ -70,15 +70,38 @@ export function ShapeTool({
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.strokeStyle = settings.borderColor
     ctx.lineWidth = settings.borderWidth * scale
+    ctx.fillStyle = settings.fillColor
+    ctx.globalAlpha = settings.fillOpacity // This applies to stroke too? Ideally only fill.
+    // Actually canvas globalAlpha applies to everything.
+    // For stroke opacity we might need rgba color if we want separate opacity.
+    // For now simple implementation.
+
+    ctx.beginPath()
 
     if (settings.shapeType === 'rectangle') {
-       ctx.strokeRect(x, y, w, h)
+       ctx.rect(x, y, w, h)
+       ctx.stroke()
+       if (settings.fillOpacity > 0) ctx.fill()
     } else if (settings.shapeType === 'circle') {
-       ctx.beginPath()
        ctx.ellipse(x + w/2, y + h/2, Math.abs(w/2), Math.abs(h/2), 0, 0, 2 * Math.PI)
        ctx.stroke()
+       if (settings.fillOpacity > 0) ctx.fill()
+    } else if (settings.shapeType === 'triangle') {
+        ctx.moveTo(x + w / 2, y)
+        ctx.lineTo(x + w, y + h)
+        ctx.lineTo(x, y + h)
+        ctx.closePath()
+        ctx.stroke()
+        if (settings.fillOpacity > 0) ctx.fill()
+    } else if (settings.shapeType === 'line' || settings.shapeType === 'arrow') {
+        ctx.moveTo(x, y)
+        ctx.lineTo(current.x * scale, current.y * scale)
+        ctx.stroke()
+        // For arrow preview, maybe draw a simple head
+        if (settings.shapeType === 'arrow') {
+            // Simple arrow head logic could be complex for preview, skip for now or keep simple
+        }
     }
-    // Add logic for other shapes as needed
   }
 
   const finishShape = (e: React.MouseEvent) => {
@@ -91,12 +114,26 @@ export function ShapeTool({
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const current = getPoint(e)
-      const width = Math.abs(current.x - startPoint.current.x)
-      const height = Math.abs(current.y - startPoint.current.y)
-      const x = Math.min(startPoint.current.x, current.x)
-      const y = Math.min(startPoint.current.y, current.y)
 
-      if (width > 5 && height > 5) {
+      let x, y, width, height, points;
+
+      if (settings.shapeType === 'line' || settings.shapeType === 'arrow') {
+          // For line/arrow, we use the points
+          points = [startPoint.current, current]
+          const xs = points.map(p => p.x)
+          const ys = points.map(p => p.y)
+          x = Math.min(...xs)
+          y = Math.min(...ys)
+          width = Math.max(...xs) - x
+          height = Math.max(...ys) - y
+      } else {
+          width = Math.abs(current.x - startPoint.current.x)
+          height = Math.abs(current.y - startPoint.current.y)
+          x = Math.min(startPoint.current.x, current.x)
+          y = Math.min(startPoint.current.y, current.y)
+      }
+
+      if (width > 5 || height > 5) {
         const annotation: ShapeAnnotation = {
           id: `shape-${Date.now()}`,
           type: 'shape',
@@ -114,6 +151,7 @@ export function ShapeTool({
           borderStyle: settings.borderStyle,
           fillColor: settings.fillColor,
           fillOpacity: settings.fillOpacity,
+          points,
 
           zIndex: 1,
           createdAt: new Date().toISOString(),

@@ -639,6 +639,70 @@ export function AnnotationInterface() {
           </div>
         )}
 
+        {/* Shape Tool Options */}
+        {activeTool === 'shape' && (
+           <div className="mt-4 flex items-center gap-4 border-t pt-4">
+              <div className="flex items-center gap-2">
+                 <label className="text-sm font-medium">Shape:</label>
+                 <Select
+                    value={shapeSettings.shapeType}
+                    onValueChange={(v: any) => setShapeSettings(prev => ({ ...prev, shapeType: v }))}
+                 >
+                    <SelectTrigger className="w-32">
+                       <SelectValue placeholder="Shape" />
+                    </SelectTrigger>
+                    <SelectContent>
+                       <SelectItem value="rectangle">Rectangle</SelectItem>
+                       <SelectItem value="circle">Circle</SelectItem>
+                       <SelectItem value="triangle">Triangle</SelectItem>
+                       <SelectItem value="line">Line</SelectItem>
+                       <SelectItem value="arrow">Arrow</SelectItem>
+                    </SelectContent>
+                 </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                 <label className="text-sm font-medium">Border:</label>
+                 <input
+                   type="color"
+                   value={shapeSettings.borderColor}
+                   onChange={(e) => setShapeSettings(prev => ({ ...prev, borderColor: e.target.value }))}
+                   className="h-8 w-16 cursor-pointer rounded border"
+                 />
+              </div>
+              <div className="flex items-center gap-2">
+                 <label className="text-sm font-medium">Width:</label>
+                 <Slider
+                    value={[shapeSettings.borderWidth]}
+                    onValueChange={([v]) => setShapeSettings(prev => ({ ...prev, borderWidth: v }))}
+                    min={1}
+                    max={10}
+                    step={1}
+                    className="w-24"
+                 />
+              </div>
+              <div className="flex items-center gap-2">
+                 <label className="text-sm font-medium">Fill:</label>
+                 <input
+                   type="color"
+                   value={shapeSettings.fillColor}
+                   onChange={(e) => setShapeSettings(prev => ({ ...prev, fillColor: e.target.value }))}
+                   className="h-8 w-16 cursor-pointer rounded border"
+                 />
+              </div>
+               <div className="flex items-center gap-2">
+                 <label className="text-sm font-medium">Fill Opacity:</label>
+                 <Slider
+                    value={[shapeSettings.fillOpacity * 100]}
+                    onValueChange={([v]) => setShapeSettings(prev => ({ ...prev, fillOpacity: v / 100 }))}
+                    min={0}
+                    max={100}
+                    step={5}
+                    className="w-24"
+                 />
+              </div>
+           </div>
+        )}
+
         {/* Text Tool Options */}
         {activeTool === 'text' && (
           <div className="mt-4 border-t pt-2 w-full">
@@ -774,6 +838,55 @@ export function AnnotationInterface() {
                                          fill={shapeAnn.fillColor}
                                          fillOpacity={shapeAnn.fillOpacity}
                                       />
+                                  )}
+                                  {shapeAnn.shapeType === 'triangle' && (
+                                      <polygon
+                                         points={`
+                                           ${50}%,${0}%
+                                           ${100}%,${100}%
+                                           ${0}%,${100}%
+                                         `}
+                                         stroke={shapeAnn.borderColor}
+                                         strokeWidth={shapeAnn.borderWidth * zoom}
+                                         fill={shapeAnn.fillColor}
+                                         fillOpacity={shapeAnn.fillOpacity}
+                                         vectorEffect="non-scaling-stroke"
+                                      />
+                                  )}
+                                  {shapeAnn.shapeType === 'line' && (
+                                     <line
+                                       x1={shapeAnn.points ? (shapeAnn.points[0].x - ann.x) * zoom : 0}
+                                       y1={shapeAnn.points ? (shapeAnn.points[0].y - ann.y) * zoom : 0}
+                                       x2={shapeAnn.points ? (shapeAnn.points[1].x - ann.x) * zoom : "100%"}
+                                       y2={shapeAnn.points ? (shapeAnn.points[1].y - ann.y) * zoom : "100%"}
+                                       stroke={shapeAnn.borderColor}
+                                       strokeWidth={shapeAnn.borderWidth * zoom}
+                                     />
+                                  )}
+                                  {shapeAnn.shapeType === 'arrow' && (
+                                     <>
+                                        <defs>
+                                           <marker
+                                              id={`arrowhead-${ann.id}`}
+                                              markerWidth="10"
+                                              markerHeight="7"
+                                              refX="9"
+                                              refY="3.5"
+                                              orient="auto"
+                                           >
+                                              <polygon points="0 0, 10 3.5, 0 7" fill={shapeAnn.borderColor} />
+                                           </marker>
+                                        </defs>
+                                        <line
+                                          x1={shapeAnn.points ? (shapeAnn.points[0].x - ann.x) * zoom : 0}
+                                          y1={shapeAnn.points ? (shapeAnn.points[0].y - ann.y) * zoom : 0}
+                                          x2={shapeAnn.points ? (shapeAnn.points[1].x - ann.x) * zoom : "100%"}
+                                          y2={shapeAnn.points ? (shapeAnn.points[1].y - ann.y) * zoom : "100%"}
+                                          stroke={shapeAnn.borderColor}
+                                          strokeWidth={shapeAnn.borderWidth * zoom}
+                                          markerEnd={`url(#arrowhead-${ann.id})`}
+                                        />
+                                     </>
                                   )}
                                </svg>
                             </div>
