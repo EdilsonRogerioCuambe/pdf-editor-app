@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useCallback, useState } from "react"
-import { Upload, FileText, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { FileText, X, CloudUpload } from "lucide-react"
+import { useCallback, useState } from "react"
 
 export interface UploadedFile {
   id: string
@@ -103,13 +103,14 @@ export function FileDropZone({ onFilesSelected, multiple = true, accept = ".pdf"
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          "relative flex min-h-[280px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all",
+          "relative flex min-h-[280px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all group",
           isDragging
             ? "border-primary bg-primary/5 scale-[1.02]"
             : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50",
         )}
       >
         <input
+              title="Upload"
           type="file"
           accept={accept}
           multiple={multiple}
@@ -119,12 +120,12 @@ export function FileDropZone({ onFilesSelected, multiple = true, accept = ".pdf"
         <div className="flex flex-col items-center gap-4 p-8 text-center">
           <div
             className={cn(
-              "flex h-16 w-16 items-center justify-center rounded-full transition-colors",
-              isDragging ? "bg-primary/20" : "bg-muted",
+              "flex h-20 w-20 items-center justify-center rounded-full transition-all duration-300",
+              isDragging ? "bg-primary/20 scale-110" : "bg-primary/10 group-hover:bg-primary/20",
             )}
           >
-            <Upload
-              className={cn("h-8 w-8 transition-colors", isDragging ? "text-primary" : "text-muted-foreground")}
+            <CloudUpload
+              className={cn("h-10 w-10 transition-colors duration-300", isDragging ? "text-primary" : "text-primary/70 group-hover:text-primary")}
             />
           </div>
           <div className="space-y-2">
