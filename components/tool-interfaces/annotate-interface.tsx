@@ -334,10 +334,14 @@ export function AnnotationInterface() {
     }
   }
 
-  const updateTextBox = (id: string, updates: Partial<TextAnnotation>) => {
+  const updateAnnotation = (id: string, updates: Partial<Annotation>) => {
     setAnnotations(prev => prev.map(ann =>
-      ann.id === id && ann.type === 'text' ? { ...ann, ...updates, modifiedAt: new Date().toISOString() } : ann
+      ann.id === id ? { ...ann, ...updates, modifiedAt: new Date().toISOString() } as Annotation : ann
     ))
+  }
+
+  const updateTextBox = (id: string, updates: Partial<TextAnnotation>) => {
+    updateAnnotation(id, updates)
   }
 
   const duplicateTextBox = (box: any) => {
@@ -806,14 +810,9 @@ export function AnnotationInterface() {
                                           placeholder="Enter note..."
                                           value={noteAnn.noteContent}
                                           onChange={(e) => {
-                                              const newAnn = { ...noteAnn, noteContent: e.target.value }
-                                              // We need a way to update the annotation from here.
-                                              // Ideally we should pass an update function or use a specific component.
-                                              // For now, let's just assume we can't edit text here easily without helper.
-                                              // BUT, I can simulate update by calling setAnnotations in a clever way if I had access.
-                                              // No, better to make it read-only here or use a specific component.
-                                              // Let's just show content.
+                                              updateAnnotation(ann.id, { noteContent: e.target.value } as Partial<NoteAnnotation>)
                                           }}
+                                          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking text area
                                         />
                                     </div>
                                 )}
