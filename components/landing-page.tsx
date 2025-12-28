@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button"
 import { pdfTools } from "@/lib/pdf-tools"
-import { ArrowRight, Check, FileText, Globe, Shield, Zap } from "lucide-react"
+import { ArrowRight, Check, FileText, Globe, Menu, Shield, X, Zap } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 
 // Translations for the landing page
 const translations: Record<string, { name: string; description: string }> = {
@@ -25,37 +26,84 @@ const translations: Record<string, { name: string; description: string }> = {
 }
 
 export function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-50">
+      {/* Navbar */}
       {/* Navbar */}
       <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-             <div className="flex h-10 w-10 items-center justify-center rounded-xl">
+             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/50">
                 <Image
                   src="/pdf_master.png"
                   alt="PDF Icon"
                   width={24}
                   height={24}
-                  className="h-12 w-12 object-cover rounded-lg"
+                  className="h-full w-full object-cover rounded-lg"
                 />
              </div>
              <span className="text-xl font-bold tracking-tight text-white">PDF Master</span>
           </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden gap-6 md:flex">
             <Link href="#tools" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
               Ferramentas
             </Link>
             <Link href="#features" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
               Recursos
             </Link>
-          <div className="flex items-center gap-4">
+          </nav>
+
+          <div className="hidden items-center gap-4 md:flex">
             <Link href="/merge">
               <Button className="bg-primary text-white hover:bg-primary/90">
                 Começar Agora
               </Button>
             </Link>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            className="rounded-lg p-2 text-zinc-400 hover:bg-white/10 hover:text-white md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
+
+        {/* Mobile Menu Drawer */}
+        {mobileMenuOpen && (
+          <div className="absolute left-0 top-16 h-[calc(100vh-4rem)] w-full bg-zinc-950 p-6 md:hidden animate-in slide-in-from-top-4">
+             <nav className="flex flex-col gap-6">
+                <Link
+                  href="#tools"
+                  className="text-lg font-medium text-zinc-300 hover:text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Ferramentas
+                </Link>
+                <Link
+                  href="#features"
+                  className="text-lg font-medium text-zinc-300 hover:text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Recursos
+                </Link>
+                <hr className="border-white/10" />
+                <Link
+                  href="/merge"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Button className="w-full bg-primary text-white hover:bg-primary/90">
+                    Começar Agora
+                  </Button>
+                </Link>
+             </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}

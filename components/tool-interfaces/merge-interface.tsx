@@ -161,48 +161,78 @@ export function MergeInterface() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
       {!files.length ? (
-         <FileDropZone
-            onFilesSelected={handleFilesSelected}
-            accept=".pdf"
-            multiple={true}
-            maxFiles={50}
-         />
-      ) : (
         <div className="space-y-6">
-           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                 <h3 className="font-medium">Selected Files ({files.length})</h3>
-                 <p className="text-sm text-muted-foreground">Drag files to reorder or move them using arrows.</p>
-              </div>
-              <div className="relative">
-                 <input
-                    type="file"
-                    accept=".pdf"
-                    multiple
-                    onChange={(e) => {
-                       if (e.target.files && e.target.files.length > 0) {
-                          const newFiles: UploadedFile[] = Array.from(e.target.files).map((file, i) => ({
-                             id: `${file.name}-${Date.now()}-${i}`,
-                             name: file.name,
-                             size: file.size,
-                             file: file
-                          }))
-                          handleFilesSelected(newFiles)
-                          e.target.value = ''
-                       }
-                    }}
-                    className="absolute inset-0 cursor-pointer opacity-0"
-                 />
-                 <Button variant="outline" size="sm" className="gap-2 w-full sm:w-auto" disabled={isMerging}>
-                    <Plus className="h-4 w-4" />
-                    Add More Files
-                 </Button>
-              </div>
+            <div className="text-center space-y-2">
+                 <h2 className="text-3xl font-bold tracking-tight">Merge PDFs</h2>
+                 <p className="text-muted-foreground">Combine multiple PDF files into one ordered document.</p>
+             </div>
+             <FileDropZone
+                onFilesSelected={handleFilesSelected}
+                accept=".pdf"
+                multiple={true}
+                maxFiles={50}
+             />
+        </div>
+      ) : (
+        <div className="space-y-6 h-full flex flex-col">
+           <div className="flex items-center justify-between border-b pb-4">
+               <div>
+                   <h3 className="font-semibold text-lg flex items-center gap-2">
+                      Merge {files.length} Files
+                   </h3>
+                   <button onClick={handleReset} className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
+                       <RotateCcw className="w-3 h-3" /> Start Over
+                   </button>
+               </div>
+
+                <div className="flex items-center gap-2 relative">
+                    <input
+                        type="file"
+                        accept=".pdf"
+                        multiple
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files.length > 0) {
+                                const newFiles: UploadedFile[] = Array.from(e.target.files).map((file, i) => ({
+                                    id: `${file.name}-${Date.now()}-${i}`,
+                                    name: file.name,
+                                    size: file.size,
+                                    file: file
+                                }))
+                                handleFilesSelected(newFiles)
+                                e.target.value = ''
+                            }
+                        }}
+                        className="absolute inset-0 cursor-pointer opacity-0 w-10 h-full z-10"
+                        title="Add more files"
+                     />
+                   <Button variant="secondary" size="sm" className="gap-2" disabled={isMerging}>
+                        <Plus className="h-4 w-4" />
+                        Add Files
+                   </Button>
+                   <Button onClick={mergePdfs} disabled={files.length < 2 || isMerging}>
+                       {isMerging ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <FileText className="w-4 h-4 mr-2" />}
+                       {isMerging ? "Merging..." : "Merge PDFs"}
+                   </Button>
+               </div>
            </div>
 
-          <div className="space-y-2">
+           {isMerging && (
+             <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2">
+               <div className="flex items-center justify-between text-sm">
+                 <span>Processing...</span>
+                 <span>{mergeProgress}%</span>
+               </div>
+               <Progress value={mergeProgress} className="h-2" />
+             </div>
+           )}
+
+          <div className="space-y-3">
+             <div className="flex items-center justify-between px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <span>File Order</span>
+                <span>Actions</span>
+             </div>
             {files.map((file, index) => (
               <div
                 key={file.id}
@@ -211,96 +241,59 @@ export function MergeInterface() {
                 onDragOver={(e) => onDragOver(e, index)}
                 onDragEnd={onDragEnd}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-sm transition-all select-none",
-                  draggedIndex === index ? "opacity-50 border-primary border-dashed" : "",
-                  isMerging ? "cursor-not-allowed opacity-80" : "cursor-grab active:cursor-grabbing hover:border-primary/50"
+                  "flex items-center gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-all select-none group",
+                  draggedIndex === index ? "opacity-50 border-primary border-dashed ring-2 ring-primary/10" : "hover:border-primary/30 hover:shadow-md",
+                  isMerging ? "cursor-not-allowed opacity-80" : "cursor-grab active:cursor-grabbing"
                 )}
               >
-                <div className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground shrink-0">
+                <div className="cursor-grab active:cursor-grabbing text-muted-foreground/50 hover:text-foreground shrink-0 transition-colors">
                   <GripVertical className="h-5 w-5" />
                 </div>
 
-                <div className="h-8 w-8 shrink-0 bg-red-100 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-900/30 flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-red-600 dark:text-red-400" />
+                <div className="h-10 w-10 shrink-0 bg-red-500/10 rounded-lg flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
                 </div>
 
-                <div className="flex-1 min-w-0 grid gap-0.5">
+                <div className="flex-1 min-w-0 grid gap-1">
                    <div className="flex items-center gap-2">
                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground shrink-0">
                           {index + 1}
                        </span>
-                       <p className="truncate text-sm font-medium text-foreground">{file.name}</p>
+                       <p className="truncate font-medium text-foreground">{file.name}</p>
                    </div>
                   <p className="text-xs text-muted-foreground ml-7">{formatFileSize(file.size)}</p>
                 </div>
 
-                 <div className="flex items-center gap-1 shrink-0">
+                 <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100">
                      <Button
-                       variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hidden sm:flex"
+                       variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
                        disabled={index === 0 || isMerging}
                        onClick={() => moveFile(index, index - 1)}
                        title="Move Up"
                      >
-                       <MoveUp className="h-3 w-3" />
+                       <MoveUp className="h-4 w-4" />
                      </Button>
                      <Button
-                       variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hidden sm:flex"
+                       variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
                        disabled={index === files.length - 1 || isMerging}
                        onClick={() => moveFile(index, index + 1)}
                        title="Move Down"
                      >
-                       <MoveDown className="h-3 w-3" />
+                       <MoveDown className="h-4 w-4" />
                      </Button>
+                     <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
                      <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => removeFile(file.id)}
                         disabled={isMerging}
-                        className="text-muted-foreground hover:text-destructive h-8 w-8"
+                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8"
                      >
                         <X className="h-4 w-4" />
                      </Button>
                  </div>
               </div>
             ))}
-          </div>
-
-          {isMerging && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Processing...</span>
-                <span>{mergeProgress}%</span>
-              </div>
-              <Progress value={mergeProgress} className="h-2" />
-            </div>
-          )}
-
-          <div className="flex gap-4 pt-4">
-             <Button
-                variant="outline"
-                className="w-full sm:w-auto"
-                onClick={handleReset}
-                disabled={isMerging}
-            >
-                Clear All
-            </Button>
-            <Button
-                size="lg"
-                className="flex-1 gap-2"
-                onClick={mergePdfs}
-                disabled={files.length < 2 || isMerging}
-            >
-                {isMerging ? (
-                    <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Merging...
-                    </>
-                ) : (
-                    <>
-                        Merge {files.length} PDFs
-                    </>
-                )}
-            </Button>
           </div>
         </div>
       )}
