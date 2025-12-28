@@ -8,10 +8,37 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "PDF Master - Free Online PDF Tools",
-  description:
-    "Edit, merge, split, compress, and convert PDF files online for free. 100% secure - files processed in your browser.",
-  generator: "v0.app",
+  title: {
+    default: "PDF Master - Free Online PDF Tools",
+    template: "%s | PDF Master",
+  },
+  description: "Edit, merge, split, compress, and convert PDF files online for free. 100% secure, no login required, files processed locally in your browser.",
+  keywords: ["pdf", "editor", "merge", "split", "compress", "convert", "free", "offline", "secure", "pdf tools"],
+  authors: [{ name: "PDF Master Team" }],
+  creator: "PDF Master",
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: "https://pdf-master.app",
+    siteName: "PDF Master",
+    title: "PDF Master - Ferramentas de PDF Online Grátis",
+    description: "Edite, converta e assine PDFs. Grátis, seguro e sem login.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PDF Master Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PDF Master - Ferramentas de PDF Online Grátis",
+    description: "Edite, converta e assine PDFs. Grátis, seguro e sem login.",
+    images: ["/og-image.png"],
+    creator: "@pdfmaster",
+  },
   icons: {
     icon: [
       {
@@ -28,6 +55,17 @@ export const metadata: Metadata = {
       },
     ],
     apple: "/apple-icon.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 }
 
