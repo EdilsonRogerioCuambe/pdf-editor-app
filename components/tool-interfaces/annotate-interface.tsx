@@ -588,6 +588,7 @@ export function AnnotationInterface() {
               <label className="text-sm font-medium">Color:</label>
               <input
                 type="color"
+                title='Cor'
                 value={highlightSettings.color}
                 onChange={(e) =>
                   setHighlightSettings(prev => ({ ...prev, color: e.target.value }))
@@ -619,6 +620,7 @@ export function AnnotationInterface() {
                 <label className="text-sm font-medium">Color:</label>
                 <input
                   type="color"
+                  title='Cor'
                   value={drawSettings.color}
                   onChange={(e) => setDrawSettings(prev => ({ ...prev, color: e.target.value }))}
                   className="h-8 w-16 cursor-pointer rounded border"
@@ -664,6 +666,7 @@ export function AnnotationInterface() {
                  <label className="text-sm font-medium">Border:</label>
                  <input
                    type="color"
+                   title='Cor'
                    value={shapeSettings.borderColor}
                    onChange={(e) => setShapeSettings(prev => ({ ...prev, borderColor: e.target.value }))}
                    className="h-8 w-16 cursor-pointer rounded border"
@@ -684,6 +687,7 @@ export function AnnotationInterface() {
                  <label className="text-sm font-medium">Fill:</label>
                  <input
                    type="color"
+                   title='Cor'
                    value={shapeSettings.fillColor}
                    onChange={(e) => setShapeSettings(prev => ({ ...prev, fillColor: e.target.value }))}
                    className="h-8 w-16 cursor-pointer rounded border"
