@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react"
 // Import pdfjs-dist dynamically to avoid SSR issues or handle worker correctly
 import * as pdfjsLib from 'pdfjs-dist'
 
-import { ArrowLeft, Download, PenTool, ZoomIn, ZoomOut } from "lucide-react"
+import { ArrowLeft, Download, PenTool, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "lucide-react"
 import { SignatureBox } from './sign-pdf/signature-box'
 import { SignatureCreationModal } from './sign-pdf/signature-creation-modal'
 import { SignatureBox as SignatureBoxType } from './sign-pdf/types'
@@ -319,15 +319,36 @@ export function SignInterface() {
 
                        <div className="space-y-2">
                            <label className="text-sm font-medium">Appearance</label>
-                           <div className="flex items-center justify-between">
-                               <span className="text-sm text-gray-500">Rotate</span>
-                               <input
-                                  type="range" min="0" max="360"
-                                  value={selectedBox.rotation}
-                                  onChange={(e) => updateBox(selectedBox.id, { rotation: parseInt(e.target.value) })}
-                                  className="w-32"
-                               />
+
+                           {/* Rotation Control */}
+                           <div className="space-y-2">
+                               <span className="text-sm text-gray-500 block">Rotate</span>
+                               <div className="flex items-center gap-2">
+                                   <Button
+                                       variant="outline"
+                                       size="sm"
+                                       onClick={() => updateBox(selectedBox.id, { rotation: (selectedBox.rotation - 90) % 360 })}
+                                       title="Rotate Left -90°"
+                                   >
+                                       <RotateCcw className="w-4 h-4" />
+                                   </Button>
+                                   <input
+                                      type="range" min="0" max="360"
+                                      value={selectedBox.rotation}
+                                      onChange={(e) => updateBox(selectedBox.id, { rotation: parseInt(e.target.value) })}
+                                      className="flex-1"
+                                   />
+                                   <Button
+                                       variant="outline"
+                                       size="sm"
+                                       onClick={() => updateBox(selectedBox.id, { rotation: (selectedBox.rotation + 90) % 360 })}
+                                       title="Rotate Right +90°"
+                                   >
+                                       <RotateCw className="w-4 h-4" />
+                                   </Button>
+                               </div>
                            </div>
+
                            <div className="flex items-center justify-between">
                                <span className="text-sm text-gray-500">Opacity</span>
                                <input

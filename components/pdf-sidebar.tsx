@@ -70,7 +70,7 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
           </div>
 
           {/* Tools Navigation */}
-          <nav className="flex-1 overflow-y-auto py-4">
+          <nav className="flex-1 overflow-y-auto py-4 sidebar-scroll">
             <div className="space-y-1 px-2">
               {pdfTools.map((tool) => {
                 const Icon = tool.icon
