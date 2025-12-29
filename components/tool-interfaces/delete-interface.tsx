@@ -4,27 +4,27 @@ import { FileDropZone, type UploadedFile } from "@/components/file-drop-zone"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import {
-  AlertTriangle,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Loader2,
-  RotateCcw,
-  Trash2,
-  X,
-  ZoomIn,
-  ZoomOut
+    AlertTriangle,
+    ChevronLeft,
+    ChevronRight,
+    Download,
+    Loader2,
+    RotateCcw,
+    Trash2,
+    X,
+    ZoomIn,
+    ZoomOut
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
@@ -341,6 +341,9 @@ export function DeleteInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
+                 <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10">
+                    <Trash2 className="h-8 w-8 text-destructive" />
+                 </div>
                  <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
                  <p className="text-muted-foreground">{t('description')}</p>
              </div>

@@ -8,15 +8,15 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import {
-  ChevronLeft, ChevronRight,
-  Download,
-  Loader2,
-  RefreshCw,
-  RotateCcw, RotateCw,
-  RotateCcw as Undo2,
-  X,
-  ZoomIn,
-  ZoomOut
+    ChevronLeft, ChevronRight,
+    Download,
+    Loader2,
+    RefreshCw,
+    RotateCcw, RotateCw,
+    RotateCcw as Undo2,
+    X,
+    ZoomIn,
+    ZoomOut
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { PDFDocument, degrees } from "pdf-lib"
@@ -221,7 +221,7 @@ export function RotateInterface() {
           setProgress(90)
           const pdfBytes = await pdfDoc.save()
 
-          const blob = new Blob([pdfBytes], { type: "application/pdf" })
+          const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
           const url = URL.createObjectURL(blob)
           const link = document.createElement("a")
           link.href = url
@@ -278,6 +278,9 @@ export function RotateInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
+                 <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                    <RotateCw className="h-8 w-8 text-primary" />
+                 </div>
                  <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
                  <p className="text-muted-foreground">{t('description')}</p>
              </div>

@@ -206,9 +206,12 @@ export function SignInterface() {
   if (!file) {
       return (
           <div className="container mx-auto py-10 max-w-4xl">
-             <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
-                <p className="text-gray-500">{t('subtitle')}</p>
+             <div className="text-center mb-8 space-y-2">
+                 <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                    <PenTool className="h-8 w-8 text-primary" />
+                 </div>
+                 <h1 className="text-3xl font-bold">{t('title')}</h1>
+                 <p className="text-muted-foreground">{t('subtitle')}</p>
              </div>
              <FileDropZone onFilesSelected={handleFileSelected} multiple={false} maxFiles={1} />
           </div>

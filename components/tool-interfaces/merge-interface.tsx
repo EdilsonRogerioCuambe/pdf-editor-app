@@ -4,7 +4,7 @@ import { FileDropZone, type UploadedFile } from "@/components/file-drop-zone"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
-import { ArrowDownToLine, Download, FileText, GripVertical, Loader2, MoveDown, MoveUp, Plus, RotateCcw, X } from "lucide-react"
+import { ArrowDownToLine, Download, FileText, GripVertical, Loader2, Merge, MoveDown, MoveUp, Plus, RotateCcw, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import type React from "react"
@@ -169,6 +169,9 @@ export function MergeInterface() {
       {!files.length ? (
         <div className="space-y-6">
             <div className="text-center space-y-2">
+                 <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                    <Merge className="h-8 w-8 text-primary" />
+                 </div>
                  <h2 className="text-3xl font-bold tracking-tight">{t('name')}</h2>
                  <p className="text-muted-foreground">{t('description')}</p>
              </div>

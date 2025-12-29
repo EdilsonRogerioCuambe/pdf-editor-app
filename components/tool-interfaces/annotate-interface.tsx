@@ -401,12 +401,15 @@ export function AnnotationInterface() {
   if (!file) {
     return (
       <div className="mx-auto max-w-4xl py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">{t('title')}</h1>
-          <p className="mt-2 text-muted-foreground">
-            {t('subtitle')}
-          </p>
-        </div>
+         <div className="mb-8 text-center space-y-2">
+           <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+              <Highlighter className="h-8 w-8 text-primary" />
+           </div>
+           <h1 className="text-3xl font-bold">{t('title')}</h1>
+           <p className="text-muted-foreground">
+             {t('subtitle')}
+           </p>
+         </div>
 
         <FileDropZone
           onFilesSelected={handleFileSelected}

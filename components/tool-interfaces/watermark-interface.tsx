@@ -190,6 +190,9 @@ export function WatermarkInterface() {
       return (
          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
+                 <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                    <Stamp className="h-8 w-8 text-primary" />
+                 </div>
                  <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
                  <p className="text-muted-foreground">{t('description')}</p>
              </div>

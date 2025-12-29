@@ -75,16 +75,7 @@ export function PDFToolContent({ activeTool }: PDFToolContentProps) {
 
   return (
     <div className="mx-auto max-w-7xl">
-      {/* Tool Header */}
-      <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-          <Icon className="h-8 w-8 text-primary" />
-        </div>
-        <h1 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">{tool.name}</h1>
-        <p className="text-muted-foreground">{tool.description}</p>
-      </div>
-
-      {/* Tool Interface */}
+      {/* Tool Interface - Header removed to avoid duplication */}
       <div className="rounded-xl border border-border bg-card p-6 shadow-sm">{renderInterface()}</div>
     </div>
   )

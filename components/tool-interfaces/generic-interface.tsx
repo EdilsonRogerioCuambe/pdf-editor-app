@@ -1,23 +1,28 @@
 "use client"
 
-import { useState } from "react"
 import { FileDropZone, type UploadedFile } from "@/components/file-drop-zone"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { getPDFTools, type ToolId } from "@/lib/pdf-tools"
 import { Download, RotateCcw } from "lucide-react"
-import { pdfTools, type ToolId } from "@/lib/pdf-tools"
+import { useTranslations } from "next-intl"
+import { useState } from "react"
 
 interface GenericInterfaceProps {
   toolId: ToolId
 }
 
 export function GenericInterface({ toolId }: GenericInterfaceProps) {
+  const tTools = useTranslations('tools')
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [progress, setProgress] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
 
-  const tool = pdfTools.find((t) => t.id === toolId)
+  // Get translated tools
+  const tools = getPDFTools((key) => tTools(key))
+  const tool = tools.find((t) => t.id === toolId)
+  const Icon = tool?.icon
 
   const handleFilesSelected = (newFiles: UploadedFile[]) => {
     setFiles(newFiles)
@@ -68,6 +73,17 @@ export function GenericInterface({ toolId }: GenericInterfaceProps) {
 
   return (
     <div className="space-y-6">
+      {/* Tool Header */}
+      <div className="text-center space-y-2 mb-6">
+        {Icon && (
+          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+            <Icon className="h-8 w-8 text-primary" />
+          </div>
+        )}
+        <h1 className="text-2xl font-bold tracking-tight">{tool?.name}</h1>
+        <p className="text-muted-foreground">{tool?.description}</p>
+      </div>
+
       <FileDropZone
         onFilesSelected={handleFilesSelected}
         multiple={toolId === "image-to-pdf"}

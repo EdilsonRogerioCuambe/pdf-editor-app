@@ -80,9 +80,9 @@ export function UnlockInterface() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
             <Unlock className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
+          <h1 className="mb-2 text-2xl font-bold">{t('name')}</h1>
           <p className="text-muted-foreground">
-            {t('subtitle')}
+            {t('description')}
           </p>
         </div>
 
