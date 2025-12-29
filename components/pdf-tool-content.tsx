@@ -16,7 +16,8 @@ import { SignInterface } from "@/components/tool-interfaces/sign-interface"
 import { SplitInterface } from "@/components/tool-interfaces/split-interface"
 import { UnlockInterface } from "@/components/tool-interfaces/unlock-interface"
 import { WatermarkInterface } from "@/components/tool-interfaces/watermark-interface"
-import { pdfTools, type ToolId } from "@/lib/pdf-tools"
+import { getPDFTools, type ToolId } from "@/lib/pdf-tools"
+import { useTranslations } from "next-intl"
 
 interface PDFToolContentProps {
   activeTool: ToolId
@@ -24,7 +25,11 @@ interface PDFToolContentProps {
 }
 
 export function PDFToolContent({ activeTool }: PDFToolContentProps) {
-  const tool = pdfTools.find((t) => t.id === activeTool)
+  const tTools = useTranslations('tools')
+
+  // Get translated tools
+  const tools = getPDFTools((key) => tTools(key))
+  const tool = tools.find((t) => t.id === activeTool)
 
   if (!tool) return null
 

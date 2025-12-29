@@ -40,6 +40,115 @@ export interface PDFTool {
   category: "organize" | "convert" | "edit" | "security"
 }
 
+// Type for translation function
+type TranslationFunction = (key: string) => string
+
+// Function to get tools with translations
+export function getPDFTools(t: TranslationFunction): PDFTool[] {
+  return [
+    {
+      id: "merge",
+      name: t('merge.name'),
+      description: t('merge.description'),
+      icon: Merge,
+      category: "organize",
+    },
+    {
+      id: "split",
+      name: t('split.name'),
+      description: t('split.description'),
+      icon: Scissors,
+      category: "organize",
+    },
+    {
+      id: "compress",
+      name: t('compress.name'),
+      description: t('compress.description'),
+      icon: Archive,
+      category: "organize",
+    },
+    {
+      id: "rotate",
+      name: t('rotate.name'),
+      description: t('rotate.description'),
+      icon: RotateCw,
+      category: "organize",
+    },
+    {
+      id: "delete",
+      name: t('delete.name'),
+      description: t('delete.description'),
+      icon: Trash2,
+      category: "organize",
+    },
+    {
+      id: "reorder",
+      name: t('reorder.name'),
+      description: t('reorder.description'),
+      icon: GripVertical,
+      category: "organize",
+    },
+    {
+      id: "pdf-to-image",
+      name: t('pdf-to-image.name'),
+      description: t('pdf-to-image.description'),
+      icon: ImageIcon,
+      category: "convert",
+    },
+    {
+      id: "image-to-pdf",
+      name: t('image-to-pdf.name'),
+      description: t('image-to-pdf.description'),
+      icon: FileImage,
+      category: "convert",
+    },
+    {
+      id: "watermark",
+      name: t('watermark.name'),
+      description: t('watermark.description'),
+      icon: Droplets,
+      category: "edit",
+    },
+    {
+      id: "page-numbers",
+      name: t('page-numbers.name'),
+      description: t('page-numbers.description'),
+      icon: Hash,
+      category: "edit",
+    },
+    {
+      id: "sign",
+      name: t('sign.name'),
+      description: t('sign.description'),
+      icon: PenTool,
+      category: "edit",
+    },
+    {
+      id: "annotate",
+      name: t('annotate.name'),
+      description: t('annotate.description'),
+      icon: Pencil,
+      category: "edit",
+    },
+    {
+      id: "protect",
+      name: t('protect.name'),
+      description: t('protect.description'),
+      icon: Lock,
+      category: "security",
+    },
+    {
+      id: "unlock",
+      name: t('unlock.name'),
+      description: t('unlock.description'),
+      icon: Unlock,
+      category: "security",
+    },
+  ]
+}
+
+// Legacy export for backward compatibility (English only)
+// This can be removed once all components are updated
 export const pdfTools: PDFTool[] = [
   {
     id: "merge",

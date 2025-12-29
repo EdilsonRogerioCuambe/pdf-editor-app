@@ -192,11 +192,93 @@
     },
     "protect": {
       "name": "Proteger PDF",
-      "description": "Adicione senha e criptografe seus arquivos PDF importantes."
+      "description": "Adicione senha e criptografe seus arquivos PDF importantes.",
+      "title": "Proteger PDF com Senha",
+      "subtitle": "Proteja seu PDF com criptografia e permissões",
+      "fileInfo": "Informações do Arquivo",
+      "notProtected": "Não Protegido",
+      "userPassword": "Senha de Usuário (Senha de Abertura)",
+      "userPasswordDesc": "Necessária para abrir o documento PDF",
+      "addUserPassword": "Adicionar senha de usuário (recomendado)",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "enterPassword": "Digite a senha",
+      "ownerPassword": "Senha de Proprietário (Permissões)",
+      "ownerPasswordDesc": "Controle restrições e permissões do documento",
+      "setOwnerPassword": "Definir senha de proprietário",
+      "ownerPasswordWarning": "A senha de proprietário deve ser diferente da senha de usuário",
+      "enterOwnerPassword": "Digite a senha de proprietário",
+      "confirmOwnerPassword": "Confirmar Senha de Proprietário",
+      "permissions": "Permissões do Documento",
+      "quickPresets": "Predefinições Rápidas",
+      "printing": "Impressão",
+      "printingNone": "Nenhuma (sem impressão)",
+      "printingLow": "Baixa Resolução (150 DPI)",
+      "printingHigh": "Alta Resolução (qualidade total)",
+      "allowCopying": "Permitir cópia de conteúdo",
+      "allowModifying": "Permitir modificação",
+      "allowAssembly": "Permitir montagem do documento",
+      "allowForms": "Permitir preenchimento de formulários",
+      "allowAnnotations": "Permitir anotações",
+      "allowScreenReaders": "Permitir leitores de tela",
+      "encryptionSettings": "Configurações de Criptografia",
+      "encryptionLevel": "Nível de Criptografia",
+      "encryption40bit": "RC4 de 40 bits",
+      "encryption40bitDesc": "(legado, fraco)",
+      "encryption128rc4": "RC4 de 128 bits",
+      "encryption128rc4Desc": "(padrão)",
+      "encryption128aes": "AES de 128 bits",
+      "encryption128aesDesc": "(recomendado) ✓",
+      "encryption256aes": "AES de 256 bits",
+      "encryption256aesDesc": "(mais forte)",
+      "encryptionInfo": "Criptografia mais forte oferece melhor segurança, mas pode ter problemas de compatibilidade com leitores de PDF antigos",
+      "protectPdf": "Proteger PDF",
+      "processing": "Processando...",
+      "cancel": "Cancelar",
+      "errors": {
+        "noFile": "Nenhum arquivo fornecido",
+        "noPassword": "Por favor, defina pelo menos uma senha",
+        "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
+        "passwordMismatch": "As senhas não coincidem",
+        "passwordsSame": "A senha de proprietário deve ser diferente da senha de usuário"
+      },
+      "toasts": {
+        "success": "PDF protegido com sucesso!",
+        "successDesc": "Seu PDF criptografado foi baixado.",
+        "error": "Falha ao proteger PDF",
+        "errorDesc": "Ocorreu um erro ao proteger o PDF"
+      },
+      "passwordStrength": {
+        "weak": "Fraca",
+        "fair": "Razoável",
+        "good": "Boa",
+        "strong": "Forte"
+      }
     },
     "unlock": {
       "name": "Desbloquear PDF",
-      "description": "Remova a senha e proteção de arquivos PDF."
+      "description": "Remova a senha e proteção de arquivos PDF.",
+      "title": "Desbloquear PDF",
+      "subtitle": "Remova a proteção por senha e restrições dos seus arquivos PDF",
+      "enterPdfPassword": "Digite a Senha do PDF",
+      "enterPasswordPlaceholder": "Digite a senha para desbloquear",
+      "passwordNote": "Nota: Você deve fornecer a senha correta para desbloquear o documento. Não podemos quebrar senhas desconhecidas.",
+      "unlockPdf": "Desbloquear PDF",
+      "unlocking": "Desbloqueando...",
+      "change": "Alterar",
+      "features": {
+        "removePassword": "Remover Senha",
+        "removePasswordDesc": "Remover senha de abertura",
+        "removeRestrictions": "Remover Restrições",
+        "removeRestrictionsDesc": "Habilitar impressão e edição",
+        "secureHandling": "Processamento Seguro",
+        "secureHandlingDesc": "Arquivos processados localmente"
+      },
+      "supportNote": "Suportamos a remoção de senhas de proprietário e usuário se você as conhecer.",
+      "toasts": {
+        "success": "PDF desbloqueado com sucesso!",
+        "error": "Falha ao desbloquear PDF. Verifique a senha."
+      }
     }
   },
   "landing": {

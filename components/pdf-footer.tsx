@@ -1,7 +1,6 @@
 "use client"
 
-import { useToolTranslations } from "@/lib/i18n-helpers"
-import { pdfTools } from "@/lib/pdf-tools"
+import { getPDFTools } from "@/lib/pdf-tools"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useParams } from "next/navigation"
@@ -9,9 +8,12 @@ import { useParams } from "next/navigation"
 export function PDFFooter() {
   const t = useTranslations('footer')
   const tCommon = useTranslations('common')
+  const tTools = useTranslations('tools')
   const params = useParams()
   const locale = params.locale as string || 'pt-BR'
-  const getToolTranslation = useToolTranslations()
+
+  // Get translated tools
+  const tools = getPDFTools((key) => tTools(key))
 
   return (
     <footer className="border-t border-border bg-muted/30 pt-16 pb-8">
@@ -34,15 +36,14 @@ export function PDFFooter() {
           <div className="lg:col-span-2">
             <h3 className="font-semibold mb-4">{t('toolsSection')}</h3>
             <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3">
-              {pdfTools.map((tool) => {
-                const translation = getToolTranslation(tool.id)
+              {tools.map((tool) => {
                 return (
                   <Link
                     key={tool.id}
                     href={`/${locale}/${tool.id}`}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline"
                   >
-                    {translation.name}
+                    {tool.name}
                   </Link>
                 )
               })}

@@ -6,10 +6,14 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, CheckCircle, Eye, EyeOff, Lock, Unlock } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 
 export function UnlockInterface() {
+  const t = useTranslations('tools.unlock')
+  const tCommon = useTranslations('common')
+
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -27,7 +31,7 @@ export function UnlockInterface() {
   const handleUnlock = async () => {
     if (!file) return
     if (!password) {
-      setError("Please enter the password to unlock the PDF")
+      setError(t('enterPdfPassword'))
       return
     }
 
@@ -46,7 +50,7 @@ export function UnlockInterface() {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || "Failed to unlock PDF")
+        throw new Error(data.error || t('toasts.error'))
       }
 
       const blob = await response.blob()
@@ -59,11 +63,11 @@ export function UnlockInterface() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
 
-      toast.success("PDF unlocked successfully!")
+      toast.success(t('toasts.success'))
     } catch (err) {
       console.error(err)
-      setError(err instanceof Error ? err.message : "An error occurred")
-      toast.error("Failed to unlock PDF. Please check the password.")
+      setError(err instanceof Error ? err.message : t('toasts.error'))
+      toast.error(t('toasts.error'))
     } finally {
       setIsProcessing(false)
     }
@@ -76,9 +80,9 @@ export function UnlockInterface() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
             <Unlock className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="mb-2 text-3xl font-bold">Unlock PDF</h1>
+          <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">
-            Remove password protection and restrictions from your PDF files
+            {t('subtitle')}
           </p>
         </div>
 
@@ -90,7 +94,7 @@ export function UnlockInterface() {
         />
 
         <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>We support removing owner passwords and user passwords if you know them.</p>
+          <p>{t('supportNote')}</p>
         </div>
       </div>
     )
@@ -109,9 +113,9 @@ export function UnlockInterface() {
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
+          {tCommon('back')}
         </Button>
-        <h1 className="text-2xl font-bold">Unlock PDF</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
       </div>
 
       <Card className="p-6">
@@ -134,20 +138,20 @@ export function UnlockInterface() {
               setError("")
             }}
           >
-            Change
+            {t('change')}
           </Button>
         </div>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="password">Enter PDF Password</Label>
+            <Label htmlFor="password">{t('enterPdfPassword')}</Label>
             <div className="relative mt-1">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter the password to unlock"
+                placeholder={t('enterPasswordPlaceholder')}
                 className="pr-10"
               />
               <button
@@ -167,8 +171,7 @@ export function UnlockInterface() {
 
           <div className="flex items-center gap-2 rounded-lg bg-yellow-50 p-4 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
             <p>
-              Note: You must provide the correct password to unlock the document.
-              We cannot crack unknown passwords.
+              {t('passwordNote')}
             </p>
           </div>
 
@@ -178,7 +181,7 @@ export function UnlockInterface() {
             onClick={handleUnlock}
             disabled={isProcessing || !password}
           >
-            {isProcessing ? "Unlocking..." : "Unlock PDF"}
+            {isProcessing ? t('unlocking') : t('unlockPdf')}
           </Button>
         </div>
       </Card>
@@ -188,22 +191,22 @@ export function UnlockInterface() {
           <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600">
             <CheckCircle className="h-4 w-4" />
           </div>
-          <h3 className="text-sm font-medium">Remove Password</h3>
-          <p className="text-xs text-muted-foreground">Strip open password</p>
+          <h3 className="text-sm font-medium">{t('features.removePassword')}</h3>
+          <p className="text-xs text-muted-foreground">{t('features.removePasswordDesc')}</p>
         </div>
         <div className="flex flex-col items-center text-center">
           <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600">
             <CheckCircle className="h-4 w-4" />
           </div>
-          <h3 className="text-sm font-medium">Remove Restrictions</h3>
-          <p className="text-xs text-muted-foreground">Enable print & edit</p>
+          <h3 className="text-sm font-medium">{t('features.removeRestrictions')}</h3>
+          <p className="text-xs text-muted-foreground">{t('features.removeRestrictionsDesc')}</p>
         </div>
         <div className="flex flex-col items-center text-center">
           <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600">
             <CheckCircle className="h-4 w-4" />
           </div>
-          <h3 className="text-sm font-medium">Secure Handling</h3>
-          <p className="text-xs text-muted-foreground">Files processed locally</p>
+          <h3 className="text-sm font-medium">{t('features.secureHandling')}</h3>
+          <p className="text-xs text-muted-foreground">{t('features.secureHandlingDesc')}</p>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useToolTranslations } from "@/lib/i18n-helpers"
-import { pdfTools } from "@/lib/pdf-tools"
+import { getPDFTools } from "@/lib/pdf-tools"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -22,7 +21,10 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
   const locale = params.locale as string || 'pt-BR'
   const tCommon = useTranslations('common')
   const tSidebar = useTranslations('sidebar')
-  const getToolTranslation = useToolTranslations()
+  const tTools = useTranslations('tools')
+
+  // Get translated tools
+  const tools = getPDFTools((key) => tTools(key))
 
   return (
     <>
@@ -76,12 +78,10 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
             </Button>
           </div>
 
-          {/* Tools Navigation */}
           <nav className="flex-1 overflow-y-auto py-4 sidebar-scroll">
             <div className="space-y-1 px-2">
-              {pdfTools.map((tool) => {
+              {tools.map((tool) => {
                 const Icon = tool.icon
-                const translation = getToolTranslation(tool.id)
                 const isActive = pathname === `/${locale}/${tool.id}`
 
                 return (
@@ -100,14 +100,14 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
                         <Icon className="h-5 w-5 shrink-0" />
                         {/* Show label only when sidebar is expanded */}
                         {(!collapsed || mobileOpen) && (
-                          <span className="truncate">{translation.name}</span>
+                          <span className="truncate">{tool.name}</span>
                         )}
                       </Link>
                     </TooltipTrigger>
                     {collapsed && !mobileOpen && (
                       <TooltipContent side="right" className="font-medium hidden lg:block">
-                        <p>{translation.name}</p>
-                        <p className="text-xs text-muted-foreground">{translation.description}</p>
+                        <p>{tool.name}</p>
+                        <p className="text-xs text-muted-foreground">{tool.description}</p>
                       </TooltipContent>
                     )}
                   </Tooltip>

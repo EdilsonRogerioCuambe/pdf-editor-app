@@ -192,11 +192,93 @@
     },
     "protect": {
       "name": "Protect PDF",
-      "description": "Add password and encrypt your important PDF files."
+      "description": "Add password and encrypt your important PDF files.",
+      "title": "Protect PDF with Password",
+      "subtitle": "Secure your PDF with encryption and permissions",
+      "fileInfo": "File Information",
+      "notProtected": "Not Protected",
+      "userPassword": "User Password (Open Password)",
+      "userPasswordDesc": "Required to open the PDF document",
+      "addUserPassword": "Add user password (recommended)",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "enterPassword": "Enter password",
+      "ownerPassword": "Owner Password (Permissions)",
+      "ownerPasswordDesc": "Control document restrictions and permissions",
+      "setOwnerPassword": "Set owner password",
+      "ownerPasswordWarning": "Owner password must be different from user password",
+      "enterOwnerPassword": "Enter owner password",
+      "confirmOwnerPassword": "Confirm Owner Password",
+      "permissions": "Document Permissions",
+      "quickPresets": "Quick Presets",
+      "printing": "Printing",
+      "printingNone": "None (no printing)",
+      "printingLow": "Low Resolution (150 DPI)",
+      "printingHigh": "High Resolution (full quality)",
+      "allowCopying": "Allow content copying",
+      "allowModifying": "Allow modifying",
+      "allowAssembly": "Allow document assembly",
+      "allowForms": "Allow form filling",
+      "allowAnnotations": "Allow annotations",
+      "allowScreenReaders": "Allow screen readers",
+      "encryptionSettings": "Encryption Settings",
+      "encryptionLevel": "Encryption Level",
+      "encryption40bit": "40-bit RC4",
+      "encryption40bitDesc": "(legacy, weak)",
+      "encryption128rc4": "128-bit RC4",
+      "encryption128rc4Desc": "(standard)",
+      "encryption128aes": "128-bit AES",
+      "encryption128aesDesc": "(recommended) ✓",
+      "encryption256aes": "256-bit AES",
+      "encryption256aesDesc": "(strongest)",
+      "encryptionInfo": "Higher encryption provides better security but may have compatibility issues with older PDF readers",
+      "protectPdf": "Protect PDF",
+      "processing": "Processing...",
+      "cancel": "Cancel",
+      "errors": {
+        "noFile": "No file provided",
+        "noPassword": "Please set at least one password",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "passwordMismatch": "Passwords do not match",
+        "passwordsSame": "Owner password must be different from user password"
+      },
+      "toasts": {
+        "success": "PDF protected successfully!",
+        "successDesc": "Your encrypted PDF has been downloaded.",
+        "error": "Failed to protect PDF",
+        "errorDesc": "An error occurred while protecting the PDF"
+      },
+      "passwordStrength": {
+        "weak": "Weak",
+        "fair": "Fair",
+        "good": "Good",
+        "strong": "Strong"
+      }
     },
     "unlock": {
       "name": "Unlock PDF",
-      "description": "Remove password and protection from PDF files."
+      "description": "Remove password and protection from PDF files.",
+      "title": "Unlock PDF",
+      "subtitle": "Remove password protection and restrictions from your PDF files",
+      "enterPdfPassword": "Enter PDF Password",
+      "enterPasswordPlaceholder": "Enter the password to unlock",
+      "passwordNote": "Note: You must provide the correct password to unlock the document. We cannot crack unknown passwords.",
+      "unlockPdf": "Unlock PDF",
+      "unlocking": "Unlocking...",
+      "change": "Change",
+      "features": {
+        "removePassword": "Remove Password",
+        "removePasswordDesc": "Strip open password",
+        "removeRestrictions": "Remove Restrictions",
+        "removeRestrictionsDesc": "Enable print & edit",
+        "secureHandling": "Secure Handling",
+        "secureHandlingDesc": "Files processed locally"
+      },
+      "supportNote": "We support removing owner passwords and user passwords if you know them.",
+      "toasts": {
+        "success": "PDF unlocked successfully!",
+        "error": "Failed to unlock PDF. Please check the password."
+      }
     }
   },
   "landing": {

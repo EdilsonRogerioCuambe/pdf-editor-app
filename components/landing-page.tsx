@@ -2,8 +2,7 @@
 
 import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
-import { useToolTranslations } from "@/lib/i18n-helpers"
-import { pdfTools } from "@/lib/pdf-tools"
+import { getPDFTools } from "@/lib/pdf-tools"
 import { ArrowRight, Check, FileText, Globe, Menu, Shield, X, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
@@ -20,7 +19,10 @@ export function LandingPage() {
   const tNav = useTranslations('nav')
   const tCommon = useTranslations('common')
   const tFooter = useTranslations('footer')
-  const getToolTranslation = useToolTranslations()
+  const tTools = useTranslations('tools')
+
+  // Get translated tools
+  const tools = getPDFTools((key) => tTools(key))
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-50">
@@ -171,9 +173,8 @@ export function LandingPage() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {pdfTools.map((tool) => {
+            {tools.map((tool) => {
               const Icon = tool.icon
-              const translation = getToolTranslation(tool.id)
 
               return (
                 <Link
@@ -185,8 +186,8 @@ export function LandingPage() {
                     <Icon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-primary" />
                   </div>
 
-                  <h3 className="mb-2 text-xl font-semibold text-white">{translation.name}</h3>
-                  <p className="text-sm text-zinc-400 group-hover:text-zinc-300">{translation.description}</p>
+                  <h3 className="mb-2 text-xl font-semibold text-white">{tool.name}</h3>
+                  <p className="text-sm text-zinc-400 group-hover:text-zinc-300">{tool.description}</p>
 
                   <div className="absolute bottom-4 right-4 translate-x-4 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100">
                     <ArrowRight className="h-5 w-5 text-primary" />
