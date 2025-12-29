@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress"
 import { analyzePDF, type PDFAnalysisResult, validateCompressionSettings } from "@/lib/pdf-analysis"
 import { cn } from "@/lib/utils"
 import { AlertTriangle, ArrowRight, CheckCircle2, Download, FileText, Image as ImageIcon, Loader2, Minimize2, RefreshCw, ShieldAlert } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useState } from "react"
@@ -23,13 +24,15 @@ if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
 
 type CompressionLevel = 'low' | 'medium' | 'high'
 
-const LEVELS: Record<CompressionLevel, { label: string, quality: number, scale: number, desc: string }> = {
-    low: { label: "Low Compression", quality: 0.8, scale: 1.5, desc: "Best quality, minor size reduction" },
-    medium: { label: "Medium Compression", quality: 0.6, scale: 1.0, desc: "Good balance (Recommended)" },
-    high: { label: "High Compression", quality: 0.4, scale: 0.8, desc: "Smallest size, lower quality" }
+const LEVEL_KEYS: Record<CompressionLevel, { labelKey: string, descKey: string, quality: number, scale: number }> = {
+    low: { labelKey: "low", descKey: "lowDesc", quality: 0.8, scale: 1.5 },
+    medium: { labelKey: "medium", descKey: "mediumDesc", quality: 0.6, scale: 1.0 },
+    high: { labelKey: "high", descKey: "highDesc", quality: 0.4, scale: 0.8 }
 }
 
 export function CompressInterface() {
+  const t = useTranslations('compress')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysis, setAnalysis] = useState<PDFAnalysisResult | null>(null)
@@ -59,14 +62,13 @@ export function CompressInterface() {
         setSelectedLevel(result.recommendation)
 
         if (result.warnings.length > 0) {
-            toast("Analysis Complete", {
-                description: "We detected some constraints with this file.",
-                action: { label: "View", onClick: () => {} }
+            toast(t('analysisComplete'), {
+                description: t('analysisCompleteDesc'),
             })
         }
     } catch (err) {
         console.error("Analysis Failed", err)
-        toast.error("Could not analyze PDF structure")
+        toast.error(t('analysisFailed'))
         // Fallback default
         setAnalysis({
             totalPages: 1,
@@ -89,7 +91,7 @@ export function CompressInterface() {
     if (!file || !analysis) return
 
     // 1. Validation Pre-Check
-    const settings = LEVELS[selectedLevel]
+    const settings = LEVEL_KEYS[selectedLevel]
     const validation = validateCompressionSettings(analysis, settings.quality)
 
     if (!validation.valid && !confirmed) {
@@ -153,13 +155,13 @@ export function CompressInterface() {
 
         // Heuristic: If size increased or barely decreased, warn
         if (newSize > originalSize * 0.95) {
-             toast.warning("Optimization Limited", {
-                 description: "This PDF was already compressed. File size reduction is minimal.",
+             toast.warning(t('optimizationLimited'), {
+                 description: t('optimizationLimitedDesc'),
                  duration: 6000
              })
         } else {
-             toast.success("Compression Successful!", {
-                 description: `Saved ${((originalSize - newSize) / 1024 / 1024).toFixed(2)} MB`
+             toast.success(t('compressionSuccess'), {
+                 description: t('saved', { size: ((originalSize - newSize) / 1024 / 1024).toFixed(2) })
              })
         }
 
@@ -187,8 +189,8 @@ export function CompressInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Smart PDF Compression</h2>
-                 <p className="text-muted-foreground">Intelligent optimization that preserves legibility.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('subtitle')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -205,8 +207,8 @@ export function CompressInterface() {
           <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
               <Loader2 className="w-10 h-10 animate-spin text-primary" />
               <div className="text-center">
-                  <h3 className="font-semibold text-lg">Analyzing Content...</h3>
-                  <p className="text-muted-foreground text-sm">Detecting text, images, and structure</p>
+                  <h3 className="font-semibold text-lg">{t('analyzing')}</h3>
+                  <p className="text-muted-foreground text-sm">{t('detecting')}</p>
               </div>
           </div>
       )
@@ -219,10 +221,10 @@ export function CompressInterface() {
             <div>
                 <h3 className="text-2xl font-semibold opacity-90">{file.name}</h3>
                 <p className="text-sm text-muted-foreground">
-                    Original Size: {(file.file.size / 1024 / 1024).toFixed(2)} MB • {analysis?.totalPages} Pages
+                    {t('originalSize')}: {(file.file.size / 1024 / 1024).toFixed(2)} MB • {analysis?.totalPages} {tCommon('pages')}
                 </p>
             </div>
-            <Button variant="ghost" onClick={() => setFile(null)}>Change File</Button>
+            <Button variant="ghost" onClick={() => setFile(null)}>{t('changeFile')}</Button>
        </div>
 
        {/* Analysis Report */}
@@ -232,12 +234,12 @@ export function CompressInterface() {
                     <CardContent className="pt-6">
                         <div className="flex items-center gap-2 mb-2">
                             {analysis.hasText ? <FileText className="w-5 h-5 text-amber-500" /> : <ImageIcon className="w-5 h-5 text-blue-500" />}
-                            <span className="font-semibold">{analysis.hasText ? "Text-Heavy" : "Image-Rich"}</span>
+                            <span className="font-semibold">{analysis.hasText ? t('textHeavy') : t('imageRich')}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
                             {analysis.hasText
-                              ? "Contains mostly searchable text. Aggressive compression may affect clarity."
-                              : "Contains mostly images. Good candidate for compression."}
+                              ? t('textHeavyDesc')
+                              : t('imageRichDesc')}
                         </p>
                     </CardContent>
                 </Card>
@@ -246,13 +248,13 @@ export function CompressInterface() {
                     <CardContent className="pt-6">
                         <div className="flex items-center gap-2 mb-2">
                              {analysis.alreadyCompressed ? <Minimize2 className="w-5 h-5 text-red-500" /> : <RefreshCw className="w-5 h-5 text-green-500" />}
-                             <span className="font-semibold">{analysis.alreadyCompressed ? "Already Optimized" : "Compressible"}</span>
+                             <span className="font-semibold">{analysis.alreadyCompressed ? t('alreadyOptimized') : t('compressible')}</span>
                         </div>
                         <div className="space-y-1">
                              <div className="flex justify-between text-xs">
-                                 <span>Potential</span>
+                                 <span>{t('potential')}</span>
                                  <span className={cn("font-bold", analysis.compressionPotential > 70 ? "text-green-600" : "text-amber-600")}>
-                                     {analysis.compressionPotential > 70 ? "High" : analysis.compressionPotential > 30 ? "Medium" : "Low"}
+                                     {analysis.compressionPotential > 70 ? t('high') : analysis.compressionPotential > 30 ? t('medium') : t('low')}
                                  </span>
                              </div>
                              <Progress value={analysis.compressionPotential} className="h-1.5" />
@@ -264,16 +266,16 @@ export function CompressInterface() {
                     <CardContent className="pt-6">
                         <div className="flex items-center gap-2 mb-2">
                              <ShieldAlert className="w-5 h-5 text-purple-500" />
-                             <span className="font-semibold">Safety Limits</span>
+                             <span className="font-semibold">{t('safetyLimits')}</span>
                         </div>
                          <p className="text-xs text-muted-foreground mb-1">
                             Min Quality: {Math.round(analysis.minSafeQuality * 100)}%
                         </p>
                         <div className="flex flex-wrap gap-1">
                             {analysis.warnings.length > 0 ? (
-                                <Badge variant="destructive" className="text-[10px]">Active Constraints</Badge>
+                                <Badge variant="destructive" className="text-[10px]">{t('activeConstraints')}</Badge>
                             ) : (
-                                <Badge variant="secondary" className="text-[10px]">No major risks</Badge>
+                                <Badge variant="secondary" className="text-[10px]">{t('noMajorRisks')}</Badge>
                             )}
                         </div>
                     </CardContent>
@@ -285,7 +287,7 @@ export function CompressInterface() {
        {analysis?.warnings && analysis.warnings.length > 0 && (
            <Alert variant="destructive" className="bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
                <AlertTriangle className="h-4 w-4" />
-               <AlertTitle>Optimization Warning</AlertTitle>
+               <AlertTitle>{t('optimizationWarning')}</AlertTitle>
                <AlertDescription className="text-sm mt-1">
                    <ul className="list-disc pl-4 space-y-1">
                        {analysis.warnings.map((w, i) => <li key={i}>{w}</li>)}
@@ -296,10 +298,10 @@ export function CompressInterface() {
 
        {/* Compression Levels */}
        <div>
-           <Label className="text-base mb-4 block">Select Compression Mode</Label>
+           <Label className="text-base mb-4 block">{t('selectMode')}</Label>
            <div className="grid md:grid-cols-3 gap-4">
-               {(Object.keys(LEVELS) as CompressionLevel[]).map((level) => {
-                   const config = LEVELS[level]
+               {(Object.keys(LEVEL_KEYS) as CompressionLevel[]).map((level) => {
+                   const config = LEVEL_KEYS[level]
                    const isRisky = config.quality < (analysis?.minSafeQuality || 0)
                    const isSelected = selectedLevel === level
 
@@ -317,15 +319,15 @@ export function CompressInterface() {
                            {isSelected && <div className="absolute top-3 right-3 text-primary"><CheckCircle2 className="w-5 h-5"/></div>}
 
                            <h4 className="font-semibold flex items-center gap-2">
-                               {config.label}
-                               {analysis?.recommendation === level && <Badge className="text-[10px] h-5">Recommended</Badge>}
+                               {t(`levels.${config.labelKey}`)}
+                               {analysis?.recommendation === level && <Badge className="text-[10px] h-5">{t('levels.recommended')}</Badge>}
                            </h4>
-                           <p className="text-sm text-muted-foreground mt-1 mb-3">{config.desc}</p>
+                           <p className="text-sm text-muted-foreground mt-1 mb-3">{t(`levels.${config.descKey}`)}</p>
 
                            {isRisky && (
                                <div className="flex items-center gap-1.5 text-xs text-destructive font-medium mt-2 bg-destructive/10 p-1.5 rounded">
                                    <AlertTriangle className="w-3 h-3" />
-                                   <span>Unsafe for this file</span>
+                                   <span>{t('unsafe')}</span>
                                </div>
                            )}
                        </button>
@@ -346,12 +348,12 @@ export function CompressInterface() {
                    {isCompressing ? (
                        <>
                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                         Optimizing... {progress}%
+                         {t('optimizing')} ({progress}%)
                        </>
                    ) : (
                        <>
                          <Minimize2 className="mr-2 h-4 w-4" />
-                         Compress PDF
+                         {t('compressPdf')}
                        </>
                    )}
                </Button>
@@ -360,7 +362,7 @@ export function CompressInterface() {
                     <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
                         <Download className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">Compression Complete!</h3>
+                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">{t('compressionComplete')}</h3>
 
                     {compressionStats && (
                         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6">
@@ -375,10 +377,10 @@ export function CompressInterface() {
 
                     <div className="flex gap-3 justify-center">
                         <Button onClick={downloadPDF} size="lg" className="bg-green-600 hover:bg-green-700 text-white">
-                            Download Compressed PDF
+                            {t('downloadCompressed')}
                         </Button>
                         <Button variant="outline" onClick={() => { setProcessedPdfBytes(null); setCompressionStats(null); }}>
-                            Compress Another
+                            {t('compressAnother')}
                         </Button>
                     </div>
                 </div>

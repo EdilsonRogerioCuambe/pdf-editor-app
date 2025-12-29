@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import { AlignLeft, AlignRight, Download, Hash, Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useEffect, useRef, useState } from "react"
@@ -42,6 +43,7 @@ const DEFAULT_SETTINGS: PageNumberSettings = {
 }
 
 export function PageNumbersInterface() {
+  const t = useTranslations('page-numbers')
   const [file, setFile] = useState<File | null>(null)
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -66,7 +68,7 @@ export function PageNumbersInterface() {
         setCurrentPage(1)
       } catch (err) {
         console.error("Error loading PDF", err)
-        toast.error("Failed to load PDF file")
+        toast.error(t('loadError'))
       }
     }
   }
@@ -213,7 +215,7 @@ export function PageNumbersInterface() {
         }
 
         const pdfBytes = await pdf.save()
-        const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" })
+        const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
         const url = URL.createObjectURL(blob)
 
         const link = document.createElement("a")
@@ -223,11 +225,11 @@ export function PageNumbersInterface() {
         link.click()
         document.body.removeChild(link)
 
-        toast.success("Page numbers added successfully!")
+        toast.success(t('success'))
 
     } catch (err) {
         console.error("Failed to add numbers", err)
-        toast.error("Failed to add page numbers")
+        toast.error(t('error'))
     } finally {
         setIsProcessing(false)
     }
@@ -237,8 +239,8 @@ export function PageNumbersInterface() {
       return (
          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Add Page Numbers</h2>
-                 <p className="text-muted-foreground">Insert page numbers into your PDF document.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('subtitle')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -258,7 +260,7 @@ export function PageNumbersInterface() {
                      <Button variant="outline" size="icon" onClick={() => setCurrentPage(Math.max(1, currentPage - 1))} disabled={currentPage <= 1}>
                          <AlignLeft className="w-4 h-4 rotate-180" />
                      </Button>
-                     <span className="text-sm font-medium">Page {currentPage} of {totalPages}</span>
+                     <span className="text-sm font-medium">{t('visualizer', { current: currentPage, total: totalPages })}</span>
                      <Button variant="outline" size="icon" onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage >= totalPages}>
                          <AlignRight className="w-4 h-4" />
                      </Button>
@@ -280,7 +282,7 @@ export function PageNumbersInterface() {
                  <div className="space-y-2">
                      <h3 className="font-semibold flex items-center gap-2">
                          <Hash className="w-5 h-5 text-primary" />
-                         Numbering Settings
+                         {t('settingsTitle')}
                      </h3>
                      <Separator />
                  </div>
@@ -288,7 +290,7 @@ export function PageNumbersInterface() {
                  <div className="space-y-4">
                      {/* Position Grid */}
                      <div className="space-y-2">
-                         <Label>Position</Label>
+                         <Label>{t('position')}</Label>
                          <div className="grid grid-cols-3 gap-2 w-32 mx-auto">
                               <div className="col-span-3 h-0" /> {/* Spacer for layout matching */}
                               {/* Top Row */}
@@ -323,21 +325,21 @@ export function PageNumbersInterface() {
                      </div>
 
                      <div className="space-y-2">
-                         <Label>Format</Label>
+                         <Label>{t('format')}</Label>
                          <Select value={settings.format} onValueChange={(v: any) => setSettings(s => ({...s, format: v}))}>
                              <SelectTrigger><SelectValue /></SelectTrigger>
                              <SelectContent>
-                                 <SelectItem value="n">1, 2, 3...</SelectItem>
-                                 <SelectItem value="Page n">Page 1, Page 2...</SelectItem>
-                                 <SelectItem value="n of total">1 of 5, 2 of 5...</SelectItem>
-                                 <SelectItem value="Page n of total">Page 1 of 5...</SelectItem>
+                                 <SelectItem value="n">{t('formatOptions.n')}</SelectItem>
+                                 <SelectItem value="Page n">{t('formatOptions.pageN')}</SelectItem>
+                                 <SelectItem value="n of total">{t('formatOptions.nOfTotal')}</SelectItem>
+                                 <SelectItem value="Page n of total">{t('formatOptions.pageNOfTotal')}</SelectItem>
                              </SelectContent>
                          </Select>
                      </div>
 
                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                             <Label>Start Number</Label>
+                             <Label>{t('startNumber')}</Label>
                              <Input
                                 type="number"
                                 min={1}
@@ -346,7 +348,7 @@ export function PageNumbersInterface() {
                              />
                         </div>
                          <div className="space-y-2">
-                             <Label>Font Size</Label>
+                             <Label>{t('fontSize')}</Label>
                              <Input
                                 type="number"
                                 value={settings.fontSize}
@@ -357,7 +359,7 @@ export function PageNumbersInterface() {
 
                      <div className="space-y-2">
                          <Label className="flex justify-between">
-                             <span>Margin</span>
+                             <span>{t('margin')}</span>
                              <span className="text-muted-foreground">{settings.margin}mm</span>
                          </Label>
                          <Slider
@@ -379,12 +381,12 @@ export function PageNumbersInterface() {
                     {isProcessing ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Processing... {progress}%
+                            {t('applying', { progress })}
                         </>
                     ) : (
                         <>
                             <Download className="mr-2 h-4 w-4" />
-                            Add Page Numbers
+                            {t('apply')}
                         </>
                     )}
                  </Button>

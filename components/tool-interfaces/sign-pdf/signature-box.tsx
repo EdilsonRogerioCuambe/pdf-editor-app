@@ -11,7 +11,10 @@ interface SignatureBoxProps {
   zoom: number;
 }
 
+import { useTranslations } from "next-intl";
+
 export function SignatureBox({ box, isSelected, onSelect, onUpdate, onDelete, zoom }: SignatureBoxProps) {
+  const t = useTranslations('sign')
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -191,7 +194,7 @@ export function SignatureBox({ box, isSelected, onSelect, onUpdate, onDelete, zo
                  <button
                    onClick={(e) => { e.stopPropagation(); onDelete(box.id); }}
                    className="p-1 hover:bg-gray-100 rounded text-red-500"
-                   title="Delete"
+                   title={t('delete')}
                  >
                     <X size={16} />
                  </button>

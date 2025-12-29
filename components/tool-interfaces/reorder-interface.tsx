@@ -33,13 +33,16 @@ import {
     RefreshCw,
     RotateCcw
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useState } from "react"
 import { toast } from "sonner"
 
 // Set worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+}
 
 interface PageItem {
   id: string
@@ -58,6 +61,7 @@ function SortablePage({
   onMoveFirst,
   onMoveLast,
   total,
+  t
 }: {
   id: string
   item: PageItem
@@ -67,6 +71,7 @@ function SortablePage({
   onMoveFirst: () => void
   onMoveLast: () => void
   total: number
+  t: any
 }) {
   const {
     attributes,
@@ -102,19 +107,19 @@ function SortablePage({
 
       {/* Manual Controls (above drag layer in z-index) */}
        <div className="absolute top-2 right-2 z-20 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md shadow-sm p-0.5">
-           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveUp() }} disabled={index === 0} title="Move Back">
+           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveUp() }} disabled={index === 0} title={t('moveBack')}>
                <ArrowUp className="h-3 w-3" />
            </Button>
-           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveDown() }} disabled={index === total - 1} title="Move Forward">
+           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveDown() }} disabled={index === total - 1} title={t('moveForward')}>
                <ArrowDown className="h-3 w-3" />
            </Button>
        </div>
 
        <div className="absolute top-2 left-2 z-20 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md shadow-sm p-0.5">
-           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveFirst() }} disabled={index === 0} title="Move to Start">
+           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveFirst() }} disabled={index === 0} title={t('moveToStart')}>
                <ChevronsUp className="h-3 w-3" />
            </Button>
-           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveLast() }} disabled={index === total - 1} title="Move to End">
+           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onMoveLast() }} disabled={index === total - 1} title={t('moveToEnd')}>
                <ChevronsDown className="h-3 w-3" />
            </Button>
        </div>
@@ -139,10 +144,10 @@ function SortablePage({
       </div>
 
       <div className="flex flex-col gap-0.5 px-1 py-1 text-center pointer-events-none">
-        <span className="text-sm font-medium">Page {index + 1}</span>
+        <span className="text-sm font-medium">{t('page', {index: index + 1})}</span>
         {item.originalIndex !== index && (
            <Badge variant="outline" className="mx-auto text-[10px] h-4 px-1 py-0 w-fit text-muted-foreground">
-               was {item.originalIndex + 1}
+               {t('was', {index: item.originalIndex + 1})}
            </Badge>
         )}
       </div>
@@ -152,6 +157,8 @@ function SortablePage({
 
 
 export function ReorderInterface() {
+  const t = useTranslations('reorder')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [items, setItems] = useState<PageItem[]>([])
   const [loadingThumbnails, setLoadingThumbnails] = useState(false)
@@ -204,7 +211,7 @@ export function ReorderInterface() {
       }
     } catch (err) {
       console.error("Error loading PDF", err)
-      toast.error("Failed to load PDF")
+      toast.error(tCommon('fileTooLarge') || "Failed to load PDF")
       setFile(null)
     } finally {
       setLoadingThumbnails(false)
@@ -228,12 +235,12 @@ export function ReorderInterface() {
   const resetOrder = () => {
       const sorted = [...items].sort((a, b) => a.originalIndex - b.originalIndex)
       setItems(sorted)
-      toast.success("Order reset to original")
+      toast.success(t('resetSuccess'))
   }
 
   const reverseOrder = () => {
       setItems([...items].reverse())
-      toast.success("Order reversed")
+      toast.success(t('reverseSuccess'))
   }
 
   const moveItem = (index: number, newIndex: number) => {
@@ -263,7 +270,7 @@ export function ReorderInterface() {
           setProgress(90)
           const pdfBytes = await newDoc.save()
 
-          const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
+          const blob = new Blob([pdfBytes], { type: "application/pdf" })
           const url = URL.createObjectURL(blob)
           const link = document.createElement("a")
           link.href = url
@@ -273,11 +280,11 @@ export function ReorderInterface() {
           document.body.removeChild(link)
 
           setProgress(100)
-          toast.success("PDF saved successfully")
+          toast.success(t('saveSuccess'))
 
       } catch (err) {
           console.error("Save error", err)
-          toast.error("Failed to save PDF")
+          toast.error(t('saveError') || "Failed to save PDF")
       } finally {
           setIsProcessing(false)
       }
@@ -287,8 +294,8 @@ export function ReorderInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Reorder Pages</h2>
-                 <p className="text-muted-foreground">Drag and drop to rearrange pages in your PDF.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -308,23 +315,23 @@ export function ReorderInterface() {
            <div>
                <h3 className="font-semibold text-lg">{file.name}</h3>
                <div className="flex items-center gap-3 text-sm mt-1 text-muted-foreground">
-                   <span>{items.length} pages</span>
-                   {hasChanges && <Badge variant="secondary" className="text-xs">Order Modified</Badge>}
+                   <span>{t('pagesCount', {count: items.length})}</span>
+                   {hasChanges && <Badge variant="secondary" className="text-xs">{t('orderModified')}</Badge>}
                </div>
            </div>
 
            <div className="flex flex-wrap items-center gap-2">
                <Button variant="outline" size="sm" onClick={resetOrder} disabled={!hasChanges}>
                    <RotateCcw className="w-3 h-3 mr-2" />
-                   Reset
+                   {t('reset')}
                </Button>
                <Button variant="outline" size="sm" onClick={reverseOrder}>
                    <RefreshCw className="w-3 h-3 mr-2" />
-                   Reverse
+                   {t('reverse')}
                </Button>
                <Button onClick={handleSave} disabled={isProcessing}>
                    {isProcessing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-                   Save Reordered PDF
+                   {t('save')}
                </Button>
            </div>
        </div>
@@ -355,6 +362,7 @@ export function ReorderInterface() {
                                    onMoveDown={() => moveItem(index, index + 1)}
                                    onMoveFirst={() => moveItem(index, 0)}
                                    onMoveLast={() => moveItem(index, items.length - 1)}
+                                   t={t}
                                />
                            ))}
                        </div>

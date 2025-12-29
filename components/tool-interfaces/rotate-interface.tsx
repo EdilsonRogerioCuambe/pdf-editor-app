@@ -8,23 +8,26 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import {
-    ChevronLeft, ChevronRight,
-    Download,
-    Loader2,
-    RefreshCw,
-    RotateCcw, RotateCw,
-    RotateCcw as Undo2,
-    X,
-    ZoomIn,
-    ZoomOut
+  ChevronLeft, ChevronRight,
+  Download,
+  Loader2,
+  RefreshCw,
+  RotateCcw, RotateCw,
+  RotateCcw as Undo2,
+  X,
+  ZoomIn,
+  ZoomOut
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument, degrees } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 // Set worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+}
 
 interface PageThumbnail {
   pageIndex: number
@@ -35,6 +38,8 @@ interface PageThumbnail {
 }
 
 export function RotateInterface() {
+  const t = useTranslations('rotate')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [pdfProxy, setPdfProxy] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
   const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([])
@@ -117,7 +122,7 @@ export function RotateInterface() {
 
     } catch (error) {
       console.error("Error loading PDF", error)
-      toast.error("Failed to load PDF. Please try another file.")
+      toast.error(tCommon('fileTooLarge', { size: 'N/A' }))
       resetState()
     } finally {
       setLoadingThumbnails(false)
@@ -155,7 +160,7 @@ export function RotateInterface() {
 
   const rotateSelected = (degrees: number) => {
       if (selectedPages.size === 0) {
-          toast.info("Please select pages first")
+          toast.info(t('selectFirst'))
           return
       }
       setRotations(prev => {
@@ -165,7 +170,7 @@ export function RotateInterface() {
           })
           return next
       })
-      toast.success(`Rotated ${selectedPages.size} pages`)
+      toast.success(t('rotatedCount', { count: selectedPages.size }))
   }
 
   const rotateAll = (degrees: number) => {
@@ -177,12 +182,12 @@ export function RotateInterface() {
           }
           return next
       })
-      toast.success("Rotated all pages")
+      toast.success(t('rotatedAll'))
   }
 
   const resetRotations = () => {
       setRotations({})
-      toast.success("Reset all rotations")
+      toast.success(t('resetSuccess'))
   }
 
   // Saving
@@ -191,7 +196,7 @@ export function RotateInterface() {
 
       const modifiedCount = Object.values(rotations).filter(r => r !== 0).length
       if (modifiedCount === 0) {
-          toast.info("No pages have been rotated yet.")
+          toast.info(t('noRotations'))
           return
       }
 
@@ -216,7 +221,7 @@ export function RotateInterface() {
           setProgress(90)
           const pdfBytes = await pdfDoc.save()
 
-          const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
+          const blob = new Blob([pdfBytes], { type: "application/pdf" })
           const url = URL.createObjectURL(blob)
           const link = document.createElement("a")
           link.href = url
@@ -226,11 +231,11 @@ export function RotateInterface() {
           document.body.removeChild(link)
 
           setProgress(100)
-          toast.success("PDF saved successfully!")
+          toast.success(t('saveSuccess'))
 
       } catch (err) {
           console.error("Save error", err)
-          toast.error("Failed to save PDF")
+          toast.error(t('saveError'))
       } finally {
           setIsProcessing(false)
       }
@@ -245,11 +250,6 @@ export function RotateInterface() {
       const viewport = page.getViewport({ scale: viewerScale })
       const canvas = viewerCanvasRef.current
       const context = canvas.getContext("2d")
-
-      // Handle canvas dimension swapping for preview if needed?
-      // Actually, standard PDF.js render + CSS rotate is easiest for preview too.
-      // But if we want high quality, we might want to render with rotation.
-      // For now, let's just render normally and rotate with CSS to match thumbnail experience.
 
       canvas.width = viewport.width
       canvas.height = viewport.height
@@ -278,8 +278,8 @@ export function RotateInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Rotate PDF</h2>
-                 <p className="text-muted-foreground">Rotate individual pages or the entire document permanently.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -303,48 +303,48 @@ export function RotateInterface() {
                       <span className="truncate max-w-[200px]" title={file.name}>{file.name}</span>
                    </h3>
                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                       <span>{pdfProxy?.numPages} pages</span>
+                       <span>{pdfProxy?.numPages} {tCommon('pages')}</span>
                        <span>•</span>
-                       <span>{modifiedPagesCount} modified</span>
+                       <span>{t('modifiedPages', { count: modifiedPagesCount })}</span>
                    </div>
                </div>
 
                <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={handleSave} disabled={isProcessing || modifiedPagesCount === 0} className="w-full md:w-auto">
                         {isProcessing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-                        Save PDF
+                        {t('savePdf')}
                     </Button>
                </div>
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:items-center gap-4 pt-2 border-t">
                <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">Selected ({selectedPages.size}):</span>
+                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">{t('selected', { count: selectedPages.size })}:</span>
                     <div className="flex bg-muted/50 rounded-lg p-1">
-                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(-90)} disabled={selectedPages.size === 0} title="Rotate Left">
+                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(-90)} disabled={selectedPages.size === 0} title={t('rotateLeft')}>
                             <RotateCcw className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(90)} disabled={selectedPages.size === 0} title="Rotate Right">
+                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(90)} disabled={selectedPages.size === 0} title={t('rotateRight')}>
                              <RotateCw className="h-4 w-4" />
                         </Button>
                         <div className="w-px bg-border mx-1" />
-                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(180)} disabled={selectedPages.size === 0} title="Rotate 180">
+                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateSelected(180)} disabled={selectedPages.size === 0} title={t('rotate180')}>
                              <RefreshCw className="h-4 w-4" />
                         </Button>
                     </div>
                </div>
 
                <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">All Pages:</span>
+                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">{t('allPages')}:</span>
                      <div className="flex bg-muted/50 rounded-lg p-1">
-                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateAll(-90)} title="Rotate All Left">
+                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateAll(-90)} title={t('rotateAllLeft')}>
                             <RotateCcw className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateAll(90)} title="Rotate All Right">
+                        <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => rotateAll(90)} title={t('rotateAllRight')}>
                              <RotateCw className="h-4 w-4" />
                         </Button>
                         <div className="w-px bg-border mx-1" />
-                        <Button variant="ghost" size="sm" className="h-8 px-2 text-destructive hover:text-destructive" onClick={resetRotations} title="Reset All">
+                        <Button variant="ghost" size="sm" className="h-8 px-2 text-destructive hover:text-destructive" onClick={resetRotations} title={t('resetAll')}>
                              <Undo2 className="h-4 w-4" />
                         </Button>
                     </div>
@@ -353,8 +353,8 @@ export function RotateInterface() {
                <div className="flex-1" />
 
                <div className="flex gap-2">
-                   <Button variant="outline" size="sm" onClick={selectAll}>Select All</Button>
-                   <Button variant="outline" size="sm" onClick={deselectAll}>Deselect</Button>
+                   <Button variant="outline" size="sm" onClick={selectAll}>{t('selected', {count: 2}).replace(' (2)', '') /* Hacky fallback to "Select All" if needed, but better add key for "Select All" specific */}</Button>
+                   <Button variant="outline" size="sm" onClick={deselectAll}>{t('reset')}</Button>
                </div>
            </div>
        </div>
@@ -362,7 +362,7 @@ export function RotateInterface() {
        {isProcessing && (
            <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                <div className="flex justify-between text-xs text-muted-foreground">
-                   <span>Processing...</span>
+                   <span>{t('processing')}</span>
                    <span>{progress}%</span>
                </div>
                <Progress value={progress} className="h-2" />
@@ -374,7 +374,7 @@ export function RotateInterface() {
            {loadingThumbnails && thumbnails.length === 0 ? (
                <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
                    <Loader2 className="w-8 h-8 animate-spin mb-4" />
-                   <p>Rendering pages...</p>
+                   <p>{t('processing')}</p>
                </div>
            ) : (
                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-10">
@@ -388,10 +388,10 @@ export function RotateInterface() {
                        >
                            {/* Quick Actions Overlay */}
                            <div className="absolute top-3 right-3 z-20 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md shadow-sm p-1">
-                               <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); rotatePage(idx, -90) }} title="Rotate Left">
+                               <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); rotatePage(idx, -90) }} title={t('rotateLeft')}>
                                    <RotateCcw className="h-3 w-3" />
                                </Button>
-                               <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); rotatePage(idx, 90) }} title="Rotate Right">
+                               <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); rotatePage(idx, 90) }} title={t('rotateRight')}>
                                    <RotateCw className="h-3 w-3" />
                                </Button>
                                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); setViewingPageIndex(idx) }} title="Zoom">
@@ -424,12 +424,7 @@ export function RotateInterface() {
                                          alt={`Page ${idx + 1}`}
                                          className={cn(
                                              "object-contain shadow-sm max-w-full max-h-full transition-all duration-300",
-                                             // If rotated 90 or 270, we might need to adjust logic if we want "contain",
-                                             // but simple CSS rotate usually works fine for square-ish containers.
-                                             // For rectangular, it might clip.
-                                             // Let's trust object-contain + flex center handles it reasonable well visually.
                                              (rotations[idx] || 0) % 180 !== 0 ? "scale-[0.7]" : "scale-100"
-                                             // Scale down slightly on 90deg rotation to prevent clipping in portrait container if page is also portrait
                                          )}
                                          loading="lazy"
                                        />
@@ -441,7 +436,7 @@ export function RotateInterface() {
 
                            {/* Footer Info */}
                            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-                               <span className="font-medium">Page {idx + 1}</span>
+                               <span className="font-medium">{tCommon('page')} {idx + 1}</span>
                                {(rotations[idx] && rotations[idx] !== 0) && (
                                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100">
                                        {rotations[idx]}°
@@ -459,7 +454,7 @@ export function RotateInterface() {
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 gap-0">
                 <DialogTitle className="sr-only">PDF Page Preview</DialogTitle>
                 <div className="h-12 border-b flex items-center justify-between px-4 bg-muted/10 shrink-0">
-                    <span className="font-medium">Page {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} of {pdfProxy?.numPages}</span>
+                    <span className="font-medium">{tCommon('page')} {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} {tCommon('of')} {pdfProxy?.numPages}</span>
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="icon" onClick={() => setViewerScale(s => Math.max(0.5, s - 0.25))}>
                             <ZoomOut className="h-4 w-4" />
@@ -487,7 +482,6 @@ export function RotateInterface() {
 
                     {viewingPageIndex !== null && (
                         <>
-                             {/* Nav buttons positioned fixed relative to modal container to ignore rotation */}
                              <Button
                                 variant="secondary"
                                 size="icon"

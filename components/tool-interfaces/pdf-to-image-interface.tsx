@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import JSZip from "jszip"
 import { Check, Download, Image as ImageIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 import * as pdfjsLib from "pdfjs-dist"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -29,13 +30,9 @@ interface ConversionSettings {
   prefix: string
 }
 
-const FORMATS: { id: ImageFormat; label: string; desc: string }[] = [
-  { id: "png", label: "PNG", desc: "Lossless, transparent" },
-  { id: "jpeg", label: "JPEG", desc: "Smaller size, lossy" },
-  { id: "webp", label: "WebP", desc: "Best compression" },
-]
-
 export function PdfToImageInterface() {
+  const t = useTranslations('pdfToImage')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [totalPages, setTotalPages] = useState(0)
   const [selectedPages, setSelectedPages] = useState<PageSelection>(new Set())
@@ -52,6 +49,12 @@ export function PdfToImageInterface() {
   const [isConverting, setIsConverting] = useState(false)
   const [progress, setProgress] = useState(0)
   const [convertedImages, setConvertedImages] = useState<{ blob: Blob; filename: string }[]>([])
+
+  const FORMATS: { id: ImageFormat; label: string; desc: string }[] = [
+    { id: "png", label: "PNG", desc: t('fmtPngDesc') },
+    { id: "jpeg", label: "JPEG", desc: t('fmtJpegDesc') },
+    { id: "webp", label: "WebP", desc: t('fmtWebpDesc') },
+  ]
 
   const handleFileSelected = async (files: UploadedFile[]) => {
     if (files.length === 0) return
@@ -95,7 +98,7 @@ export function PdfToImageInterface() {
 
     } catch (err) {
       console.error("Error loading PDF", err)
-      toast.error("Failed to load PDF")
+      toast.error(t('loadError'))
       setFile(null)
     } finally {
       setLoadingThumbnails(false)
@@ -173,11 +176,11 @@ export function PdfToImageInterface() {
         }
 
         setConvertedImages(outputImages)
-        toast.success("Conversion Complete!", { description: `Converted ${outputImages.length} pages.` })
+        toast.success(t('completeToast'), { description: t('completeDesc', { count: outputImages.length }) })
 
     } catch (err) {
         console.error("Conversion failed", err)
-        toast.error("Failed during conversion")
+        toast.error(t('errorToast'))
     } finally {
         setIsConverting(false)
     }
@@ -217,8 +220,8 @@ export function PdfToImageInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">PDF to Image</h2>
-                 <p className="text-muted-foreground">Convert PDF pages to high-quality images.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -237,10 +240,10 @@ export function PdfToImageInterface() {
            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                <div>
                    <h3 className="font-semibold text-lg truncate max-w-[300px]" title={file.name}>{file.name}</h3>
-                   <p className="text-sm text-muted-foreground">{totalPages} pages • {selectedPages.size} selected</p>
+                   <p className="text-sm text-muted-foreground">{totalPages} {tCommon('pages')} • {t('selected', { count: selectedPages.size })}</p>
                </div>
                <div className="flex gap-2">
-                   <Button variant="outline" size="sm" onClick={() => setFile(null)}>Change File</Button>
+                   <Button variant="outline" size="sm" onClick={() => setFile(null)}>{t('changeFile')}</Button>
                </div>
            </div>
 
@@ -249,7 +252,7 @@ export function PdfToImageInterface() {
            <div className="grid md:grid-cols-2 gap-8">
                {/* Format Selection */}
                <div className="space-y-3">
-                   <Label className="text-base">Image Format</Label>
+                   <Label className="text-base">{t('formatLabel')}</Label>
                    <div className="grid grid-cols-3 gap-3">
                        {FORMATS.map(fmt => (
                            <div
@@ -270,14 +273,14 @@ export function PdfToImageInterface() {
                {/* Quality Settings */}
                <div className="space-y-4">
                    <Label className="text-base flex justify-between">
-                       <span>Quality & Resolution</span>
+                       <span>{t('qualityLabel')}</span>
                        <span className="text-xs font-normal text-muted-foreground">{settings.dpi} DPI</span>
                    </Label>
 
                    {settings.format !== 'png' && (
                        <div className="space-y-2">
                            <div className="flex justify-between text-xs">
-                               <span>Compression</span>
+                               <span>{t('compression')}</span>
                                <span>{settings.quality}%</span>
                            </div>
                            <Slider
@@ -289,7 +292,7 @@ export function PdfToImageInterface() {
                    )}
 
                    <div className="space-y-2">
-                       <Label className="text-xs">DPI (Scale)</Label>
+                       <Label className="text-xs">{t('dpiLabel')}</Label>
                        <div className="flex gap-2">
                            {[72, 150, 300].map(dpi => (
                                <Button
@@ -303,7 +306,7 @@ export function PdfToImageInterface() {
                                </Button>
                            ))}
                            <div className="flex items-center gap-1 border rounded-md px-2 w-24">
-                               <span className="text-xs text-muted-foreground">Custom</span>
+                               <span className="text-xs text-muted-foreground">{t('custom')}</span>
                                <Input
                                    type="number"
                                    value={settings.dpi}
@@ -321,8 +324,8 @@ export function PdfToImageInterface() {
        <div className="space-y-4">
            <div className="flex items-center justify-between">
                <div className="flex items-center gap-2">
-                   <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs">Select All</Button>
-                   <Button variant="ghost" size="sm" onClick={deselectAll} className="text-xs">Deselect All</Button>
+                   <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs">{t('selectAll')}</Button>
+                   <Button variant="ghost" size="sm" onClick={deselectAll} className="text-xs">{t('deselectAll')}</Button>
                </div>
                {/* Could add Range Input here later */}
            </div>
@@ -345,7 +348,7 @@ export function PdfToImageInterface() {
                                    <img src={thumbnails[pageNum-1]} alt={`Page ${pageNum}`} className="object-contain w-full h-full" />
                                ) : (
                                    <div className="flex items-center justify-center h-full text-muted-foreground text-xs p-2 text-center">
-                                       {pageNum > 20 ? "No Preview" : "Loading..."}
+                                       {pageNum > 20 ? t('noPreview') : t('loading')}
                                    </div>
                                )}
 
@@ -360,7 +363,7 @@ export function PdfToImageInterface() {
                                </div>
 
                                 <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] py-0.5 text-center">
-                                   Page {pageNum}
+                                   {t('page', { pageNum })}
                                </div>
                            </div>
                        </div>
@@ -379,32 +382,32 @@ export function PdfToImageInterface() {
                    className="w-full md:w-auto min-w-[200px]"
                >
                    <ImageIcon className="mr-2 h-4 w-4" />
-                   Convert {selectedPages.size} Images
+                   {t('convertCount', { count: selectedPages.size })}
                </Button>
            ) : isConverting ? (
                <div className="w-full max-w-md space-y-2">
                    <Progress value={progress} />
-                   <p className="text-center text-sm text-muted-foreground">Converting... {progress}%</p>
+                   <p className="text-center text-sm text-muted-foreground">{t('converting', { progress })}</p>
                </div>
            ) : (
                <div className="w-full max-w-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-xl p-6 text-center animate-in fade-in slide-in-from-bottom-4">
                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
                        <Check className="w-6 h-6 text-green-600 dark:text-green-400" />
                    </div>
-                   <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-4">Conversion Success!</h3>
+                   <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-4">{t('successTitle')}</h3>
 
                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
                        <Button onClick={downloadZip} size="lg" className="bg-green-600 hover:bg-green-700 text-white">
                            <Download className="mr-2 h-4 w-4" />
-                           Download ZIP
+                           {t('downloadZip')}
                        </Button>
                        {convertedImages.length === 1 && (
                             <Button variant="outline" onClick={() => downloadSingle(0)}>
-                                Download Image
+                                {t('downloadImage')}
                             </Button>
                        )}
                        <Button variant="ghost" onClick={() => { setConvertedImages([]); setProgress(0); }}>
-                           Convert More
+                           {t('convertMore')}
                        </Button>
                    </div>
                </div>

@@ -4,35 +4,38 @@ import { FileDropZone, type UploadedFile } from "@/components/file-drop-zone"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import {
-    AlertTriangle,
-    ChevronLeft,
-    ChevronRight,
-    Download,
-    Loader2,
-    RotateCcw,
-    Trash2,
-    X,
-    ZoomIn,
-    ZoomOut
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Loader2,
+  RotateCcw,
+  Trash2,
+  X,
+  ZoomIn,
+  ZoomOut
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 // Set worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+}
 
 interface PageThumbnail {
   pageIndex: number
@@ -42,6 +45,8 @@ interface PageThumbnail {
 }
 
 export function DeleteInterface() {
+  const t = useTranslations('delete')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [pdfProxy, setPdfProxy] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
   const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([])
@@ -124,7 +129,7 @@ export function DeleteInterface() {
       }
     } catch (error) {
       console.error("Error loading PDF", error)
-      toast.error("Failed to load PDF. Please try another file.")
+      toast.error(tCommon('fileTooLarge', { size: 'N/A' }))
       resetState()
     } finally {
       setLoadingThumbnails(false)
@@ -145,31 +150,14 @@ export function DeleteInterface() {
 
   const deleteSelected = () => {
     if (selectedPages.size === 0) {
-        toast.info("No pages selected")
+        toast.info(t('noPagesSelected'))
         return
     }
     const newSet = new Set(pagesToDelete)
     selectedPages.forEach(idx => newSet.add(idx))
     setPagesToDelete(newSet)
-    setSelectedPages(new Set()) // Clear selection after action? Or keep it? Let's clear for clarity.
-    toast.success(`Marked ${selectedPages.size} pages for deletion`)
-  }
-
-  const keepOnlySelected = () => {
-      if (selectedPages.size === 0) {
-          toast.info("No pages selected to keep")
-          return
-      }
-      if (!pdfProxy) return
-
-      const newSet = new Set<number>()
-      for(let i=0; i < pdfProxy.numPages; i++) {
-          if (!selectedPages.has(i)) {
-              newSet.add(i)
-          }
-      }
-      setPagesToDelete(newSet)
-      toast.success(`Marked ${newSet.size} pages for deletion`)
+    setSelectedPages(new Set())
+    toast.success(t('markedCount', { count: selectedPages.size }))
   }
 
   const deleteEvenPages = () => {
@@ -179,7 +167,7 @@ export function DeleteInterface() {
           if ((i + 1) % 2 === 0) newSet.add(i)
       }
       setPagesToDelete(newSet)
-      toast.success("Marked all even pages for deletion")
+      toast.success(t('markedEven'))
   }
 
   const deleteOddPages = () => {
@@ -189,12 +177,12 @@ export function DeleteInterface() {
           if ((i + 1) % 2 !== 0) newSet.add(i)
       }
       setPagesToDelete(newSet)
-      toast.success("Marked all odd pages for deletion")
+      toast.success(t('markedOdd'))
   }
 
   const undoAllDeletions = () => {
       setPagesToDelete(new Set())
-      toast.success("Restored all pages")
+      toast.success(t('restoredAll'))
   }
 
   // Range Logic
@@ -222,14 +210,14 @@ export function DeleteInterface() {
       if (!rangeInput || !pdfProxy) return
       const indices = parseRange(rangeInput, pdfProxy.numPages)
       if (indices.length === 0) {
-          toast.error("Invalid range or no pages found")
+          toast.error(t('noPagesSelected'))
           return
       }
       const newSet = new Set(pagesToDelete)
       indices.forEach(idx => newSet.add(idx))
       setPagesToDelete(newSet)
       setRangeInput("")
-      toast.success(`Marked ${indices.length} pages from range`)
+      toast.success(t('markedRange', { count: indices.length }))
   }
 
   // --- Selection Logic ---
@@ -263,11 +251,11 @@ export function DeleteInterface() {
   const handleSaveClick = () => {
       if (!pdfProxy) return
       if (pagesToDelete.size === 0) {
-          toast.info("No pages marked for deletion")
+          toast.info(t('noPagesSelected'))
           return
       }
       if (pagesToDelete.size >= pdfProxy.numPages) {
-          toast.error("Cannot delete all pages. At least one page must remain.")
+          toast.error(t('cannotDeleteAll'))
           return
       }
       setShowConfirmModal(true)
@@ -315,11 +303,11 @@ export function DeleteInterface() {
         document.body.removeChild(link)
 
         setProgress(100)
-        toast.success(`Successfully removed ${pagesToDelete.size} pages`)
+        toast.success(t('successRemoved', { count: pagesToDelete.size }))
 
     } catch (err) {
         console.error("Deletion error", err)
-        toast.error("Failed to save PDF")
+        toast.error(t('saveError') || "Failed to save PDF")
     } finally {
         setIsProcessing(false)
     }
@@ -353,8 +341,8 @@ export function DeleteInterface() {
       return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Delete Pages</h2>
-                 <p className="text-muted-foreground">Remove specific pages from your PDF document.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -380,9 +368,9 @@ export function DeleteInterface() {
                       <span className="truncate max-w-[200px]" title={file.name}>{file.name}</span>
                    </h3>
                    <div className="flex items-center gap-3 text-sm mt-1">
-                       <span className="text-muted-foreground">{totalPages} total</span>
-                       <span className="text-destructive font-medium">• {pagesToDelete.size} to delete</span>
-                       <span className="text-success font-medium">• {remainingPages} remaining</span>
+                       <span className="text-muted-foreground">{t('total', { count: totalPages })}</span>
+                       <span className="text-destructive font-medium">• {t('toDelete', { count: pagesToDelete.size })}</span>
+                       <span className="text-success font-medium">• {t('remaining', { count: remainingPages })}</span>
                    </div>
                </div>
 
@@ -391,10 +379,10 @@ export function DeleteInterface() {
                        disabled={pagesToDelete.size === 0}
                        variant="outline"
                        onClick={undoAllDeletions}
-                       title="Restore all pages"
+                       title={t('restoreAll')}
                     >
                         <RotateCcw className="w-4 h-4 mr-2" />
-                        Undo All
+                        {t('undoAll')}
                     </Button>
                     <Button
                         variant="destructive"
@@ -403,7 +391,7 @@ export function DeleteInterface() {
                         className="flex-1 md:flex-none"
                     >
                         {isProcessing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-                        Save PDF
+                        {t('savePdf')}
                     </Button>
                </div>
            </div>
@@ -413,9 +401,9 @@ export function DeleteInterface() {
                {/* Selection Group */}
                <div className="flex flex-wrap items-center gap-2 border-r pr-4 mr-2">
                    <div className="flex gap-1 bg-muted/50 rounded-lg p-1">
-                       <Button variant="ghost" size="sm" onClick={selectAll} title="Select All">All</Button>
-                       <Button variant="ghost" size="sm" onClick={deselectAll} title="Deselect All">None</Button>
-                       <Button variant="ghost" size="sm" onClick={invertSelection} title="Invert Selection">Inv</Button>
+                       <Button variant="ghost" size="sm" onClick={selectAll} title="Select All">{t('selectAll')}</Button>
+                       <Button variant="ghost" size="sm" onClick={deselectAll} title="Deselect All">{t('selectNone')}</Button>
+                       <Button variant="ghost" size="sm" onClick={invertSelection} title={t('invertTitle')}>{t('invert')}</Button>
                    </div>
                </div>
 
@@ -429,20 +417,20 @@ export function DeleteInterface() {
                         className="text-destructive hover:text-destructive"
                     >
                         <Trash2 className="w-3 h-3 mr-2" />
-                        Delete Selected ({selectedPages.size})
+                        {t('deleteSelected', { count: selectedPages.size })}
                     </Button>
 
                     <div className="h-6 w-px bg-border mx-1" />
 
-                    <Button variant="ghost" size="sm" onClick={deleteEvenPages}>Even</Button>
-                    <Button variant="ghost" size="sm" onClick={deleteOddPages}>Odd</Button>
+                    <Button variant="ghost" size="sm" onClick={deleteEvenPages}>{t('deleteEven')}</Button>
+                    <Button variant="ghost" size="sm" onClick={deleteOddPages}>{t('deleteOdd')}</Button>
                </div>
 
                <div className="flex-1" />
 
                {/* Range Input */}
                <div className="flex items-center gap-2 max-w-[300px]">
-                   <span className="text-xs font-medium whitespace-nowrap">Range:</span>
+                   <span className="text-xs font-medium whitespace-nowrap">{t('range')}:</span>
                    <Input
                       placeholder="e.g. 1-5, 8"
                       value={rangeInput}
@@ -450,7 +438,7 @@ export function DeleteInterface() {
                       className="h-8 text-xs"
                    />
                    <Button variant="secondary" size="sm" onClick={handleDeleteRange}>
-                       Delete
+                       {t('delete')}
                    </Button>
                </div>
            </div>
@@ -459,7 +447,7 @@ export function DeleteInterface() {
        {isProcessing && (
            <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                <div className="flex justify-between text-xs text-muted-foreground">
-                   <span>Processing...</span>
+                   <span>{t('processing') || "Processing..."}</span>
                    <span>{progress}%</span>
                </div>
                <Progress value={progress} className="h-2" />
@@ -471,7 +459,7 @@ export function DeleteInterface() {
            {loadingThumbnails && thumbnails.length === 0 ? (
                <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
                    <Loader2 className="w-8 h-8 animate-spin mb-4" />
-                   <p>Rendering pages...</p>
+                   <p>{t('processing') || "Rendering pages..."}</p>
                </div>
            ) : (
                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-10">
@@ -498,7 +486,7 @@ export function DeleteInterface() {
                                        variant={isDeleted ? "secondary" : "destructive"}
                                        className="h-7 w-7"
                                        onClick={(e) => { e.stopPropagation(); togglePageDeletion(idx) }}
-                                       title={isDeleted ? "Restore Page" : "Delete Page"}
+                                       title={isDeleted ? t('restorePage') : t('deletePage')}
                                    >
                                        {isDeleted ? <RotateCcw className="h-3.5 w-3.5" /> : <Trash2 className="h-3.5 w-3.5" />}
                                    </Button>
@@ -523,7 +511,7 @@ export function DeleteInterface() {
                                {isDeleted && (
                                    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                                        <div className="bg-destructive/90 text-destructive-foreground px-3 py-1 rounded-md text-xs font-bold shadow-lg transform -rotate-12 backdrop-blur-sm border border-destructive-foreground/20">
-                                           DELETED
+                                           {t('deleted')}
                                        </div>
                                    </div>
                                )}
@@ -552,7 +540,7 @@ export function DeleteInterface() {
                                {/* Footer Info */}
                                <div className="flex items-center justify-between text-xs px-1">
                                    <span className={cn("font-medium", isDeleted ? "text-destructive line-through" : "text-muted-foreground")}>
-                                       Page {idx + 1}
+                                       {tCommon('page')} {idx + 1}
                                    </span>
                                    {isDeleted && (
                                        <Trash2 className="h-3 w-3 text-destructive" />
@@ -571,20 +559,16 @@ export function DeleteInterface() {
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
-                        Confirm Deletion
+                        {t('confirmTitle')}
                     </DialogTitle>
                     <DialogDescription>
-                        You are about to delete <strong>{pagesToDelete.size} pages</strong> from this document.
-                        <br/><br/>
-                        The new PDF will have <strong>{remainingPages} pages</strong>.
-                        <br/>
-                        This action creates a new file and cannot be undone on the generated file.
+                        {t('confirmDesc', { count: pagesToDelete.size, remaining: remainingPages })}
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setShowConfirmModal(false)}>Cancel</Button>
+                    <Button variant="outline" onClick={() => setShowConfirmModal(false)}>{t('cancel')}</Button>
                     <Button variant="destructive" onClick={executeSave}>
-                        Yes, Delete Pages
+                        {t('confirmYes')}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -595,7 +579,7 @@ export function DeleteInterface() {
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 gap-0">
                 <DialogTitle className="sr-only">PDF Page Preview</DialogTitle>
                 <div className="h-12 border-b flex items-center justify-between px-4 bg-muted/10 shrink-0">
-                    <span className="font-medium">Page {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} of {totalPages}</span>
+                    <span className="font-medium">{tCommon('page')} {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} {tCommon('of')} {totalPages}</span>
                      <div className="flex items-center gap-2">
                         <Button variant="ghost" size="icon" onClick={() => setViewerScale(s => Math.max(0.5, s - 0.25))}>
                             <ZoomOut className="h-4 w-4" />

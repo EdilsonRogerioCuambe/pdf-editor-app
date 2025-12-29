@@ -6,33 +6,27 @@ import { Card } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Slider } from '@/components/ui/slider'
-import { cn } from '@/lib/utils'
 import {
   Download,
-  Eye,
-  EyeOff,
   Hand,
   Highlighter,
-  Minimize2,
   MousePointer2,
   Pencil,
   Redo2,
   Square,
   StickyNote,
-  Trash2,
   Type,
   Undo2,
   ZoomIn,
   ZoomOut
 } from 'lucide-react'
+import { useTranslations } from "next-intl"
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { TextBox } from './add-text/text-box'
 import { AddTextToolbar } from './add-text/toolbar'
 import {
-  getAnnotationIcon,
-  getAnnotationSummary,
   getMaxZIndex,
   groupAnnotationsByPage
 } from './annotate/annotation-utils'
@@ -62,6 +56,7 @@ import { createAddAction, createDeleteAction, UndoRedoManager } from './annotate
 const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4]
 
 export function AnnotationInterface() {
+  const t = useTranslations('annotate')
   // File state
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null)
@@ -154,7 +149,7 @@ export function AnnotationInterface() {
       await loadPDF(selectedFile)
     } catch (error) {
       console.error('Error loading PDF:', error)
-      toast.error('Failed to load PDF. Please try again.')
+      toast.error(t('toasts.loadError'))
     } finally {
       setIsProcessing(false)
     }
@@ -187,7 +182,7 @@ export function AnnotationInterface() {
       setPages(pagesInfo)
       setCurrentPage(0)
 
-      toast.success(`PDF loaded: ${pageCount} pages`)
+      toast.success(t('toasts.loaded', { count: pageCount }))
     } catch (error) {
       console.error('Error in loadPDF:', error)
       throw error
@@ -238,7 +233,7 @@ export function AnnotationInterface() {
       undoRedoRef.current.recordAction(createAddAction(newAnnotation))
     }
 
-    toast.success('Annotation added')
+    toast.success(t('toasts.added'))
   }, [annotations])
 
   // Delete selected annotation
@@ -255,7 +250,7 @@ export function AnnotationInterface() {
       undoRedoRef.current.recordAction(createDeleteAction(annotation))
     }
 
-    toast.success('Annotation deleted')
+    toast.success(t('toasts.deleted'))
   }
 
   // Toggle annotation visibility
@@ -265,7 +260,7 @@ export function AnnotationInterface() {
     )
   }
 
-  // Text tool handlers
+  // Text tool handlers are now mainly delegated to TextBox but we keep this for clicking empty space
   const handlePageClick = (e: React.MouseEvent, pageIndex: number) => {
     if (activeTool !== 'text') return
 
@@ -287,7 +282,7 @@ export function AnnotationInterface() {
         y: y - 10,
         width: 200,
         height: 20, // Initial height, will auto-expand
-        content: 'Type here...',
+        content: t('tools.text'),
         fontSize: 16,
         fontFamily: 'Helvetica',
         fontWeight: 'normal',
@@ -379,7 +374,7 @@ export function AnnotationInterface() {
 
     try {
       setIsProcessing(true)
-      toast.info('Saving annotations to PDF...')
+      toast.info(t('toasts.saving'))
 
       const pdfBytes = await saveAnnotatedPDF(file.file, annotations)
       const blob = new Blob([pdfBytes as any], { type: 'application/pdf' })
@@ -391,10 +386,10 @@ export function AnnotationInterface() {
       link.click()
 
       URL.revokeObjectURL(url)
-      toast.success('Annotated PDF saved successfully!')
+      toast.success(t('toasts.saved'))
     } catch (error) {
       console.error('Error saving PDF:', error)
-      toast.error('Failed to save PDF. Please try again.')
+      toast.error(t('toasts.saveError'))
     } finally {
       setIsProcessing(false)
     }
@@ -407,9 +402,9 @@ export function AnnotationInterface() {
     return (
       <div className="mx-auto max-w-4xl py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Annotate PDF</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            Add highlights, drawings, shapes, text, notes, and more to your PDF files
+            {t('subtitle')}
           </p>
         </div>
 
@@ -423,29 +418,29 @@ export function AnnotationInterface() {
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
               <Highlighter className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold">Highlight</h3>
-            <p className="text-sm text-muted-foreground">Mark important text with colors</p>
+            <h3 className="font-semibold">{t('highlight')}</h3>
+            <p className="text-sm text-muted-foreground">{t('highlightDesc')}</p>
           </Card>
           <Card className="p-4">
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
               <Pencil className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold">Draw</h3>
-            <p className="text-sm text-muted-foreground">Freehand drawing and sketches</p>
+            <h3 className="font-semibold">{t('draw')}</h3>
+            <p className="text-sm text-muted-foreground">{t('drawDesc')}</p>
           </Card>
           <Card className="p-4">
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
               <Square className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold">Shapes</h3>
-            <p className="text-sm text-muted-foreground">Add rectangles, circles, arrows</p>
+            <h3 className="font-semibold">{t('shapes')}</h3>
+            <p className="text-sm text-muted-foreground">{t('shapesDesc')}</p>
           </Card>
           <Card className="p-4">
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
               <StickyNote className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold">Notes</h3>
-            <p className="text-sm text-muted-foreground">Sticky notes and comments</p>
+            <h3 className="font-semibold">{t('notes')}</h3>
+            <p className="text-sm text-muted-foreground">{t('notesDesc')}</p>
           </Card>
         </div>
       </div>
@@ -457,16 +452,13 @@ export function AnnotationInterface() {
       {/* Toolbar */}
       <Card className="mb-4 p-4">
         <div className="flex flex-wrap items-center gap-4">
-          {/* File controls */}
-
-
           {/* Tool buttons */}
           <div className="flex flex-wrap items-center gap-1">
             <Button
               variant={activeTool === 'cursor' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('cursor')}
-              title="Cursor (V)"
+              title={t('tools.cursor')}
             >
               <MousePointer2 className="h-4 w-4" />
             </Button>
@@ -474,7 +466,7 @@ export function AnnotationInterface() {
               variant={activeTool === 'hand' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('hand')}
-              title="Hand Tool (P)"
+              title={t('tools.hand')}
             >
               <Hand className="h-4 w-4" />
             </Button>
@@ -483,7 +475,7 @@ export function AnnotationInterface() {
               variant={activeTool === 'highlight' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('highlight')}
-              title="Highlight (H)"
+              title={t('tools.highlight')}
             >
               <Highlighter className="h-4 w-4" />
             </Button>
@@ -491,7 +483,7 @@ export function AnnotationInterface() {
               variant={activeTool === 'draw' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('draw')}
-              title="Draw (D)"
+              title={t('tools.draw')}
             >
               <Pencil className="h-4 w-4" />
             </Button>
@@ -499,7 +491,7 @@ export function AnnotationInterface() {
               variant={activeTool === 'shape' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('shape')}
-              title="Shapes (S)"
+              title={t('tools.shapes')}
             >
               <Square className="h-4 w-4" />
             </Button>
@@ -507,7 +499,7 @@ export function AnnotationInterface() {
               variant={activeTool === 'text' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('text')}
-              title="Text (T)"
+              title={t('tools.text')}
             >
               <Type className="h-4 w-4" />
             </Button>
@@ -515,13 +507,11 @@ export function AnnotationInterface() {
               variant={activeTool === 'note' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setActiveTool('note')}
-              title="Sticky Note (N)"
+              title={t('tools.note')}
             >
               <StickyNote className="h-4 w-4" />
             </Button>
           </div>
-
-
 
           {/* Undo/Redo */}
           <div className="flex items-center gap-1">
@@ -530,7 +520,7 @@ export function AnnotationInterface() {
               size="sm"
               onClick={() => undoRedoRef.current?.undo()}
               disabled={!undoRedoRef.current?.canUndo()}
-              title="Undo (Ctrl+Z)"
+              title={t('tools.undo')}
             >
               <Undo2 className="h-4 w-4" />
             </Button>
@@ -539,13 +529,11 @@ export function AnnotationInterface() {
               size="sm"
               onClick={() => undoRedoRef.current?.redo()}
               disabled={!undoRedoRef.current?.canRedo()}
-              title="Redo (Ctrl+Y)"
+              title={t('tools.redo')}
             >
               <Redo2 className="h-4 w-4" />
             </Button>
           </div>
-
-
 
           {/* Zoom controls */}
           <div className="flex items-center gap-2">
@@ -573,22 +561,21 @@ export function AnnotationInterface() {
 
           {/* Actions */}
           <div className="ml-auto flex items-center gap-2">
-
             <Button onClick={handleDownload} disabled={isProcessing}>
               <Download className="mr-2 h-4 w-4" />
-              {isProcessing ? 'Saving...' : 'Save PDF'}
+              {isProcessing ? t('saving') : t('savePdf')}
             </Button>
           </div>
         </div>
 
-        {/* Tool-specific options */}
+        {/* Tool options panels */}
         {activeTool === 'highlight' && (
           <div className="mt-4 flex items-center gap-4 border-t pt-4">
             <div className=" flex items-center gap-2">
-              <label className="text-sm font-medium">Color:</label>
+              <label className="text-sm font-medium">{t('color')}</label>
               <input
                 type="color"
-                title='Cor'
+                title='Color'
                 value={highlightSettings.color}
                 onChange={(e) =>
                   setHighlightSettings(prev => ({ ...prev, color: e.target.value }))
@@ -597,7 +584,7 @@ export function AnnotationInterface() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Opacity:</label>
+              <label className="text-sm font-medium">{t('opacity')}</label>
               <Slider
                 value={[highlightSettings.opacity * 100]}
                 onValueChange={([v]) =>
@@ -617,17 +604,17 @@ export function AnnotationInterface() {
         {activeTool === 'draw' && (
           <div className="mt-4 flex items-center gap-4 border-t pt-4">
              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Color:</label>
+                <label className="text-sm font-medium">{t('color')}</label>
                 <input
                   type="color"
-                  title='Cor'
+                  title='Color'
                   value={drawSettings.color}
                   onChange={(e) => setDrawSettings(prev => ({ ...prev, color: e.target.value }))}
                   className="h-8 w-16 cursor-pointer rounded border"
                 />
              </div>
              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Thickness:</label>
+                <label className="text-sm font-medium">{t('thickness')}</label>
                 <Slider
                    value={[drawSettings.thickness]}
                    onValueChange={([v]) => setDrawSettings(prev => ({ ...prev, thickness: v }))}
@@ -645,7 +632,7 @@ export function AnnotationInterface() {
         {activeTool === 'shape' && (
            <div className="mt-4 flex items-center gap-4 border-t pt-4">
               <div className="flex items-center gap-2">
-                 <label className="text-sm font-medium">Shape:</label>
+                 <label className="text-sm font-medium">{t('shape')}</label>
                  <Select
                     value={shapeSettings.shapeType}
                     onValueChange={(v: any) => setShapeSettings(prev => ({ ...prev, shapeType: v }))}
@@ -654,26 +641,26 @@ export function AnnotationInterface() {
                        <SelectValue placeholder="Shape" />
                     </SelectTrigger>
                     <SelectContent>
-                       <SelectItem value="rectangle">Rectangle</SelectItem>
-                       <SelectItem value="circle">Circle</SelectItem>
-                       <SelectItem value="triangle">Triangle</SelectItem>
-                       <SelectItem value="line">Line</SelectItem>
-                       <SelectItem value="arrow">Arrow</SelectItem>
+                       <SelectItem value="rectangle">{t('shapesOptions.rectangle')}</SelectItem>
+                       <SelectItem value="circle">{t('shapesOptions.circle')}</SelectItem>
+                       <SelectItem value="triangle">{t('shapesOptions.triangle')}</SelectItem>
+                       <SelectItem value="line">{t('shapesOptions.line')}</SelectItem>
+                       <SelectItem value="arrow">{t('shapesOptions.arrow')}</SelectItem>
                     </SelectContent>
                  </Select>
               </div>
               <div className="flex items-center gap-2">
-                 <label className="text-sm font-medium">Border:</label>
+                 <label className="text-sm font-medium">{t('border')}</label>
                  <input
                    type="color"
-                   title='Cor'
+                   title='Color'
                    value={shapeSettings.borderColor}
                    onChange={(e) => setShapeSettings(prev => ({ ...prev, borderColor: e.target.value }))}
                    className="h-8 w-16 cursor-pointer rounded border"
                  />
               </div>
               <div className="flex items-center gap-2">
-                 <label className="text-sm font-medium">Width:</label>
+                 <label className="text-sm font-medium">{t('width')}</label>
                  <Slider
                     value={[shapeSettings.borderWidth]}
                     onValueChange={([v]) => setShapeSettings(prev => ({ ...prev, borderWidth: v }))}
@@ -684,17 +671,17 @@ export function AnnotationInterface() {
                  />
               </div>
               <div className="flex items-center gap-2">
-                 <label className="text-sm font-medium">Fill:</label>
+                 <label className="text-sm font-medium">{t('fill')}</label>
                  <input
                    type="color"
-                   title='Cor'
+                   title='Color'
                    value={shapeSettings.fillColor}
                    onChange={(e) => setShapeSettings(prev => ({ ...prev, fillColor: e.target.value }))}
                    className="h-8 w-16 cursor-pointer rounded border"
                  />
               </div>
                <div className="flex items-center gap-2">
-                 <label className="text-sm font-medium">Fill Opacity:</label>
+                 <label className="text-sm font-medium">{t('fillOpacity')}</label>
                  <Slider
                     value={[shapeSettings.fillOpacity * 100]}
                     onValueChange={([v]) => setShapeSettings(prev => ({ ...prev, fillOpacity: v / 100 }))}
@@ -736,7 +723,7 @@ export function AnnotationInterface() {
                 />
 
                 {/* Annotations overlay */}
-                <div className="pointer-events-none absolute inset-0">
+                <div className="absolute inset-0 z-10 pointer-events-none">
                   {showAnnotations &&
                     annotationsByPage.get(index)?.map((ann) => {
                       if (!ann.isVisible) return null
@@ -801,148 +788,117 @@ export function AnnotationInterface() {
                           )
 
                         case 'shape':
-                          const shapeAnn = ann as ShapeAnnotation
-                          return (
-                            <div
-                               key={ann.id}
-                               className="absolute pointer-events-auto"
-                               style={{
-                                  left: ann.x * zoom,
-                                  top: ann.y * zoom,
-                                  width: ann.width * zoom,
-                                  height: ann.height * zoom,
-                                  border: borderStyle,
-                               }}
-                               onClick={(e) => {
-                                  e.stopPropagation()
-                                  setSelectedAnnotationId(ann.id)
-                               }}
-                            >
-                               <svg width="100%" height="100%" style={{ overflow: 'visible' }}>
-                                  {shapeAnn.shapeType === 'rectangle' && (
-                                      <rect
-                                         x={0}
-                                         y={0}
-                                         width="100%"
-                                         height="100%"
-                                         stroke={shapeAnn.borderColor}
-                                         strokeWidth={shapeAnn.borderWidth * zoom}
-                                         fill={shapeAnn.fillColor}
-                                         fillOpacity={shapeAnn.fillOpacity}
-                                      />
-                                  )}
-                                  {shapeAnn.shapeType === 'circle' && (
-                                      <ellipse
-                                         cx="50%"
-                                         cy="50%"
-                                         rx="50%"
-                                         ry="50%"
-                                         stroke={shapeAnn.borderColor}
-                                         strokeWidth={shapeAnn.borderWidth * zoom}
-                                         fill={shapeAnn.fillColor}
-                                         fillOpacity={shapeAnn.fillOpacity}
-                                      />
-                                  )}
-                                  {shapeAnn.shapeType === 'triangle' && (
-                                      <polygon
-                                         points={`
-                                           ${50}%,${0}%
-                                           ${100}%,${100}%
-                                           ${0}%,${100}%
-                                         `}
-                                         stroke={shapeAnn.borderColor}
-                                         strokeWidth={shapeAnn.borderWidth * zoom}
-                                         fill={shapeAnn.fillColor}
-                                         fillOpacity={shapeAnn.fillOpacity}
-                                         vectorEffect="non-scaling-stroke"
-                                      />
-                                  )}
-                                  {shapeAnn.shapeType === 'line' && (
-                                     <line
-                                       x1={shapeAnn.points ? (shapeAnn.points[0].x - ann.x) * zoom : 0}
-                                       y1={shapeAnn.points ? (shapeAnn.points[0].y - ann.y) * zoom : 0}
-                                       x2={shapeAnn.points ? (shapeAnn.points[1].x - ann.x) * zoom : "100%"}
-                                       y2={shapeAnn.points ? (shapeAnn.points[1].y - ann.y) * zoom : "100%"}
-                                       stroke={shapeAnn.borderColor}
-                                       strokeWidth={shapeAnn.borderWidth * zoom}
-                                     />
-                                  )}
-                                  {shapeAnn.shapeType === 'arrow' && (
-                                     <>
-                                        <defs>
-                                           <marker
-                                              id={`arrowhead-${ann.id}`}
-                                              markerWidth="10"
-                                              markerHeight="7"
-                                              refX="9"
-                                              refY="3.5"
-                                              orient="auto"
-                                           >
-                                              <polygon points="0 0, 10 3.5, 0 7" fill={shapeAnn.borderColor} />
-                                           </marker>
-                                        </defs>
-                                        <line
-                                          x1={shapeAnn.points ? (shapeAnn.points[0].x - ann.x) * zoom : 0}
-                                          y1={shapeAnn.points ? (shapeAnn.points[0].y - ann.y) * zoom : 0}
-                                          x2={shapeAnn.points ? (shapeAnn.points[1].x - ann.x) * zoom : "100%"}
-                                          y2={shapeAnn.points ? (shapeAnn.points[1].y - ann.y) * zoom : "100%"}
-                                          stroke={shapeAnn.borderColor}
-                                          strokeWidth={shapeAnn.borderWidth * zoom}
-                                          markerEnd={`url(#arrowhead-${ann.id})`}
-                                        />
-                                     </>
-                                  )}
-                               </svg>
-                            </div>
-                          )
-
-                          case 'note':
-                            const noteAnn = ann as NoteAnnotation
+                            const shapeAnn = ann as ShapeAnnotation
                             return (
-                              <div
-                                key={ann.id}
-                                className="absolute pointer-events-auto flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
-                                style={{
-                                  left: ann.x * zoom,
-                                  top: ann.y * zoom,
-                                  width: 24 * zoom, // Base size
-                                  height: 24 * zoom,
-                                  border: borderStyle,
-                                  zIndex: ann.zIndex,
-                                }}
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setSelectedAnnotationId(ann.id)
-                                }}
-                              >
-                                <StickyNote
-                                  fill={noteAnn.noteColor}
-                                  className="text-black" // Outline color
-                                  style={{ width: '100%', height: '100%' }}
-                                />
-                                {isSelected && (
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-yellow-100 border border-yellow-300 p-2 rounded shadow-md w-48 text-black text-xs">
-                                        <textarea
-                                          className="w-full bg-transparent outline-none resize-none"
-                                          placeholder="Enter note..."
-                                          value={noteAnn.noteContent}
-                                          onChange={(e) => {
-                                              updateAnnotation(ann.id, { noteContent: e.target.value } as Partial<NoteAnnotation>)
-                                          }}
-                                          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking text area
-                                        />
-                                    </div>
-                                )}
-                              </div>
+                                <div
+                                    key={ann.id}
+                                    className="absolute pointer-events-auto cursor-pointer"
+                                    style={{
+                                        left: ann.x * zoom,
+                                        top: ann.y * zoom,
+                                        width: ann.width * zoom,
+                                        height: ann.height * zoom,
+                                        border: borderStyle,
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setSelectedAnnotationId(ann.id)
+                                    }}
+                                >
+                                     <svg width="100%" height="100%" style={{ overflow: 'visible' }}>
+                                        {shapeAnn.shapeType === 'rectangle' && (
+                                            <rect
+                                                x="0" y="0" width="100%" height="100%"
+                                                stroke={shapeAnn.borderColor}
+                                                strokeWidth={shapeAnn.borderWidth}
+                                                fill={shapeAnn.fillColor}
+                                                fillOpacity={shapeAnn.fillOpacity}
+                                            />
+                                        )}
+                                        {shapeAnn.shapeType === 'circle' && (
+                                            <ellipse
+                                                cx="50%" cy="50%" rx="50%" ry="50%"
+                                                stroke={shapeAnn.borderColor}
+                                                strokeWidth={shapeAnn.borderWidth}
+                                                fill={shapeAnn.fillColor}
+                                                fillOpacity={shapeAnn.fillOpacity}
+                                            />
+                                        )}
+                                        {shapeAnn.shapeType === 'triangle' && (
+                                            <polygon
+                                                points={`0,${shapeAnn.height} ${shapeAnn.width/2},0 ${shapeAnn.width},${shapeAnn.height}`}
+                                                stroke={shapeAnn.borderColor}
+                                                strokeWidth={shapeAnn.borderWidth}
+                                                fill={shapeAnn.fillColor}
+                                                fillOpacity={shapeAnn.fillOpacity}
+                                            />
+                                        )}
+                                        {(shapeAnn.shapeType === 'line' || shapeAnn.shapeType === 'arrow') && shapeAnn.points && (
+                                            <line
+                                                x1={(shapeAnn.points[0].x - ann.x) * zoom}
+                                                y1={(shapeAnn.points[0].y - ann.y) * zoom}
+                                                x2={(shapeAnn.points[1].x - ann.x) * zoom}
+                                                y2={(shapeAnn.points[1].y - ann.y) * zoom}
+                                                stroke={shapeAnn.borderColor}
+                                                strokeWidth={shapeAnn.borderWidth}
+                                            />
+                                        )}
+                                    </svg>
+                                </div>
                             )
 
-                        default:
-                          return null
+                         case 'text':
+                              return (
+                                  <div
+                                      key={ann.id}
+                                      className="absolute pointer-events-auto"
+                                      style={{
+                                          left: ann.x * zoom,
+                                          top: ann.y * zoom,
+                                          zIndex: ann.zIndex
+                                      }}
+                                  >
+                                      <TextBox
+                                          box={ann as TextAnnotation}
+                                          zoom={zoom}
+                                          isSelected={isSelected}
+                                          onSelect={setSelectedAnnotationId}
+                                          onUpdate={(_, updates) => updateTextBox(ann.id, updates)}
+                                          onDelete={() => handleDeleteSelected()}
+                                          onDuplicate={() => duplicateTextBox(ann)}
+                                      />
+                                  </div>
+                              )
+
+                            case 'note':
+                                const noteAnn = ann as NoteAnnotation
+                                return (
+                                    <div
+                                        key={ann.id}
+                                        className="absolute pointer-events-auto cursor-pointer flex items-center justify-center shadow-md bg-yellow-200"
+                                        style={{
+                                            left: ann.x * zoom,
+                                            top: ann.y * zoom,
+                                            width: 24 * zoom,
+                                            height: 24 * zoom,
+                                            backgroundColor: noteAnn.noteColor,
+                                            border: borderStyle,
+                                            borderRadius: '4px'
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setSelectedAnnotationId(ann.id)
+                                        }}
+                                        title={noteAnn.noteContent || "Note"}
+                                    >
+                                        <StickyNote size={16} />
+                                    </div>
+                                )
                       }
                     })}
                 </div>
 
-                {/* Highlight tool */}
+                {/* Tool overlays for interaction */}
                 {activeTool === 'highlight' && (
                   <HighlightTool
                     pageIndex={index}
@@ -954,149 +910,50 @@ export function AnnotationInterface() {
                     author="User"
                   />
                 )}
-
-                {/* Draw tool */}
                 {activeTool === 'draw' && (
-                   <DrawTool
-                      pageIndex={index}
-                      scale={zoom}
-                      settings={drawSettings}
-                      onAddAnnotation={handleAddAnnotation}
-                      isActive={true}
-                      author="User"
-                   />
+                  <DrawTool
+                    pageIndex={index}
+                    scale={zoom}
+                    settings={drawSettings}
+                    onAddAnnotation={handleAddAnnotation}
+                    isActive={true}
+                    author="User"
+                  />
                 )}
-
-                {/* Shape tool */}
                 {activeTool === 'shape' && (
-                   <ShapeTool
-                      pageIndex={index}
-                      scale={zoom}
-                      settings={shapeSettings}
-                      onAddAnnotation={handleAddAnnotation}
-                      isActive={true}
-                      author="User"
-                   />
+                    <ShapeTool
+                        pageIndex={index}
+                        scale={zoom}
+                        settings={shapeSettings}
+                        onAddAnnotation={handleAddAnnotation}
+                        isActive={true}
+                        author="User"
+                    />
+                )}
+                {activeTool === 'note' && (
+                    <StickyNoteTool
+                        pageIndex={index}
+                        scale={zoom}
+                        settings={noteSettings}
+                        onAddAnnotation={handleAddAnnotation}
+                        isActive={true}
+                        author="User"
+                    />
                 )}
 
-                {/* Sticky Note tool */}
-                {activeTool === 'note' && (
-                   <StickyNoteTool
-                      pageIndex={index}
-                      scale={zoom}
-                      settings={noteSettings}
-                      onAddAnnotation={handleAddAnnotation}
-                      isActive={true}
-                      author="User"
-                   />
-                )}
-                {/* Text tool overlay */}
-                <div
-                  className="absolute inset-0 z-20"
-                  style={{ pointerEvents: activeTool === 'text' ? 'auto' : 'none' }}
-                  onClick={(e) => handlePageClick(e, index)}
-                >
-                  {annotationsByPage.get(index)?.map((ann) =>
-                    ann.type === 'text' && ann.isVisible ? (
-                      <div key={ann.id} style={{ pointerEvents: 'auto' }}>
-                        <TextBox
-                          box={ann as any}
-                          isSelected={selectedAnnotationId === ann.id}
-                          onSelect={setSelectedAnnotationId}
-                          onUpdate={updateTextBox}
-                          onDuplicate={duplicateTextBox}
-                          onDelete={(id) => {
-                            setSelectedAnnotationId(id)
-                            handleDeleteSelected()
-                          }}
-                          zoom={zoom}
-                        />
-                      </div>
-                    ) : null
-                  )}
-                </div>
+                 {/* General click handler for Text tool and deselection */}
+                 {activeTool === 'text' && (
+                     <div
+                        className="absolute inset-0"
+                        style={{ zIndex: 50, cursor: 'text' }}
+                        onClick={(e) => handlePageClick(e, index)}
+                     />
+                 )}
+
               </div>
             ))}
           </div>
         </div>
-
-        {/* Annotations panel */}
-        {showAnnotationsPanel && (
-          <Card className="w-80 overflow-auto p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-semibold">Annotations ({annotations.length})</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowAnnotationsPanel(false)}
-              >
-                <Minimize2 className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {Array.from(annotationsByPage.entries()).map(([pageIndex, pageAnnotations]) => (
-                <div key={pageIndex}>
-                  <h4 className="mb-2 text-sm font-medium">
-                    Page {pageIndex + 1} ({pageAnnotations.length})
-                  </h4>
-                  <div className="space-y-2">
-                    {pageAnnotations.map((ann) => (
-                      <div
-                        key={ann.id}
-                        className={cn(
-                          'flex items-start gap-2 rounded border p-2 text-sm cursor-pointer',
-                          selectedAnnotationId === ann.id && 'border-blue-500 bg-blue-50'
-                        )}
-                        onClick={() => setSelectedAnnotationId(ann.id)}
-                      >
-                        <span className="text-lg">{getAnnotationIcon(ann)}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="truncate">{getAnnotationSummary(ann)}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {new Date(ann.createdAt).toLocaleTimeString()}
-                          </div>
-                        </div>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleToggleVisibility(ann.id)
-                            }}
-                          >
-                            {ann.isVisible ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setSelectedAnnotationId(ann.id)
-                              handleDeleteSelected()
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              {annotations.length === 0 && (
-                <div className="py-8 text-center text-sm text-muted-foreground">
-                  <p>No annotations yet</p>
-                  <p className="mt-1">Use the tools above to add annotations</p>
-                </div>
-              )}
-            </div>
-          </Card>
-        )}
       </div>
     </div>
   )

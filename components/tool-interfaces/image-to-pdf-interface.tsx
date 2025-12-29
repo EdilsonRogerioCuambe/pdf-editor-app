@@ -10,6 +10,7 @@ import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, TouchSensor, cl
 import { SortableContext, arrayMove, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { Download, FileImage, GripVertical, ImagePlus, Loader2, RotateCw, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -90,6 +91,7 @@ type Orientation = "portrait" | "landscape"
 type FitMode = "fit" | "fill" | "stretch"
 
 export function ImageToPdfInterface() {
+  const t = useTranslations('imageToPdf')
   const [images, setImages] = useState<ImageFile[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -267,7 +269,7 @@ export function ImageToPdfInterface() {
         }
 
         const pdfBytes = await pdfDoc.save()
-        const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" })
+        const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
         const url = URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
@@ -275,11 +277,11 @@ export function ImageToPdfInterface() {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-        toast.success("PDF Created Successfully!")
+        toast.success(t('success'))
 
     } catch (err) {
         console.error("PDF Creation Failed", err)
-        toast.error("Failed to create PDF")
+        toast.error(t('error'))
     } finally {
         setIsConverting(false)
     }
@@ -289,8 +291,8 @@ export function ImageToPdfInterface() {
       return (
          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Image to PDF</h2>
-                 <p className="text-muted-foreground">Convert and merge images into a single PDF.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFilesSelected}
@@ -307,12 +309,12 @@ export function ImageToPdfInterface() {
         <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                   <h3 className="text-lg font-semibold">{images.length} Images Selected</h3>
-                   <p className="text-sm text-muted-foreground">Drag to reorder pages</p>
+                   <h3 className="text-lg font-semibold">{t('imagesSelected', { count: images.length })}</h3>
+                   <p className="text-sm text-muted-foreground">{t('dragReorder')}</p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => document.getElementById("add-more-trigger")?.click()}>
-                        <ImagePlus className="w-4 h-4 mr-2" /> Add Images
+                        <ImagePlus className="w-4 h-4 mr-2" /> {t('addImages')}
                     </Button>
                     {/* Hidden input hack for "Add More" since FileDropZone wraps everything usually */}
                      <input
@@ -324,13 +326,13 @@ export function ImageToPdfInterface() {
                         onChange={(e) => {
                              if(e.target.files) {
                                  const files = Array.from(e.target.files).map(f => ({ file: f, id: Math.random().toString(), preview: "" })) // Simple map
-                                 handleFilesSelected(files)
+                                 handleFilesSelected(files as unknown as UploadedFile[])
                                  e.target.value = "" // Reset
                              }
                         }}
                     />
                     <Button variant="ghost" size="sm" onClick={() => setImages([])} className="text-destructive hover:text-destructive">
-                        Clear All
+                        {t('clearAll')}
                     </Button>
                 </div>
             </div>
@@ -369,7 +371,7 @@ export function ImageToPdfInterface() {
                  <div className="space-y-2">
                      <h3 className="font-semibold flex items-center gap-2">
                          <FileImage className="w-5 h-5 text-primary" />
-                         PDF Settings
+                         {t('pdfSettings')}
                      </h3>
                      <Separator />
                  </div>
@@ -377,7 +379,7 @@ export function ImageToPdfInterface() {
                  <div className="space-y-4">
                      {/* Page Size */}
                      <div className="space-y-2">
-                         <Label>Page Size</Label>
+                         <Label>{t('pageSize')}</Label>
                          <Select value={settings.pageSize} onValueChange={(v: PageSize) => setSettings(s => ({...s, pageSize: v}))}>
                              <SelectTrigger><SelectValue /></SelectTrigger>
                              <SelectContent>
@@ -392,7 +394,7 @@ export function ImageToPdfInterface() {
 
                      {/* Orientation */}
                      <div className="space-y-2">
-                         <Label>Orientation</Label>
+                         <Label>{t('orientation')}</Label>
                          <div className="grid grid-cols-2 gap-2">
                              {(['portrait', 'landscape'] as const).map(o => (
                                  <Button
@@ -402,7 +404,7 @@ export function ImageToPdfInterface() {
                                     onClick={() => setSettings(s => ({...s, orientation: o}))}
                                     className="capitalize"
                                  >
-                                     {o}
+                                     {t(o)}
                                  </Button>
                              ))}
                          </div>
@@ -412,20 +414,20 @@ export function ImageToPdfInterface() {
 
                      {/* Image Layout */}
                      <div className="space-y-2">
-                         <Label>Image Scaling</Label>
+                         <Label>{t('imageScaling')}</Label>
                          <Select value={settings.fitMode} onValueChange={(v: FitMode) => setSettings(s => ({...s, fitMode: v}))}>
                              <SelectTrigger><SelectValue /></SelectTrigger>
                              <SelectContent>
-                                 <SelectItem value="fit">Fit to Page (Best)</SelectItem>
-                                 <SelectItem value="fill">Fill Page (Zoomed)</SelectItem>
-                                 <SelectItem value="stretch">Stretch (Distorted)</SelectItem>
+                                 <SelectItem value="fit">{t('scalingFit')}</SelectItem>
+                                 <SelectItem value="fill">{t('scalingFill')}</SelectItem>
+                                 <SelectItem value="stretch">{t('scalingStretch')}</SelectItem>
                              </SelectContent>
                          </Select>
                      </div>
 
                      <div className="space-y-3">
                          <div className="flex justify-between">
-                            <Label>Margin</Label>
+                            <Label>{t('margin')}</Label>
                             <span className="text-xs text-muted-foreground">{settings.margin} mm</span>
                          </div>
                          <div className="flex gap-2">
@@ -437,7 +439,7 @@ export function ImageToPdfInterface() {
                                     onClick={() => setSettings(s => ({...s, margin: m}))}
                                     className="flex-1 text-xs"
                                 >
-                                    {m === 0 ? "None" : `${m}mm`}
+                                    {m === 0 ? t('none') : `${m}mm`}
                                 </Button>
                             ))}
                          </div>
@@ -453,12 +455,12 @@ export function ImageToPdfInterface() {
                     {isConverting ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Creating PDF... {progress}%
+                            {t('creating', { progress })}
                         </>
                     ) : (
                         <>
                             <Download className="mr-2 h-4 w-4" />
-                            Create PDF
+                            {t('createPdf')}
                         </>
                     )}
                  </Button>

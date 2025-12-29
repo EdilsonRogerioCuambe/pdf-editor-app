@@ -4,7 +4,7 @@ import type React from "react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { FileText, X, CloudUpload } from "lucide-react"
+import { CloudUpload, FileText, X } from "lucide-react"
 import { useCallback, useState } from "react"
 
 export interface UploadedFile {
@@ -21,7 +21,10 @@ interface FileDropZoneProps {
   maxFiles?: number
 }
 
+import { useTranslations } from "next-intl"
+
 export function FileDropZone({ onFilesSelected, multiple = true, accept = ".pdf", maxFiles = 20 }: FileDropZoneProps) {
+  const t = useTranslations('common.dropZone')
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<UploadedFile[]>([])
 
@@ -130,21 +133,21 @@ export function FileDropZone({ onFilesSelected, multiple = true, accept = ".pdf"
           </div>
           <div className="space-y-2">
             <p className="text-lg font-medium text-foreground">
-              {isDragging ? "Drop your files here" : "Drag & drop PDF files here"}
+              {isDragging ? t('dragText') : t('dropText')}
             </p>
-            <p className="text-sm text-muted-foreground">or click to browse from your computer</p>
+            <p className="text-sm text-muted-foreground">{t('orClick')}</p>
           </div>
           <Button variant="default" size="lg" className="mt-2">
-            Choose PDF File
+            {t('chooseFile')}
           </Button>
-          <p className="text-xs text-muted-foreground">Max {maxFiles} files • All processing happens in your browser</p>
+          <p className="text-xs text-muted-foreground">{t('maxFiles', { maxFiles })}</p>
         </div>
       </div>
 
       {/* File List */}
       {files.length > 0 && (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-foreground">Selected Files ({files.length})</p>
+          <p className="text-sm font-medium text-foreground">{t('selected', { count: files.length })}</p>
           <div className="space-y-2 max-h-[200px] overflow-y-auto">
             {files.map((file) => (
               <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">

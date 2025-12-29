@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react"
 import * as pdfjsLib from 'pdfjs-dist'
 
 import { ArrowLeft, Download, PenTool, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { SignatureBox } from './sign-pdf/signature-box'
 import { SignatureCreationModal } from './sign-pdf/signature-creation-modal'
 import { SignatureBox as SignatureBoxType } from './sign-pdf/types'
@@ -19,6 +20,8 @@ if (typeof window !== 'undefined' && 'Worker' in window) {
 }
 
 export function SignInterface() {
+  const t = useTranslations('sign')
+  const tCommon = useTranslations('common')
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
   const [pages, setPages] = useState<Array<{ pageNum: number, width: number, height: number }>>([])
@@ -182,7 +185,7 @@ export function SignInterface() {
          const modifiedPdf = await addSignatureToPDF(pdfDoc, signatureBoxes);
 
          const pdfBytes = await modifiedPdf.save();
-         const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+         const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
          const url = URL.createObjectURL(blob);
 
          const link = document.createElement('a');
@@ -194,7 +197,7 @@ export function SignInterface() {
          URL.revokeObjectURL(url);
      } catch (e) {
          console.error("Error saving PDF", e);
-         alert("Failed to save PDF");
+         alert(t('saveError') || "Failed to save PDF");
      } finally {
          setIsProcessing(false);
      }
@@ -204,8 +207,8 @@ export function SignInterface() {
       return (
           <div className="container mx-auto py-10 max-w-4xl">
              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold mb-2">Sign PDF</h1>
-                <p className="text-gray-500">Upload a PDF to add your signature</p>
+                <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
+                <p className="text-gray-500">{t('subtitle')}</p>
              </div>
              <FileDropZone onFilesSelected={handleFileSelected} multiple={false} maxFiles={1} />
           </div>
@@ -220,11 +223,11 @@ export function SignInterface() {
        <div className="h-16 bg-white border-b flex items-center px-4 justify-between shrink-0 z-50">
           <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
-                  <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                  <ArrowLeft className="w-4 h-4 mr-2" /> {tCommon('back')}
               </Button>
               <div className="h-6 w-px bg-gray-200" />
               <Button onClick={() => setShowModal(true)} className="gap-2">
-                  <PenTool className="w-4 h-4" /> Add Signature
+                  <PenTool className="w-4 h-4" /> {t('addSignature')}
               </Button>
           </div>
 
@@ -239,9 +242,9 @@ export function SignInterface() {
           </div>
 
           <Button onClick={downloadPDF} disabled={isProcessing || signatureBoxes.length === 0}>
-              {isProcessing ? "Processing..." : (
+              {isProcessing ? tCommon('processing') : (
                   <>
-                    <Download className="w-4 h-4 mr-2" /> Save PDF
+                    <Download className="w-4 h-4 mr-2" /> {t('savePdf')}
                   </>
               )}
           </Button>
@@ -290,11 +293,11 @@ export function SignInterface() {
            {/* Properties Panel (Sidebar) */}
            {selectedBox && (
                <div className="w-80 bg-white border-l p-4 overflow-y-auto shrink-0 animate-in slide-in-from-right duration-200">
-                   <h3 className="font-semibold mb-4 text-lg">Properties</h3>
+                   <h3 className="font-semibold mb-4 text-lg">{t('properties')}</h3>
 
                    <div className="space-y-6">
                        <div className="space-y-2">
-                           <label className="text-sm font-medium">Position</label>
+                           <label className="text-sm font-medium">{t('position')}</label>
                            <div className="grid grid-cols-2 gap-2">
                                <div className="flex items-center gap-2 border rounded px-2">
                                    <span className="text-gray-500 text-xs">X</span>
@@ -318,17 +321,17 @@ export function SignInterface() {
                        </div>
 
                        <div className="space-y-2">
-                           <label className="text-sm font-medium">Appearance</label>
+                           <label className="text-sm font-medium">{t('appearance')}</label>
 
                            {/* Rotation Control */}
                            <div className="space-y-2">
-                               <span className="text-sm text-gray-500 block">Rotate</span>
+                               <span className="text-sm text-gray-500 block">{t('rotate')}</span>
                                <div className="flex items-center gap-2">
                                    <Button
                                        variant="outline"
                                        size="sm"
                                        onClick={() => updateBox(selectedBox.id, { rotation: (selectedBox.rotation - 90) % 360 })}
-                                       title="Rotate Left -90°"
+                                       title={t('rotateLeft')}
                                    >
                                        <RotateCcw className="w-4 h-4" />
                                    </Button>
@@ -342,7 +345,7 @@ export function SignInterface() {
                                        variant="outline"
                                        size="sm"
                                        onClick={() => updateBox(selectedBox.id, { rotation: (selectedBox.rotation + 90) % 360 })}
-                                       title="Rotate Right +90°"
+                                       title={t('rotateRight')}
                                    >
                                        <RotateCw className="w-4 h-4" />
                                    </Button>
@@ -350,7 +353,7 @@ export function SignInterface() {
                            </div>
 
                            <div className="flex items-center justify-between">
-                               <span className="text-sm text-gray-500">Opacity</span>
+                               <span className="text-sm text-gray-500">{t('opacity')}</span>
                                <input
                                   type="range" min="0" max="1" step="0.1"
                                   value={selectedBox.opacity}
@@ -369,7 +372,7 @@ export function SignInterface() {
                                  id="inc-date"
                                  className="rounded border-gray-300"
                                />
-                               <label htmlFor="inc-date" className="text-sm font-medium">Add Date Stamp</label>
+                               <label htmlFor="inc-date" className="text-sm font-medium">{t('addDateStamp')}</label>
                            </div>
 
                            {selectedBox.includeDate && (
@@ -379,8 +382,8 @@ export function SignInterface() {
                                       value={selectedBox.datePosition}
                                       onChange={(e) => updateBox(selectedBox.id, { datePosition: e.target.value as any })}
                                    >
-                                       <option value="below">Below</option>
-                                       <option value="above">Above</option>
+                                       <option value="below">{t('datePositionBelow')}</option>
+                                       <option value="above">{t('datePositionAbove')}</option>
                                    </select>
                                </div>
                            )}
@@ -388,11 +391,11 @@ export function SignInterface() {
 
                        <div className="pt-4 border-t">
                            <Button
-                              variant="destructive"
-                              className="w-full"
-                              onClick={() => deleteBox(selectedBox.id)}
+                               variant="destructive"
+                               className="w-full"
+                               onClick={() => deleteBox(selectedBox.id)}
                            >
-                               Delete Signature
+                               {t('deleteSignature')}
                            </Button>
                        </div>
                    </div>

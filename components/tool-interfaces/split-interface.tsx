@@ -16,6 +16,7 @@ import {
     X,
     ZoomIn, ZoomOut
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import * as pdfjsLib from "pdfjs-dist"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -35,6 +36,10 @@ interface PageThumbnail {
 type SplitMode = 'selected' | 'range' | 'every' | 'individual'
 
 export function SplitInterface() {
+  const t = useTranslations('split')
+  const tCommon = useTranslations('common')
+  const tTools = useTranslations('tools.split')
+
   // State
   const [file, setFile] = useState<UploadedFile | null>(null)
   const [pdfProxy, setPdfProxy] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
@@ -131,7 +136,7 @@ export function SplitInterface() {
 
     } catch (error) {
       console.error("Error loading PDF", error)
-      toast.error("Failed to load PDF. Please try another file.")
+      toast.error(tCommon('fileTooLarge', { size: 'N/A' })) // Generic error fallback
       setFile(null)
     } finally {
       setLoadingThumbnails(false)
@@ -227,7 +232,7 @@ export function SplitInterface() {
     try {
       setIsProcessing(true)
       setProgress(0)
-      setProcessingStatus("Initializing...")
+      setProcessingStatus(t('initializing'))
 
       const fileBuffer = await file.file.arrayBuffer()
       const srcDoc = await PDFDocument.load(fileBuffer)
@@ -238,7 +243,7 @@ export function SplitInterface() {
       // Determine what to split based on mode
       if (splitMode === 'selected') {
         if (selectedPages.size === 0) {
-          toast.error("Please select at least one page.")
+          toast.error(t('selectAtLeastOne'))
           setIsProcessing(false)
           return
         }
@@ -247,7 +252,7 @@ export function SplitInterface() {
       else if (splitMode === 'range') {
         const indices = parseRange(rangeInput, pageCount)
         if (indices.length === 0) {
-           toast.error("Invalid range or no pages in range.")
+           toast.error(t('invalidRange'))
            setIsProcessing(false)
            return
         }
@@ -255,7 +260,7 @@ export function SplitInterface() {
       }
       else if (splitMode === 'every') {
          if (everyInput < 1) {
-            toast.error("Please enter a valid number (>= 1).")
+            toast.error(t('enterValidNumber'))
             setIsProcessing(false)
             return
          }
@@ -274,7 +279,7 @@ export function SplitInterface() {
         }
       }
 
-      setProcessingStatus(`Preparing to generate ${pagesToExtract.length} PDF(s)...`)
+      setProcessingStatus(t('preparing', { count: pagesToExtract.length }))
 
       // Generate PDFs
       const generatedPdfs: Uint8Array[] = []
@@ -294,7 +299,7 @@ export function SplitInterface() {
       }
 
       // Download
-      setProcessingStatus("Finalizing...")
+      setProcessingStatus(t('finalizing'))
 
       if (generatedPdfs.length === 1) {
          // Single file download
@@ -323,11 +328,11 @@ export function SplitInterface() {
       }
 
       setProgress(100)
-      toast.success("Split successful! Downloading files...")
+      toast.success(t('success'))
 
     } catch (e) {
       console.error("Split error", e)
-      toast.error("An error occurred while splitting the PDF.")
+      toast.error(t('error'))
     } finally {
       setIsProcessing(false)
     }
@@ -338,8 +343,8 @@ export function SplitInterface() {
       return (
           <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
              <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Split PDF</h2>
-                 <p className="text-muted-foreground">Extract pages, split by range, or separate every page.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{tTools('name')}</h2>
+                 <p className="text-muted-foreground">{tTools('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFileSelected}
@@ -357,10 +362,10 @@ export function SplitInterface() {
            <div>
                <h3 className="font-semibold text-lg flex items-center gap-2">
                   <span className="truncate max-w-[200px]" title={file.name}>{file.name}</span>
-                  <span className="text-muted-foreground font-normal text-sm">({pdfProxy?.numPages || 0} pages)</span>
+                  <span className="text-muted-foreground font-normal text-sm">({pdfProxy?.numPages || 0} {tCommon('pages')})</span>
                </h3>
                <button onClick={resetState} className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
-                   <RotateCcw className="w-3 h-3" /> Split another PDF
+                   <RotateCcw className="w-3 h-3" /> {t('splitAnother')}
                </button>
            </div>
 
@@ -372,7 +377,7 @@ export function SplitInterface() {
                )}
                <Button onClick={handleSplit} disabled={isProcessing || (splitMode === 'selected' && selectedPages.size === 0)}>
                    {isProcessing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Scissors className="w-4 h-4 mr-2" />}
-                   {isProcessing ? "Processing..." : splitMode === 'selected' ? "Extract Selected" : "Split PDF"}
+                   {isProcessing ? t('processing') : splitMode === 'selected' ? t('extractSelected') : t('splitPdf')}
                </Button>
            </div>
        </div>
@@ -394,16 +399,16 @@ export function SplitInterface() {
                   <ScrollArea className="w-full whitespace-nowrap lg:w-auto lg:whitespace-normal pb-2 lg:pb-0">
                       <TabsList className="inline-flex w-auto lg:grid lg:grid-cols-1 h-auto gap-2 bg-transparent p-0 lg:w-full">
                           <TabsTrigger value="selected" className="justify-start data-[state=active]:bg-primary/10 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 flex-1 lg:flex-none px-4 py-2 h-auto">
-                              Extract Selected
+                              {t('modeSelected')}
                           </TabsTrigger>
                           <TabsTrigger value="range" className="justify-start data-[state=active]:bg-primary/10 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 flex-1 lg:flex-none px-4 py-2 h-auto">
-                              By Range
+                              {t('modeRange')}
                           </TabsTrigger>
                           <TabsTrigger value="every" className="justify-start data-[state=active]:bg-primary/10 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 flex-1 lg:flex-none px-4 py-2 h-auto">
-                              By Frequency
+                              {t('modeEvery')}
                           </TabsTrigger>
                           <TabsTrigger value="individual" className="justify-start data-[state=active]:bg-primary/10 data-[state=active]:text-primary border border-transparent data-[state=active]:border-primary/20 flex-1 lg:flex-none px-4 py-2 h-auto">
-                              Individual Pages
+                              {t('modeIndividual')}
                           </TabsTrigger>
                       </TabsList>
                   </ScrollArea>
@@ -412,16 +417,16 @@ export function SplitInterface() {
                      {splitMode === 'selected' && (
                         <div className="flex flex-col h-full justify-between gap-4">
                            <div className="space-y-2">
-                              <h4 className="font-medium text-sm">Selection Mode</h4>
+                              <h4 className="font-medium text-sm">{t('selectionMode')}</h4>
                               <p className="text-xs text-muted-foreground">
-                                Click pages on the right to select explicitly for extraction.
+                                {t('selectionHelp')}
                               </p>
                            </div>
 
                            <div className="pt-4 border-t mt-4">
                               <div className="grid grid-cols-2 gap-2">
-                                  <Button variant="outline" size="sm" onClick={selectAll}>Select All</Button>
-                                  <Button variant="outline" size="sm" onClick={deselectAll}>Deselect</Button>
+                                  <Button variant="outline" size="sm" onClick={selectAll}>{t('selectAll')}</Button>
+                                  <Button variant="outline" size="sm" onClick={deselectAll}>{t('deselect')}</Button>
                               </div>
                            </div>
                         </div>
@@ -430,14 +435,14 @@ export function SplitInterface() {
                      {splitMode === 'range' && (
                          <div className="space-y-4">
                             <div className="space-y-2">
-                               <Label>Page Range</Label>
+                               <Label>{t('pageRangeLabel')}</Label>
                                <Input
-                                  placeholder="e.g. 1-5, 8, 11-13"
+                                  placeholder={t('pageRangePlaceholder')}
                                   value={rangeInput}
                                   onChange={(e) => setRangeInput(e.target.value)}
                                />
                                <p className="text-xs text-muted-foreground">
-                                 Enter page numbers and/or ranges separated by commas.
+                                 {t('pageRangeHelp')}
                                </p>
                             </div>
                          </div>
@@ -446,7 +451,7 @@ export function SplitInterface() {
                      {splitMode === 'every' && (
                          <div className="space-y-4">
                             <div className="space-y-2">
-                               <Label>Split every N pages</Label>
+                               <Label>{t('splitEveryLabel')}</Label>
                                <Input
                                   type="number"
                                   min={1}
@@ -454,7 +459,7 @@ export function SplitInterface() {
                                   onChange={(e) => setEveryInput(parseInt(e.target.value) || 0)}
                                />
                                <p className="text-xs text-muted-foreground">
-                                 The PDF will be broken into chunks of {everyInput} pages.
+                                 {t('splitEveryHelp', { count: everyInput })}
                                </p>
                             </div>
                          </div>
@@ -463,7 +468,7 @@ export function SplitInterface() {
                     {splitMode === 'individual' && (
                          <div className="space-y-4">
                             <p className="text-sm">
-                               Every single page will be saved as a separate PDF file.
+                               {t('individualHelp')}
                             </p>
                          </div>
                      )}
@@ -476,7 +481,7 @@ export function SplitInterface() {
                {loadingThumbnails && thumbnails.length === 0 && (
                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
                        <Loader2 className="w-8 h-8 animate-spin mb-4" />
-                       <p>Rendering pages...</p>
+                       <p>{t('rendering')}</p>
                    </div>
                )}
 
@@ -540,7 +545,7 @@ export function SplitInterface() {
                               </div>
 
                               <div className="bg-card border-t p-2 text-center text-xs font-medium text-muted-foreground">
-                                  Page {idx + 1}
+                                  {tCommon('page')} {idx + 1}
                               </div>
                           </div>
                       ))}
@@ -554,7 +559,7 @@ export function SplitInterface() {
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 gap-0">
                 <DialogTitle className="sr-only">PDF Page Preview</DialogTitle>
                 <div className="h-12 border-b flex items-center justify-between px-4 bg-muted/10 shrink-0">
-                    <span className="font-medium">Page {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} of {pdfProxy?.numPages}</span>
+                    <span className="font-medium">{tCommon('page')} {viewingPageIndex !== null ? viewingPageIndex + 1 : 0} {tCommon('of')} {pdfProxy?.numPages}</span>
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="icon" onClick={() => setViewerScale(s => Math.max(0.5, s - 0.25))}>
                             <ZoomOut className="h-4 w-4" />

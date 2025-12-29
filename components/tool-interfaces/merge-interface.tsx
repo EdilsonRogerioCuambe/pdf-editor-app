@@ -5,12 +5,16 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { ArrowDownToLine, Download, FileText, GripVertical, Loader2, MoveDown, MoveUp, Plus, RotateCcw, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { PDFDocument } from "pdf-lib"
 import type React from "react"
 import { useRef, useState } from "react"
 import { toast } from "sonner"
 
 export function MergeInterface() {
+  const t = useTranslations('tools.merge')
+  const tCommon = useTranslations('common')
+  const tMsg = useTranslations('messages')
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [isMerging, setIsMerging] = useState(false)
   const [mergeProgress, setMergeProgress] = useState(0)
@@ -76,7 +80,7 @@ export function MergeInterface() {
 
   const mergePdfs = async () => {
     if (files.length < 2) {
-      toast.error("Please select at least 2 PDF files to merge.")
+      toast.error(tMsg('selectTwoFiles'))
       return
     }
 
@@ -105,7 +109,7 @@ export function MergeInterface() {
 
       setMergedPdfUrl(url)
       setMergeProgress(100)
-      toast.success("PDFs merged successfully!")
+      toast.success(tMsg('mergeSuccess'))
 
       // Auto download
       const link = document.createElement("a")
@@ -117,7 +121,7 @@ export function MergeInterface() {
 
     } catch (error) {
       console.error("Merge failed:", error)
-      toast.error("Failed to merge PDFs. Please check if the files are valid.")
+      toast.error(tMsg('mergeError'))
     } finally {
       setIsMerging(false)
     }
@@ -135,9 +139,9 @@ export function MergeInterface() {
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
           <Download className="h-10 w-10 text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="mb-2 text-2xl font-semibold text-foreground">PDFs Merged Successfully!</h3>
+        <h3 className="mb-2 text-2xl font-semibold text-foreground">{tMsg('mergeSuccessTitle')}</h3>
         <p className="mb-8 text-muted-foreground max-w-md">
-          Your {files.length} PDF files have been combined into one document. The download has started automatically.
+          {tMsg('mergeSuccessDesc', { count: files.length })}
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button size="lg" className="gap-2" onClick={() => {
@@ -149,11 +153,11 @@ export function MergeInterface() {
               document.body.removeChild(link)
           }}>
             <ArrowDownToLine className="h-5 w-5" />
-            Download Again
+            {tMsg('downloadAgain')}
           </Button>
           <Button variant="outline" size="lg" onClick={handleReset} className="gap-2">
             <RotateCcw className="h-4 w-4" />
-            Merge More Files
+            {tMsg('mergeMore')}
           </Button>
         </div>
       </div>
@@ -165,8 +169,8 @@ export function MergeInterface() {
       {!files.length ? (
         <div className="space-y-6">
             <div className="text-center space-y-2">
-                 <h2 className="text-3xl font-bold tracking-tight">Merge PDFs</h2>
-                 <p className="text-muted-foreground">Combine multiple PDF files into one ordered document.</p>
+                 <h2 className="text-3xl font-bold tracking-tight">{t('name')}</h2>
+                 <p className="text-muted-foreground">{t('description')}</p>
              </div>
              <FileDropZone
                 onFilesSelected={handleFilesSelected}
@@ -180,10 +184,10 @@ export function MergeInterface() {
            <div className="flex items-center justify-between border-b pb-4">
                <div>
                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      Merge {files.length} Files
+                      {t('name')} ({files.length})
                    </h3>
                    <button onClick={handleReset} className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
-                       <RotateCcw className="w-3 h-3" /> Start Over
+                       <RotateCcw className="w-3 h-3" /> {tCommon('startOver')}
                    </button>
                </div>
 
@@ -205,15 +209,15 @@ export function MergeInterface() {
                             }
                         }}
                         className="absolute inset-0 cursor-pointer opacity-0 w-10 h-full z-10"
-                        title="Add more files"
+                        title={tCommon('addFiles')}
                      />
                    <Button variant="secondary" size="sm" className="gap-2" disabled={isMerging}>
                         <Plus className="h-4 w-4" />
-                        Add Files
+                        {tCommon('addFiles')}
                    </Button>
                    <Button onClick={mergePdfs} disabled={files.length < 2 || isMerging}>
                        {isMerging ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <FileText className="w-4 h-4 mr-2" />}
-                       {isMerging ? "Merging..." : "Merge PDFs"}
+                       {isMerging ? tCommon('merging') : t('name')}
                    </Button>
                </div>
            </div>
@@ -221,7 +225,7 @@ export function MergeInterface() {
            {isMerging && (
              <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2">
                <div className="flex items-center justify-between text-sm">
-                 <span>Processing...</span>
+                 <span>{tCommon('processing')}</span>
                  <span>{mergeProgress}%</span>
                </div>
                <Progress value={mergeProgress} className="h-2" />
@@ -230,8 +234,8 @@ export function MergeInterface() {
 
           <div className="space-y-3">
              <div className="flex items-center justify-between px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                <span>File Order</span>
-                <span>Actions</span>
+                <span>{tCommon('fileOrder')}</span>
+                <span>{tCommon('actions')}</span>
              </div>
             {files.map((file, index) => (
               <div
@@ -269,7 +273,7 @@ export function MergeInterface() {
                        variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
                        disabled={index === 0 || isMerging}
                        onClick={() => moveFile(index, index - 1)}
-                       title="Move Up"
+                       title={tCommon('previous')}
                      >
                        <MoveUp className="h-4 w-4" />
                      </Button>
@@ -277,7 +281,7 @@ export function MergeInterface() {
                        variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
                        disabled={index === files.length - 1 || isMerging}
                        onClick={() => moveFile(index, index + 1)}
-                       title="Move Down"
+                       title={tCommon('next')}
                      >
                        <MoveDown className="h-4 w-4" />
                      </Button>

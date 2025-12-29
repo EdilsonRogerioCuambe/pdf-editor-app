@@ -8,6 +8,8 @@ import { SignatureDrawPad } from './signature-pads/draw-pad';
 import { SignatureTypePad } from './signature-pads/type-pad';
 import { SignatureUploadPad } from './signature-pads/upload-pad';
 
+import { useTranslations } from "next-intl";
+
 interface SignatureCreationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -15,6 +17,7 @@ interface SignatureCreationModalProps {
 }
 
 export function SignatureCreationModal({ open, onOpenChange, onSave }: SignatureCreationModalProps) {
+  const t = useTranslations('sign')
   const [activeTab, setActiveTab] = useState('draw');
 
   const handleSave = (data: string) => {
@@ -26,20 +29,20 @@ export function SignatureCreationModal({ open, onOpenChange, onSave }: Signature
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[800px] w-[95vw] h-[600px] max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between">
-           <DialogTitle className="text-xl">Create Signature</DialogTitle>
+           <DialogTitle className="text-xl">{t('modalTitle')}</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="draw" value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
            <div className="px-6 border-b bg-gray-50/50">
                <TabsList className="bg-transparent h-12 w-full justify-start gap-4">
                   <TabsTrigger value="draw" className="data-[state=active]:bg-white data-[state=active]:shadow-sm border-b-2 border-transparent data-[state=active]:border-primary rounded-none h-full px-4">
-                      <Pen className="w-4 h-4 mr-2" /> Draw
+                      <Pen className="w-4 h-4 mr-2" /> {t('tabDraw')}
                   </TabsTrigger>
                   <TabsTrigger value="type" className="data-[state=active]:bg-white data-[state=active]:shadow-sm border-b-2 border-transparent data-[state=active]:border-primary rounded-none h-full px-4">
-                      <Type className="w-4 h-4 mr-2" /> Type
+                      <Type className="w-4 h-4 mr-2" /> {t('tabType')}
                   </TabsTrigger>
                   <TabsTrigger value="upload" className="data-[state=active]:bg-white data-[state=active]:shadow-sm border-b-2 border-transparent data-[state=active]:border-primary rounded-none h-full px-4">
-                      <UploadIcon className="w-4 h-4 mr-2" /> Upload
+                      <UploadIcon className="w-4 h-4 mr-2" /> {t('tabUpload')}
                   </TabsTrigger>
                </TabsList>
            </div>

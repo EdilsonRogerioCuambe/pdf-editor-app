@@ -3,6 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, Palette, Type, Underline } from "lucide-react";
 import { TextBox } from "./types";
 
+import { useTranslations } from "next-intl";
+
 interface AddTextToolbarProps {
   selectedBox?: TextBox | null;
   onUpdate: (updates: Partial<TextBox>) => void;
@@ -11,10 +13,12 @@ interface AddTextToolbarProps {
 }
 
 export function AddTextToolbar({ selectedBox, onUpdate, onDownload, isProcessing }: AddTextToolbarProps) {
+  const t = useTranslations('annotate.textToolbar')
+
   if (!selectedBox) {
     return (
       <div className="w-full h-14 bg-white border-b flex items-center px-4 justify-between">
-         <div className="text-sm text-gray-500">Select a text box to edit properties</div>
+         <div className="text-sm text-gray-500">{t('selectText')}</div>
 
       </div>
     )
@@ -42,7 +46,7 @@ export function AddTextToolbar({ selectedBox, onUpdate, onDownload, isProcessing
             onValueChange={(val) => onUpdate({ fontFamily: val })}
         >
           <SelectTrigger className="w-[140px] h-9">
-            <SelectValue placeholder="Font" />
+            <SelectValue placeholder={t('font')} />
           </SelectTrigger>
           <SelectContent>
              {fonts.map(f => (
@@ -57,7 +61,7 @@ export function AddTextToolbar({ selectedBox, onUpdate, onDownload, isProcessing
             onValueChange={(val) => onUpdate({ fontSize: parseInt(val) })}
         >
           <SelectTrigger className="w-[70px] h-9">
-            <SelectValue placeholder="Size" />
+            <SelectValue placeholder={t('size')} />
           </SelectTrigger>
           <SelectContent>
              {fontSizes.map(s => (
