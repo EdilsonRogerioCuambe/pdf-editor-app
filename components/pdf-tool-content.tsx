@@ -70,7 +70,7 @@ export function PDFToolContent({ activeTool }: PDFToolContentProps) {
         return <AnnotationInterface />
       default:
         return <GenericInterface toolId={activeTool} />
-    }
+    } 
   }
 
   return (

@@ -7,18 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator'
 import { Slider } from '@/components/ui/slider'
 import {
-  Download,
-  Hand,
-  Highlighter,
-  MousePointer2,
-  Pencil,
-  Redo2,
-  Square,
-  StickyNote,
-  Type,
-  Undo2,
-  ZoomIn,
-  ZoomOut
+    Download,
+    Hand,
+    Highlighter,
+    MousePointer2,
+    Pencil,
+    Redo2,
+    Square,
+    StickyNote,
+    Type,
+    Undo2,
+    ZoomIn,
+    ZoomOut
 } from 'lucide-react'
 import { useTranslations } from "next-intl"
 import type { PDFDocumentProxy } from 'pdfjs-dist'
@@ -27,8 +27,8 @@ import { toast } from 'sonner'
 import { TextBox } from './add-text/text-box'
 import { AddTextToolbar } from './add-text/toolbar'
 import {
-  getMaxZIndex,
-  groupAnnotationsByPage
+    getMaxZIndex,
+    groupAnnotationsByPage
 } from './annotate/annotation-utils'
 import { createKeyboardHandler, type KeyboardShortcutHandlers } from './annotate/keyboard-shortcuts'
 import { saveAnnotatedPDF } from './annotate/pdf-export'
@@ -38,18 +38,18 @@ import { HighlightTool } from './annotate/tools/highlight-tool'
 import { ShapeTool } from './annotate/tools/shape-tool'
 import { StickyNoteTool } from './annotate/tools/sticky-note-tool'
 import type {
-  Annotation,
-  AnnotationTool,
-  DrawingAnnotation,
-  DrawSettings,
-  HighlightAnnotation,
-  HighlightSettings,
-  NoteAnnotation,
-  NoteSettings,
-  PageInfo,
-  ShapeAnnotation,
-  ShapeSettings,
-  TextAnnotation
+    Annotation,
+    AnnotationTool,
+    DrawingAnnotation,
+    DrawSettings,
+    HighlightAnnotation,
+    HighlightSettings,
+    NoteAnnotation,
+    NoteSettings,
+    PageInfo,
+    ShapeAnnotation,
+    ShapeSettings,
+    TextAnnotation
 } from './annotate/types'
 import { createAddAction, createDeleteAction, UndoRedoManager } from './annotate/undo-redo'
 
@@ -225,7 +225,7 @@ export function AnnotationInterface() {
   // Add annotation
   const handleAddAnnotation = useCallback((annotation: Annotation) => {
     const maxZ = getMaxZIndex(annotations)
-    const newAnnotation = { ...annotation, zIndex: maxZ + 1 }
+    const newAnnotation = { ...annotation, zIndex: Math.max(maxZ + 1, 10) }
 
     setAnnotations(prev => [...prev, newAnnotation])
 
@@ -856,8 +856,8 @@ export function AnnotationInterface() {
                                       key={ann.id}
                                       className="absolute pointer-events-auto"
                                       style={{
-                                          left: ann.x * zoom,
-                                          top: ann.y * zoom,
+                                          left: 0,
+                                          top: 0,
                                           zIndex: ann.zIndex
                                       }}
                                   >
@@ -865,7 +865,10 @@ export function AnnotationInterface() {
                                           box={ann as TextAnnotation}
                                           zoom={zoom}
                                           isSelected={isSelected}
-                                          onSelect={setSelectedAnnotationId}
+                                          onSelect={(id) => {
+                                              setSelectedAnnotationId(id)
+                                              setActiveTool('text')
+                                          }}
                                           onUpdate={(_, updates) => updateTextBox(ann.id, updates)}
                                           onDelete={() => handleDeleteSelected()}
                                           onDuplicate={() => duplicateTextBox(ann)}
@@ -948,7 +951,7 @@ export function AnnotationInterface() {
                  {activeTool === 'text' && (
                      <div
                         className="absolute inset-0"
-                        style={{ zIndex: 50, cursor: 'text' }}
+                        style={{ zIndex: 5, cursor: 'text' }}
                         onClick={(e) => handlePageClick(e, index)}
                      />
                  )}
