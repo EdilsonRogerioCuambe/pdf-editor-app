@@ -3,7 +3,7 @@
 import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
 import { getPDFTools } from "@/lib/pdf-tools"
-import { ArrowRight, Check, FileText, Globe, Menu, Shield, X, Zap } from "lucide-react"
+import { ArrowRight, Check, FileText, Github, Globe, Mail, Menu, Phone, Shield, X, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
@@ -288,14 +288,23 @@ export function LandingPage() {
                  </ul>
               </div>
 
-              <div>
-                 <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('resourcesSection')}</h3>
-                 <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link href="#" className="hover:text-primary">{tFooter('blog')}</Link></li>
-                    <li><Link href="#" className="hover:text-primary">{tFooter('developers')}</Link></li>
-                    <li><Link href="#" className="hover:text-primary">{tFooter('security')}</Link></li>
-                 </ul>
-              </div>
+             <div>
+                <h3 className="mb-4 text-sm font-semibold text-white">Contact</h3>
+                <ul className="space-y-4 text-sm text-zinc-500">
+                   <li className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-zinc-400" />
+                      <a href="mailto:edicuambe@gmail.com" className="hover:text-primary transition-colors">edicuambe@gmail.com</a>
+                   </li>
+                   <li className="flex items-center gap-2">
+                      <Github className="h-4 w-4 text-zinc-400" />
+                      <a href="https://github.com/EdilsonRogerioCuambe" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Github</a>
+                   </li>
+                   <li className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-zinc-400" />
+                      <a href="tel:+5585999670030" className="hover:text-primary transition-colors">(85) 99967-0030</a>
+                   </li>
+                </ul>
+             </div>
 
               <div>
                  <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('legalSection')}</h3>
