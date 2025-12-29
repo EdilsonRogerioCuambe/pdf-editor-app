@@ -5,6 +5,7 @@ import { PDFHeader } from "@/components/pdf-header"
 import { PDFSidebar } from "@/components/pdf-sidebar"
 import { cn } from "@/lib/utils"
 // import { ThemeProvider } from "@/components/theme-provider" // Assuming this might be needed or is generic
+import { locales } from "@/i18n/request"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 
@@ -13,7 +14,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  const isLandingPage = pathname === "/"
+  const isLandingPage = pathname === "/" || locales.some((locale) => pathname === `/${locale}`)
 
   if (isLandingPage) {
     return (

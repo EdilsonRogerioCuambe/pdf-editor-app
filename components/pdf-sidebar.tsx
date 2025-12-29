@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useToolTranslations } from "@/lib/i18n-helpers"
 import { pdfTools } from "@/lib/pdf-tools"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useParams, usePathname } from "next/navigation"
 
 interface PDFSidebarProps {
   collapsed: boolean
@@ -16,6 +18,11 @@ interface PDFSidebarProps {
 
 export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose }: PDFSidebarProps) {
   const pathname = usePathname()
+  const params = useParams()
+  const locale = params.locale as string || 'pt-BR'
+  const tCommon = useTranslations('common')
+  const tSidebar = useTranslations('sidebar')
+  const getToolTranslation = useToolTranslations()
 
   return (
     <>
@@ -41,7 +48,7 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
         >
           {/* Logo */}
           <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
-            <Link href="/" className="flex items-center gap-3" onClick={onMobileClose}>
+            <Link href={`/${locale}`} className="flex items-center gap-3" onClick={onMobileClose}>
               <div className="flex h-10 w-10 shrink-0 items-center justify-center">
                 <Image
                   src="/pdf_master.png"
@@ -54,7 +61,7 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
               {/* Show text only when sidebar is expanded */}
               {(!collapsed || mobileOpen) && (
                 <span className="text-lg font-semibold tracking-tight whitespace-nowrap">
-                  PDF Master
+                  {tCommon('appName')}
                 </span>
               )}
             </Link>
@@ -74,13 +81,14 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
             <div className="space-y-1 px-2">
               {pdfTools.map((tool) => {
                 const Icon = tool.icon
-                const isActive = pathname === `/${tool.id}`
+                const translation = getToolTranslation(tool.id)
+                const isActive = pathname === `/${locale}/${tool.id}`
 
                 return (
                   <Tooltip key={tool.id}>
                     <TooltipTrigger asChild>
                       <Link
-                        href={`/${tool.id}`}
+                        href={`/${locale}/${tool.id}`}
                         onClick={onMobileClose}
                         className={cn(
                           "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
@@ -92,14 +100,14 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
                         <Icon className="h-5 w-5 shrink-0" />
                         {/* Show label only when sidebar is expanded */}
                         {(!collapsed || mobileOpen) && (
-                          <span className="truncate">{tool.name}</span>
+                          <span className="truncate">{translation.name}</span>
                         )}
                       </Link>
                     </TooltipTrigger>
                     {collapsed && !mobileOpen && (
                       <TooltipContent side="right" className="font-medium hidden lg:block">
-                        <p>{tool.name}</p>
-                        <p className="text-xs text-muted-foreground">{tool.description}</p>
+                        <p>{translation.name}</p>
+                        <p className="text-xs text-muted-foreground">{translation.description}</p>
                       </TooltipContent>
                     )}
                   </Tooltip>
@@ -121,7 +129,7 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-2" />
-                  <span>Collapse</span>
+                  <span>{tSidebar('collapse')}</span>
                 </>
               )}
             </Button>

@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appName": "PDF Master",
+    "loading": "Cargando...",
+    "processing": "Procesando...",
+    "download": "Descargar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "upload": "Subir",
+    "select": "Seleccionar",
+    "selectFile": "Seleccionar archivo",
+    "dropFilesHere": "Arrastra archivos aquí o haz clic para seleccionar",
+    "or": "o",
+    "page": "Página",
+    "pages": "páginas",
+    "of": "de"
+  },
+  "header": {
+    "free": "100% Gratis",
+    "private": "Privado",
+    "noSignup": "Sin Registro",
+    "tagline": "Todo lo que necesitas para",
+    "taglineHighlight": "tus PDFs",
+    "slogan": "Edita, convierte y firma PDFs en segundos. Sin registro, sin pagos, sin marcas de agua. Completamente gratis e ilimitado para todos."
+  },
+  "nav": {
+    "tools": "Herramientas",
+    "features": "Características",
+    "pricing": "Precios",
+    "about": "Acerca de",
+    "startNow": "Comenzar Ahora",
+    "startFree": "Comenzar Gratis",
+    "viewTools": "Ver Herramientas"
+  },
+  "tools": {
+    "merge": {
+      "name": "Unir PDFs",
+      "description": "Combina varios archivos PDF en un único documento ordenado."
+    },
+    "split": {
+      "name": "Dividir PDF",
+      "description": "Extrae páginas específicas o divide tu documento en varias partes."
+    },
+    "compress": {
+      "name": "Comprimir PDF",
+      "description": "Reduce el tamaño del archivo manteniendo la mejor calidad posible."
+    },
+    "rotate": {
+      "name": "Rotar PDF",
+      "description": "Gira tus páginas PDF. Guarda permanentemente ahora mismo."
+    },
+    "delete": {
+      "name": "Eliminar Páginas",
+      "description": "Elimina páginas no deseadas de tu documento PDF."
+    },
+    "reorder": {
+      "name": "Reorganizar",
+      "description": "Organiza las páginas de tu PDF simplemente arrastrando y soltando."
+    },
+    "pdf-to-image": {
+      "name": "PDF a Imagen",
+      "description": "Convierte páginas PDF a imágenes JPG o PNG."
+    },
+    "image-to-pdf": {
+      "name": "Imagen a PDF",
+      "description": "Convierte tus imágenes (JPG, PNG) a archivos PDF."
+    },
+    "watermark": {
+      "name": "Marca de Agua",
+      "description": "Añade texto o imagen como marca de agua en tu PDF."
+    },
+    "page-numbers": {
+      "name": "Números de Página",
+      "description": "Añade numeración a las páginas de tu PDF con facilidad."
+    },
+    "sign": {
+      "name": "Firmar PDF",
+      "description": "Firma digitalmente tus documentos PDF."
+    },
+    "annotate": {
+      "name": "Anotar PDF",
+      "description": "Añade notas, resaltados y dibujos a tu PDF."
+    },
+    "protect": {
+      "name": "Proteger PDF",
+      "description": "Añade contraseña y encripta tus archivos PDF importantes."
+    },
+    "unlock": {
+      "name": "Desbloquear PDF",
+      "description": "Elimina la contraseña y protección de archivos PDF."
+    }
+  },
+  "landing": {
+    "heroTitle": "Todo lo que necesitas para",
+    "heroTitleHighlight": "tus PDFs",
+    "heroDescription": "Edita, convierte y firma PDFs en segundos. Sin registro, sin pagos, sin marcas de agua. Completamente gratis e ilimitado para todos.",
+    "newToolsAvailable": "Nuevas herramientas disponibles",
+    "powerfulTools": "Herramientas Poderosas",
+    "powerfulToolsDescription": "Elige la herramienta ideal para tu necesidad",
+    "featuresTitle": "Edición Profesional de PDF",
+    "featuresTitleHighlight": "Simplificada",
+    "featuresDescription": "Nuestra plataforma ofrece características avanzadas que antes solo estaban disponibles en software caro y complejo.",
+    "feature1": "Completamente Gratis (Sin costos ocultos)",
+    "feature2": "Sin necesidad de inicio de sesión o registro",
+    "feature3": "Descargas ilimitadas sin marca de agua",
+    "feature4": "Cifrado de extremo a extremo (SSL)",
+    "securePrivate": "100% Seguro y Privado",
+    "instantProcessing": "Procesamiento Instantáneo",
+    "multiPlatform": "Multi-Plataforma",
+    "ready": "Listo",
+    "protected": "Protegido"
+  },
+  "footer": {
+    "description": "La mejor plataforma en línea para gestionar tus documentos PDF de forma rápida y segura.",
+    "toolsSection": "Herramientas",
+    "resourcesSection": "Recursos",
+    "legalSection": "Legal",
+    "blog": "Blog",
+    "developers": "Desarrolladores",
+    "security": "Seguridad",
+    "privacy": "Privacidad",
+    "terms": "Términos de Uso",
+    "cookies": "Cookies",
+    "contact": "Contacto",
+    "allRightsReserved": "Todos los derechos reservados",
+    "mergePdf": "Unir PDF",
+    "splitPdf": "Dividir PDF",
+    "compressPdf": "Comprimir PDF",
+    "convertPdf": "Convertir PDF"
+  },
+  "annotate": {
+    "title": "Anotar PDF",
+    "description": "Añade resaltados, dibujos, formas, texto, notas y más a tus archivos PDF",
+    "highlight": "Resaltar",
+    "highlightDescription": "Marca texto importante con colores",
+    "draw": "Dibujar",
+    "drawDescription": "Dibujo a mano alzada y bocetos",
+    "shapes": "Formas",
+    "shapesDescription": "Añade rectángulos, círculos, flechas",
+    "notes": "Notas",
+    "notesDescription": "Notas adhesivas y comentarios",
+    "cursor": "Cursor",
+    "handTool": "Herramienta Mano",
+    "text": "Texto",
+    "stickyNote": "Nota Adhesiva",
+    "undo": "Deshacer",
+    "redo": "Rehacer",
+    "color": "Color",
+    "opacity": "Opacidad",
+    "thickness": "Grosor",
+    "shape": "Forma",
+    "border": "Borde",
+    "width": "Ancho",
+    "fill": "Relleno",
+    "fillOpacity": "Opacidad del Relleno",
+    "rectangle": "Rectángulo",
+    "circle": "Círculo",
+    "triangle": "Triángulo",
+    "line": "Línea",
+    "arrow": "Flecha",
+    "savePdf": "Guardar PDF",
+    "saving": "Guardando...",
+    "pdfLoaded": "PDF cargado: {{count}} páginas",
+    "annotationAdded": "Anotación añadida",
+    "annotationDeleted": "Anotación eliminada",
+    "savingAnnotations": "Guardando anotaciones en PDF...",
+    "savedSuccessfully": "PDF anotado guardado con éxito!",
+    "failedToLoad": "Error al cargar PDF. Por favor, inténtalo de nuevo.",
+    "failedToSave": "Error al guardar PDF. Por favor, inténtalo de nuevo."
+  },
+  "messages": {
+    "success": "¡Éxito!",
+    "error": "¡Error!",
+    "warning": "¡Advertencia!",
+    "info": "Información",
+    "fileUploaded": "Archivo subido con éxito",
+    "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {{size}}",
+    "invalidFileType": "Tipo de archivo inválido. Solo se permiten {{types}}",
+    "processingComplete": "Procesamiento completo",
+    "downloadReady": "Descarga lista"
+  },
+  "sidebar": {
+    "collapse": "Contraer"
+  }
+}

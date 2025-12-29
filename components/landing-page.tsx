@@ -1,40 +1,33 @@
 "use client"
 
+import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
+import { useToolTranslations } from "@/lib/i18n-helpers"
 import { pdfTools } from "@/lib/pdf-tools"
 import { ArrowRight, Check, FileText, Globe, Menu, Shield, X, Zap } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 import { useState } from "react"
-
-// Translations for the landing page
-const translations: Record<string, { name: string; description: string }> = {
-  merge: { name: "Juntar PDFs", description: "Combine vários arquivos PDF em um único documento ordenado." },
-  split: { name: "Dividir PDF", description: "Extraia páginas específicas ou divida seu documento em várias partes." },
-  compress: { name: "Comprimir PDF", description: "Reduza o tamanho do arquivo mantendo a melhor qualidade possível." },
-  rotate: { name: "Rodar PDF", description: "Gire suas páginas PDF. Salve agora mesmo permanentemente." },
-  delete: { name: "Excluir Páginas", description: "Remova páginas indesejadas do seu documento PDF." },
-  reorder: { name: "Reorganizar", description: "Organize as páginas do seu PDF simplesmente arrastando e soltando." },
-  "pdf-to-image": { name: "PDF para Imagem", description: "Converta páginas de PDF em imagens JPG ou PNG." },
-  "image-to-pdf": { name: "Imagem para PDF", description: "Transforme suas imagens (JPG, PNG) em arquivos PDF." },
-  watermark: { name: "Marca d'água", description: "Adicione texto ou imagem como estampa em seu PDF." },
-  "page-numbers": { name: "Números de Página", description: "Adicione numeração às páginas do seu PDF com facilidade." },
-  sign: { name: "Assinar PDF", description: "Assine digitalmente seus documentos PDF." },
-  annotate: { name: "Anotar PDF", description: "Adicione notas, destaques e desenhos ao seu PDF." },
-  protect: { name: "Proteger PDF", description: "Adicione senha e criptografe seus arquivos PDF importantes." },
-  unlock: { name: "Desbloquear PDF", description: "Remova a senha e proteção de arquivos PDF." },
-}
 
 export function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const params = useParams()
+  const locale = params.locale as string || 'pt-BR'
+
+  const t = useTranslations('landing')
+  const tNav = useTranslations('nav')
+  const tCommon = useTranslations('common')
+  const tFooter = useTranslations('footer')
+  const getToolTranslation = useToolTranslations()
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-50">
       {/* Navbar */}
-      {/* Navbar */}
       <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={`/${locale}`} className="flex items-center gap-2">
              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/50">
                 <Image
                   src="/pdf_master.png"
@@ -44,23 +37,24 @@ export function LandingPage() {
                   className="h-full w-full object-cover rounded-lg"
                 />
              </div>
-             <span className="text-xl font-bold tracking-tight text-white">PDF Master</span>
+             <span className="text-xl font-bold tracking-tight text-white">{tCommon('appName')}</span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden gap-6 md:flex">
             <Link href="#tools" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
-              Ferramentas
+              {tNav('tools')}
             </Link>
             <Link href="#features" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
-              Recursos
+              {tNav('features')}
             </Link>
           </nav>
 
           <div className="hidden items-center gap-4 md:flex">
-            <Link href="/merge">
+            <LanguageSelector />
+            <Link href={`/${locale}/merge`}>
               <Button className="bg-primary text-white hover:bg-primary/90">
-                Começar Agora
+                {tNav('startNow')}
               </Button>
             </Link>
           </div>
@@ -83,22 +77,25 @@ export function LandingPage() {
                   className="text-lg font-medium text-zinc-300 hover:text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Ferramentas
+                  {tNav('tools')}
                 </Link>
                 <Link
                   href="#features"
                   className="text-lg font-medium text-zinc-300 hover:text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Recursos
+                  {tNav('features')}
                 </Link>
                 <hr className="border-white/10" />
+                <div className="flex items-center gap-2">
+                  <LanguageSelector />
+                </div>
                 <Link
-                  href="/merge"
+                  href={`/${locale}/merge`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                    Começar Agora
+                    {tNav('startNow')}
                   </Button>
                 </Link>
              </nav>
@@ -117,48 +114,48 @@ export function LandingPage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
             </span>
-            Novas ferramentas disponíveis
+            {t('newToolsAvailable')}
           </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Tudo o que você precisa para <br/>
-            <span className="bg-gradient-to-r from-primary to-rose-600 bg-clip-text text-transparent">seus PDFs</span>
+            {t('heroTitle')} <br/>
+            <span className="bg-gradient-to-r from-primary to-rose-600 bg-clip-text text-transparent">{t('heroTitleHighlight')}</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400 sm:text-xl">
-            Edite, converta e assine PDFs em segundos. Sem cadastro, sem pagamentos, sem marcas d'água. Totalmente gratuito e ilimitado para todos.
+            {t('heroDescription')}
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link href="/merge">
+            <Link href={`/${locale}/merge`}>
               <Button size="lg" className="h-12 rounded-xl bg-primary px-8 text-base font-semibold text-white transition-all hover:scale-105 hover:bg-primary/90 shadow-lg shadow-primary/25">
-                Começar Grátis
+                {tNav('startFree')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="#tools">
                <Button size="lg" variant="outline" className="h-12 rounded-xl border-zinc-700 bg-black/50 px-8 text-base font-semibold text-white transition-all hover:bg-zinc-800">
-                Ver Ferramentas
+                {tNav('viewTools')}
               </Button>
             </Link>
           </div>
 
            {/* Stats / Trust */}
            <div className="mt-16 border-y border-white/5 bg-white/[0.02] py-8 backdrop-blur-sm">
-             <div className="container mx-auto flex flex-wrap justify-center gap-12 px-4 sm:gap-24 text-zinc-400">
-                <div className="flex items-center gap-3">
-                   <Shield className="h-6 w-6 text-primary" />
-                   <span className="font-medium text-zinc-300">100% Seguro & Privado</span>
-                </div>
-                <div className="flex items-center gap-3">
-                   <Zap className="h-6 w-6 text-primary" />
-                   <span className="font-medium text-zinc-300">Processamento Instantâneo</span>
-                </div>
-                <div className="flex items-center gap-3">
-                   <Globe className="h-6 w-6 text-primary" />
-                   <span className="font-medium text-zinc-300">Multi-Plataforma</span>
-                </div>
-             </div>
+              <div className="container mx-auto flex flex-wrap justify-center gap-12 px-4 sm:gap-24 text-zinc-400">
+                 <div className="flex items-center gap-3">
+                    <Shield className="h-6 w-6 text-primary" />
+                    <span className="font-medium text-zinc-300">{t('securePrivate')}</span>
+                 </div>
+                 <div className="flex items-center gap-3">
+                    <Zap className="h-6 w-6 text-primary" />
+                    <span className="font-medium text-zinc-300">{t('instantProcessing')}</span>
+                 </div>
+                 <div className="flex items-center gap-3">
+                    <Globe className="h-6 w-6 text-primary" />
+                    <span className="font-medium text-zinc-300">{t('multiPlatform')}</span>
+                 </div>
+              </div>
            </div>
         </div>
       </section>
@@ -167,21 +164,21 @@ export function LandingPage() {
       <section id="tools" className="py-24 bg-zinc-950/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Ferramentas Poderosas</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{t('powerfulTools')}</h2>
             <p className="mt-4 text-lg text-zinc-400">
-              Escolha a ferramenta ideal para sua necessidade
+              {t('powerfulToolsDescription')}
             </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {pdfTools.map((tool) => {
               const Icon = tool.icon
-              const translation = translations[tool.id] || { name: tool.name, description: tool.description }
+              const translation = getToolTranslation(tool.id)
 
               return (
                 <Link
                   key={tool.id}
-                  href={`/${tool.id}`}
+                  href={`/${locale}/${tool.id}`}
                   className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-6 transition-all hover:-translate-y-1 hover:border-primary/50 hover:bg-zinc-900 hover:shadow-2xl hover:shadow-primary/10"
                 >
                   <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-800/80 transition-colors group-hover:bg-primary/20">
@@ -207,19 +204,19 @@ export function LandingPage() {
            <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-center">
               <div>
                  <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Edição Profissional de PDF <br/>
-                    <span className="text-primary">Simplificada</span>
+                    {t('featuresTitle')} <br/>
+                    <span className="text-primary">{t('featuresTitleHighlight')}</span>
                  </h2>
                  <p className="mt-4 text-lg text-zinc-400">
-                    Nossa plataforma oferece recursos avançados que antes só estavam disponíveis em softwares caros e complexos.
+                    {t('featuresDescription')}
                  </p>
 
                  <div className="mt-8 space-y-4">
                     {[
-                       "Totalmente Gratuito (Sem custos ocultos)",
-                       "Sem necessidade de login ou cadastro",
-                       "Downloads ilimitados e sem marca d'água",
-                       "Criptografia de ponta a ponta (SSL)"
+                       t('feature1'),
+                       t('feature2'),
+                       t('feature3'),
+                       t('feature4')
                     ].map((feature, i) => (
                        <div key={i} className="flex items-center gap-3">
                           <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20">
@@ -243,7 +240,7 @@ export function LandingPage() {
                           <div className="mt-2 h-2 w-16 rounded-full bg-white/5" />
                        </div>
                        <div className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-500">
-                          Pronto
+                          {t('ready')}
                        </div>
                     </div>
                     <div className="flex items-center gap-4 rounded-xl border border-white/5 bg-black/40 p-4 backdrop-blur-md">
@@ -255,7 +252,7 @@ export function LandingPage() {
                           <div className="mt-2 h-2 w-20 rounded-full bg-white/5" />
                        </div>
                        <div className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-500">
-                          Protegido
+                          {t('protected')}
                        </div>
                     </div>
                  </div>
@@ -269,49 +266,49 @@ export function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                 <Link href="/" className="mb-6 flex items-center gap-2">
+                 <Link href={`/${locale}`} className="mb-6 flex items-center gap-2">
                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                       <FileText className="h-5 w-5 text-white" />
                    </div>
-                   <span className="text-lg font-bold text-white">PDF Master</span>
+                   <span className="text-lg font-bold text-white">{tCommon('appName')}</span>
                  </Link>
                  <p className="text-sm text-zinc-500">
-                    A melhor plataforma online para gerenciar seus documentos PDF de forma rápida e segura.
+                    {tFooter('description')}
                  </p>
               </div>
 
               <div>
-                 <h3 className="mb-4 text-sm font-semibold text-white">Ferramentas</h3>
+                 <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('toolsSection')}</h3>
                  <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link href="/merge" className="hover:text-primary">Juntar PDF</Link></li>
-                    <li><Link href="/split" className="hover:text-primary">Dividir PDF</Link></li>
-                    <li><Link href="/compress" className="hover:text-primary">Comprimir PDF</Link></li>
-                    <li><Link href="/convert" className="hover:text-primary">Converter PDF</Link></li>
+                    <li><Link href={`/${locale}/merge`} className="hover:text-primary">{tFooter('mergePdf')}</Link></li>
+                    <li><Link href={`/${locale}/split`} className="hover:text-primary">{tFooter('splitPdf')}</Link></li>
+                    <li><Link href={`/${locale}/compress`} className="hover:text-primary">{tFooter('compressPdf')}</Link></li>
+                    <li><Link href={`/${locale}/convert`} className="hover:text-primary">{tFooter('convertPdf')}</Link></li>
                  </ul>
               </div>
 
               <div>
-                 <h3 className="mb-4 text-sm font-semibold text-white">Recursos</h3>
+                 <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('resourcesSection')}</h3>
                  <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link href="#" className="hover:text-primary">Blog</Link></li>
-                    <li><Link href="#" className="hover:text-primary">Desenvolvedores</Link></li>
-                    <li><Link href="#" className="hover:text-primary">Segurança</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('blog')}</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('developers')}</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('security')}</Link></li>
                  </ul>
               </div>
 
               <div>
-                 <h3 className="mb-4 text-sm font-semibold text-white">Legal</h3>
+                 <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('legalSection')}</h3>
                  <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link href="#" className="hover:text-primary">Privacidade</Link></li>
-                    <li><Link href="#" className="hover:text-primary">Termos de Uso</Link></li>
-                    <li><Link href="#" className="hover:text-primary">Cookies</Link></li>
-                    <li><Link href="#" className="hover:text-primary">Contato</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('privacy')}</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('terms')}</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('cookies')}</Link></li>
+                    <li><Link href="#" className="hover:text-primary">{tFooter('contact')}</Link></li>
                  </ul>
               </div>
            </div>
 
            <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-zinc-600">
-              &copy; {new Date().getFullYear()} PDF Master. Todos os direitos reservados.
+              &copy; {new Date().getFullYear()} {tCommon('appName')}. {tFooter('allRightsReserved')}.
            </div>
         </div>
       </footer>

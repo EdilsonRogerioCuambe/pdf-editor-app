@@ -20,6 +20,7 @@ import { pdfTools, type ToolId } from "@/lib/pdf-tools"
 
 interface PDFToolContentProps {
   activeTool: ToolId
+  children?: React.ReactNode
 }
 
 export function PDFToolContent({ activeTool }: PDFToolContentProps) {

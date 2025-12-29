@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appName": "PDF Master",
+    "loading": "Loading...",
+    "processing": "Processing...",
+    "download": "Download",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "upload": "Upload",
+    "select": "Select",
+    "selectFile": "Select file",
+    "dropFilesHere": "Drop files here or click to select",
+    "or": "or",
+    "page": "Page",
+    "pages": "pages",
+    "of": "of"
+  },
+  "header": {
+    "free": "100% Free",
+    "private": "Private",
+    "noSignup": "No Signup",
+    "tagline": "Everything you need for",
+    "taglineHighlight": "your PDFs",
+    "slogan": "Edit, convert and sign PDFs in seconds. No signup, no payment, no watermarks. Completely free and unlimited for everyone."
+  },
+  "nav": {
+    "tools": "Tools",
+    "features": "Features",
+    "pricing": "Pricing",
+    "about": "About",
+    "startNow": "Start Now",
+    "startFree": "Start Free",
+    "viewTools": "View Tools"
+  },
+  "tools": {
+    "merge": {
+      "name": "Merge PDFs",
+      "description": "Combine multiple PDF files into a single ordered document."
+    },
+    "split": {
+      "name": "Split PDF",
+      "description": "Extract specific pages or split your document into multiple parts."
+    },
+    "compress": {
+      "name": "Compress PDF",
+      "description": "Reduce file size while maintaining the best possible quality."
+    },
+    "rotate": {
+      "name": "Rotate PDF",
+      "description": "Rotate your PDF pages. Save permanently right now."
+    },
+    "delete": {
+      "name": "Delete Pages",
+      "description": "Remove unwanted pages from your PDF document."
+    },
+    "reorder": {
+      "name": "Reorder",
+      "description": "Organize your PDF pages by simply dragging and dropping."
+    },
+    "pdf-to-image": {
+      "name": "PDF to Image",
+      "description": "Convert PDF pages to JPG or PNG images."
+    },
+    "image-to-pdf": {
+      "name": "Image to PDF",
+      "description": "Convert your images (JPG, PNG) to PDF files."
+    },
+    "watermark": {
+      "name": "Watermark",
+      "description": "Add text or image watermark to your PDF."
+    },
+    "page-numbers": {
+      "name": "Page Numbers",
+      "description": "Add page numbering to your PDF with ease."
+    },
+    "sign": {
+      "name": "Sign PDF",
+      "description": "Digitally sign your PDF documents."
+    },
+    "annotate": {
+      "name": "Annotate PDF",
+      "description": "Add notes, highlights and drawings to your PDF."
+    },
+    "protect": {
+      "name": "Protect PDF",
+      "description": "Add password and encrypt your important PDF files."
+    },
+    "unlock": {
+      "name": "Unlock PDF",
+      "description": "Remove password and protection from PDF files."
+    }
+  },
+  "landing": {
+    "heroTitle": "Everything you need for",
+    "heroTitleHighlight": "your PDFs",
+    "heroDescription": "Edit, convert and sign PDFs in seconds. No signup, no payment, no watermarks. Completely free and unlimited for everyone.",
+    "newToolsAvailable": "New tools available",
+    "powerfulTools": "Powerful Tools",
+    "powerfulToolsDescription": "Choose the ideal tool for your needs",
+    "featuresTitle": "Professional PDF Editing",
+    "featuresTitleHighlight": "Simplified",
+    "featuresDescription": "Our platform offers advanced features that were previously only available in expensive and complex software.",
+    "feature1": "Completely Free (No hidden costs)",
+    "feature2": "No login or registration required",
+    "feature3": "Unlimited downloads without watermark",
+    "feature4": "End-to-end encryption (SSL)",
+    "securePrivate": "100% Secure & Private",
+    "instantProcessing": "Instant Processing",
+    "multiPlatform": "Multi-Platform",
+    "ready": "Ready",
+    "protected": "Protected"
+  },
+  "footer": {
+    "description": "The best online platform to manage your PDF documents quickly and securely.",
+    "toolsSection": "Tools",
+    "resourcesSection": "Resources",
+    "legalSection": "Legal",
+    "blog": "Blog",
+    "developers": "Developers",
+    "security": "Security",
+    "privacy": "Privacy",
+    "terms": "Terms of Use",
+    "cookies": "Cookies",
+    "contact": "Contact",
+    "allRightsReserved": "All rights reserved",
+    "mergePdf": "Merge PDF",
+    "splitPdf": "Split PDF",
+    "compressPdf": "Compress PDF",
+    "convertPdf": "Convert PDF"
+  },
+  "annotate": {
+    "title": "Annotate PDF",
+    "description": "Add highlights, drawings, shapes, text, notes and more to your PDF files",
+    "highlight": "Highlight",
+    "highlightDescription": "Mark important text with colors",
+    "draw": "Draw",
+    "drawDescription": "Freehand drawing and sketches",
+    "shapes": "Shapes",
+    "shapesDescription": "Add rectangles, circles, arrows",
+    "notes": "Notes",
+    "notesDescription": "Sticky notes and comments",
+    "cursor": "Cursor",
+    "handTool": "Hand Tool",
+    "text": "Text",
+    "stickyNote": "Sticky Note",
+    "undo": "Undo",
+    "redo": "Redo",
+    "color": "Color",
+    "opacity": "Opacity",
+    "thickness": "Thickness",
+    "shape": "Shape",
+    "border": "Border",
+    "width": "Width",
+    "fill": "Fill",
+    "fillOpacity": "Fill Opacity",
+    "rectangle": "Rectangle",
+    "circle": "Circle",
+    "triangle": "Triangle",
+    "line": "Line",
+    "arrow": "Arrow",
+    "savePdf": "Save PDF",
+    "saving": "Saving...",
+    "pdfLoaded": "PDF loaded: {{count}} pages",
+    "annotationAdded": "Annotation added",
+    "annotationDeleted": "Annotation deleted",
+    "savingAnnotations": "Saving annotations to PDF...",
+    "savedSuccessfully": "Annotated PDF saved successfully!",
+    "failedToLoad": "Failed to load PDF. Please try again.",
+    "failedToSave": "Failed to save PDF. Please try again."
+  },
+  "messages": {
+    "success": "Success!",
+    "error": "Error!",
+    "warning": "Warning!",
+    "info": "Information",
+    "fileUploaded": "File uploaded successfully",
+    "fileTooLarge": "File too large. Maximum size: {{size}}",
+    "invalidFileType": "Invalid file type. Only {{types}} are allowed",
+    "processingComplete": "Processing complete",
+    "downloadReady": "Download ready"
+  },
+  "sidebar": {
+    "collapse": "Collapse"
+  }
+}

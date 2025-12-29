@@ -1,6 +1,8 @@
+import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Menu, Moon, Shield, Sun } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
 interface PDFHeaderProps {
@@ -10,6 +12,7 @@ interface PDFHeaderProps {
 
 export function PDFHeader({ sidebarCollapsed, onMobileMenuToggle }: PDFHeaderProps) {
   const [isDark, setIsDark] = useState(false)
+  const t = useTranslations('header')
 
   useEffect(() => {
     const isDarkMode = document.documentElement.classList.contains("dark")
@@ -35,20 +38,23 @@ export function PDFHeader({ sidebarCollapsed, onMobileMenuToggle }: PDFHeaderPro
         </Button>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Shield className="hidden h-4 w-4 text-primary sm:block" />
-          <span className="hidden sm:inline">100% Free • Privacy First • No Signup Required</span>
-          <span className="sm:hidden">Free & Private</span>
+          <span className="hidden sm:inline">{t('free')} • {t('private')} • {t('noSignup')}</span>
+          <span className="sm:hidden">{t('free')} & {t('private')}</span>
         </div>
       </div>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleDarkMode}
-        className="text-muted-foreground hover:text-foreground"
-      >
-        {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        <span className="sr-only">Toggle dark mode</span>
-      </Button>
+      <div className="flex items-center gap-2">
+        <LanguageSelector />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleDarkMode}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <span className="sr-only">Toggle dark mode</span>
+        </Button>
+      </div>
     </header>
   )
 }

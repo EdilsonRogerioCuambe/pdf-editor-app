@@ -552,7 +552,7 @@ export function AnnotationInterface() {
             <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoom <= ZOOM_LEVELS[0]}>
               <ZoomOut className="h-4 w-4" />
             </Button>
-            <Select value={zoom.toString()} onValueChange={(v) => setZoom(parseFloat(v))}>
+            <Select value={zoom.toString()} onValueChange={(v: string) => setZoom(parseFloat(v))}>
               <SelectTrigger className="w-24">
                 <SelectValue>{Math.round(zoom * 100)}%</SelectValue>
               </SelectTrigger>
