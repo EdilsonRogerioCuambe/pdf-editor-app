@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { locales } from "@/i18n/request"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import { Toaster } from "sonner"
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -20,6 +21,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen bg-background">
         {children}
+        <Toaster position="top-right" richColors />
       </div>
     )
   }
@@ -55,6 +57,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         {/* Footer */}
         <PDFFooter />
       </div>
+
+      {/* Toast Notifications */}
+      <Toaster position="top-right" richColors />
     </div>
   )
 }

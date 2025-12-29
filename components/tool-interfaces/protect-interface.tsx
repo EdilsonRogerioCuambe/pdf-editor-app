@@ -9,10 +9,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Download, Eye, EyeOff, Lock, Shield } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 import { PasswordStrengthIndicator } from './protect-pdf/password-strength'
 import { PERMISSION_PRESETS, type EncryptionLevel, type PrintingPermission, type ProtectionPermissions } from './protect-pdf/types'
-// @ts-ignore - The library might not have types immediately available
-import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite'
 
 export function ProtectInterface() {
   const [file, setFile] = useState<UploadedFile | null>(null)
@@ -40,8 +39,8 @@ export function ProtectInterface() {
     documentAssembly: true
   })
 
-  // Encryption
-  const [encryptionLevel, setEncryptionLevel] = useState<EncryptionLevel>('128-bit-aes')
+  // Encryption (default to 256-bit for maximum security)
+  const [encryptionLevel, setEncryptionLevel] = useState<EncryptionLevel>('256-bit-aes')
 
   // Validation
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -106,53 +105,34 @@ export function ProtectInterface() {
     setIsProcessing(true)
 
     try {
-      // Read file as ArrayBuffer
-      const buffer = await file.file.arrayBuffer()
+      // Server-side processing using /api/lock-pdf
+      const formData = new FormData()
+      formData.append('file', file.file)
+      formData.append('userPassword', useUserPassword ? userPassword : '')
+      formData.append('ownerPassword', useOwnerPassword ? ownerPassword : '')
+      formData.append('permissions', JSON.stringify(permissions))
 
-      // Convert permissions to format expected by pdf-encrypt-lite if needed,
-      // OR mostly likely it takes a simple config object.
-      // Based on typical usage:
-      // encryptPDF(buffer, { ownerPassword, userPassword, permissions... })
+      // Map encryption level to key length
+      const keyLengthMap: Record<EncryptionLevel, number> = {
+        '40-bit-rc4': 40,
+        '128-bit-rc4': 128,
+        '128-bit-aes': 128,
+        '256-bit-aes': 256
+      }
+      formData.append('keyLength', keyLengthMap[encryptionLevel].toString())
 
-      // Let's assume standard PDF permissions flags or similar.
-      // The library might use a simplified interface.
-      // Since I don't have docs, I will use a generic object structure that matches typical PDF libs
-      // and if it fails, I'll debug.
-      // Actually, my research said it supports passwords.
-      // Let's try: options object.
+      const response = await fetch('/api/lock-pdf', {
+        method: 'POST',
+        body: formData,
+      })
 
-      const options = {
-        userPassword: useUserPassword ? userPassword : '',
-        ownerPassword: useOwnerPassword ? ownerPassword : '',
-        // Permission config might vary. Let's pass typical ones.
-        // If library ignores them, at least password works.
-        permissions: {
-           print: permissions.printing !== 'none',
-           modify: permissions.modifying,
-           copy: permissions.copying,
-           annotate: permissions.annotating,
-           fillForms: permissions.fillingForms,
-           accessibility: permissions.contentAccessibility,
-           assemble: permissions.documentAssembly
-        },
-        encryptionKeyLength: 128 // Defaulting to standard
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to protect PDF')
       }
 
-      console.log('Encrypting with options:', options)
-
-      // Based on types: encryptPDF(data, userPassword, ownerPassword)
-      // Note: Permissions might not be fully verifiable with this signature in Lite version
-      const encryptedBuffer = await encryptPDF(
-          new Uint8Array(buffer),
-          options.userPassword,
-          options.ownerPassword
-      )
-
-      // Create Blob
-      const blob = new Blob([encryptedBuffer as any], { type: 'application/pdf' })
+      const blob = await response.blob()
       const url = URL.createObjectURL(blob)
-
-      // Download
       const link = document.createElement('a')
       link.href = url
       link.download = `protected-${file.file.name}`
@@ -161,17 +141,15 @@ export function ProtectInterface() {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      // Show success
-      setFile(null) // Reset or keep?
-      // Maybe show a success message toast?
-      // The original code used alert. I'll stick to alert for now or upgrade to sonner if I see it.
-      // Original used alert.
-      // I'll leave the file selected in case they want to retry or something.
-      alert('PDF protected successfully!')
+      toast.success('PDF protected successfully!', {
+        description: 'Your encrypted PDF has been downloaded.'
+      })
 
     } catch (error) {
       console.error('Error protecting PDF:', error)
-      alert(`Failed to protect PDF: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      toast.error('Failed to protect PDF', {
+        description: error instanceof Error ? error.message : 'Unknown error occurred'
+      })
     } finally {
       setIsProcessing(false)
     }
