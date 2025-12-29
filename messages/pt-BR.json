@@ -280,7 +280,39 @@
     "savingAnnotations": "Salvando anotações no PDF...",
     "savedSuccessfully": "PDF anotado salvo com sucesso!",
     "failedToLoad": "Falha ao carregar PDF. Por favor, tente novamente.",
-    "failedToSave": "Falha ao salvar PDF. Por favor, tente novamente."
+    "failedToSave": "Falha ao salvar PDF. Por favor, tente novamente.",
+    "tools": {
+      "cursor": "Cursor (V)",
+      "hand": "Mão (P)",
+      "highlight": "Destacar (H)",
+      "draw": "Desenhar (D)",
+      "shapes": "Formas (S)",
+      "text": "Texto (T)",
+      "note": "Nota Adesiva (N)",
+      "undo": "Desfazer (Ctrl+Z)",
+      "redo": "Refazer (Ctrl+Y)"
+    },
+    "shapesOptions": {
+      "rectangle": "Retângulo",
+      "circle": "Círculo",
+      "triangle": "Triângulo",
+      "line": "Linha",
+      "arrow": "Seta"
+    },
+    "toasts": {
+      "loaded": "PDF carregado: {count} páginas",
+      "loadError": "Falha ao carregar PDF. Tente novamente.",
+      "added": "Anotação adicionada",
+      "deleted": "Anotação excluída",
+      "saving": "Salvando anotações no PDF...",
+      "saved": "PDF anotado salvo com sucesso!",
+      "saveError": "Falha ao salvar PDF. Tente novamente."
+    },
+    "textToolbar": {
+      "selectText": "Selecione uma caixa de texto para editar propriedades",
+      "font": "Fonte",
+      "size": "Tamanho"
+    }
   },
   "sign": {
     "title": "Assinar PDF",
