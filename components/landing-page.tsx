@@ -309,10 +309,10 @@ export function LandingPage() {
               <div>
                  <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('legalSection')}</h3>
                  <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link href="#" className="hover:text-primary">{tFooter('privacy')}</Link></li>
-                    <li><Link href="#" className="hover:text-primary">{tFooter('terms')}</Link></li>
-                    <li><Link href="#" className="hover:text-primary">{tFooter('cookies')}</Link></li>
-                    <li><Link href="#" className="hover:text-primary">{tFooter('contact')}</Link></li>
+                    <li><Link href={`/${locale}/privacy`} className="hover:text-primary">{tFooter('privacy')}</Link></li>
+                    <li><Link href={`/${locale}/terms`} className="hover:text-primary">{tFooter('terms')}</Link></li>
+                    <li><Link href={`/${locale}/cookies`} className="hover:text-primary">{tFooter('cookies')}</Link></li>
+                    <li><Link href={`/${locale}/contact`} className="hover:text-primary">{tFooter('contact')}</Link></li>
                  </ul>
               </div>
            </div>
