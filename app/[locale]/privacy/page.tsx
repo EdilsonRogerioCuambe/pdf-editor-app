@@ -1,107 +1,94 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+import Link from "next/link"
+
 export default function PrivacyPage() {
+  const t = useTranslations('legal.privacy')
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-16">
-      <h1 className="text-4xl font-bold mb-8">Privacy Policy</h1>
+      <h1 className="text-4xl font-bold mb-8">{t('title')}</h1>
 
       <div className="prose prose-slate dark:prose-invert max-w-none">
-        <p className="text-muted-foreground mb-8">
-          Last updated: January 3, 2026
-        </p>
+        <p className="text-muted-foreground mb-8">{t('lastUpdated')}</p>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-          <p>
-            At PDF Master, we take your privacy seriously. This Privacy Policy explains how we handle your information when you use our PDF editing application.
-          </p>
+          <p>{t('intro')}</p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">2. Data Processing</h2>
-          <p className="mb-4">
-            <strong>Complete Client-Side Processing:</strong> All PDF operations are performed entirely in your browser. Your files never leave your device.
-          </p>
+          <h2 className="text-2xl font-semibold mb-4">2. {t('dataProcessing')}</h2>
+          <p className="mb-4"><strong>{t('completeProcessing')}</strong></p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>We do not upload your files to any server</li>
-            <li>We do not store your files</li>
-            <li>We do not access the content of your documents</li>
-            <li>All processing happens locally on your device</li>
+            <li>{t('noUpload')}</li>
+            <li>{t('noStore')}</li>
+            <li>{t('noAccess')}</li>
+            <li>{t('localProcessing')}</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">3. Information We Collect</h2>
-          <p className="mb-4">We may collect minimal analytics data to improve our service:</p>
+          <h2 className="text-2xl font-semibold mb-4">3. {t('infoWeCollect')}</h2>
+          <p className="mb-4">{t('minimalAnalytics')}</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Anonymous usage statistics</li>
-            <li>Browser type and version</li>
-            <li>Device type</li>
-            <li>General location (country/region)</li>
+            <li>{t('anonymousStats')}</li>
+            <li>{t('browserType')}</li>
+            <li>{t('deviceType')}</li>
+            <li>{t('location')}</li>
           </ul>
-          <p className="mt-4">
-            <strong>Note:</strong> We never collect file names, file contents, or any personal information from your documents.
-          </p>
+          <p className="mt-4"><strong>Note:</strong> {t('noPersonalData')}</p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">4. Cookies</h2>
-          <p>
-            We use minimal cookies for essential functionality and analytics. See our <a href="/cookies" className="text-primary hover:underline">Cookie Policy</a> for details.
-          </p>
+  <h2 className="text-2xl font-semibold mb-4">4. {t('cookies')}</h2>
+          <p>{t('cookiesDesc')} <Link href="/cookies" className="text-primary hover:underline">{t('seeCookiePolicy')}</Link></p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">5. Third-Party Services</h2>
-          <p className="mb-4">We may use the following third-party services:</p>
+          <h2 className="text-2xl font-semibold mb-4">5. {t('thirdParty')}</h2>
+          <p className="mb-4">{t('thirdPartyDesc')}</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Vercel Analytics:</strong> For anonymous usage statistics</li>
-            <li><strong>Google Fonts:</strong> For typography (loaded from Google's CDN)</li>
+            <li><strong>{t('vercelAnalytics')}</strong></li>
+            <li><strong>{t('googleFonts')}</strong></li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">6. Data Security</h2>
-          <p>
-            Since all processing happens in your browser, your files are as secure as your device. We recommend:
-          </p>
+          <h2 className="text-2xl font-semibold mb-4">6. {t('dataSecurity')}</h2>
+          <p>{t('securityDesc')}</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Using a secure, updated browser</li>
-            <li>Ensuring your device has up-to-date security software</li>
-            <li>Not using public computers for sensitive documents</li>
+            <li>{t('secureElement')}</li>
+            <li>{t('upToDate')}</li>
+            <li>{t('noPublic')}</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">7. Your Rights</h2>
-          <p>
-            Since we don't store your data, there's nothing to delete or modify. However, you can:
-          </p>
+          <h2 className="text-2xl font-semibold mb-4">7. {t('yourRights')}</h2>
+          <p>{t('rightsDesc')}</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Clear your browser cache and cookies at any time</li>
-            <li>Use private/incognito browsing mode</li>
-            <li>Disable analytics through browser extensions</li>
+            <li>{t('clearCache')}</li>
+            <li>{t('privateMode')}</li>
+            <li>{t('disableAnalytics')}</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">8. Children's Privacy</h2>
-          <p>
-            Our service is not directed to children under 13. We do not knowingly collect information from children.
-          </p>
+          <h2 className="text-2xl font-semibold mb-4">8. {t('children')}</h2>
+          <p>{t('childrenDesc')}</p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">9. Changes to This Policy</h2>
-          <p>
-            We may update this Privacy Policy from time to time. The updated version will be indicated by the "Last updated" date at the top of this page.
-          </p>
+          <h2 className="text-2xl font-semibold mb-4">9. {t('changes')}</h2>
+          <p>{t('changesDesc')}</p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">10. Contact Us</h2>
+          <h2 className="text-2xl font-semibold mb-4">10. {t('contact')}</h2>
           <p>
-            If you have questions about this Privacy Policy, please contact us at:{' '}
+            {t('contactDesc')}{' '}
             <a href="mailto:edicuambe@gmail.com" className="text-primary hover:underline">
               edicuambe@gmail.com
             </a>
