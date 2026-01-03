@@ -36,6 +36,7 @@ export async function generateMetadata({
       default: `${tCommon('appName')} - ${t('heroDescription')}`,
       template: `%s | ${tCommon('appName')}`,
     },
+    metadataBase: new URL('https://pdf-master.app'),
     description: t('heroDescription'),
     keywords: ["pdf", "editor", "merge", "split", "compress", "convert", "free", "offline", "secure", "pdf tools"],
     authors: [{ name: `${tCommon('appName')} Team` }],
