@@ -56,14 +56,17 @@ export function PDFFooter() {
               <div>
                 <h3 className="font-semibold mb-4">{t('legalSection')}</h3>
                 <div className="flex flex-col gap-3">
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link href={`/${locale}/privacy`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {t('privacy')}
                   </Link>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link href={`/${locale}/terms`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {t('terms')}
                   </Link>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link href={`/${locale}/cookies`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {t('cookies')}
+                  </Link>
+                  <Link href={`/${locale}/contact`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {t('contact')}
                   </Link>
                 </div>
               </div>
