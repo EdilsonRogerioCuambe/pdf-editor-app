@@ -114,6 +114,10 @@ function extractUsedKeysFromContent(content: string, filePath: string): Set<stri
           const namespaces = varToNamespaces.get(varName)!;
           namespaces.forEach(ns => {
               if (ns) {
+                // Ignore dynamic namespaces
+                if (ns.includes('${')) {
+                  return;
+                }
                 usedKeys.add(`${ns}.${key}`);
               } else {
                 usedKeys.add(key);
