@@ -76,6 +76,7 @@ export async function generateMetadata({
         'max-snippet': -1,
       },
     },
+
     alternates: {
       canonical: `${baseUrl}/${locale}`,
       languages: {
@@ -109,7 +110,7 @@ export async function generateMetadata({
       creator: '@pdfmaster',
     },
     verification: {
-      google: 'google3462bb9e5384e530',
+      google: '8b8SjCVAGyjY3SDNkAD4E6GvKpfJsTF6ULjf8W8oX_M',
       other: {
         'msvalidate.01': 'C4520CB409BDDABF509D7E41ADE3DFA9',
       },

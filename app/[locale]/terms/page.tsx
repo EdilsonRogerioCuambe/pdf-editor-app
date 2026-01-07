@@ -1,6 +1,14 @@
-"use client"
+import { useTranslations } from "next-intl";
+import { getTranslations } from 'next-intl/server';
 
-import { useTranslations } from "next-intl"
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+  const t = await getTranslations({locale: params.locale, namespace: 'legal.terms'});
+  return {
+    title: `${t('title')} | PDF Master`,
+    description: t('acceptanceDesc')
+  };
+}
 
 export default function TermsPage() {
   const t = useTranslations('legal.terms')

@@ -1,7 +1,15 @@
-"use client"
+import { Github, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getTranslations } from 'next-intl/server';
 
-import { Github, Mail } from "lucide-react"
-import { useTranslations } from "next-intl"
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+  const t = await getTranslations({locale: params.locale, namespace: 'legal.contact'});
+  return {
+    title: `${t('title')} | PDF Master`,
+    description: t('subtitle')
+  };
+}
 
 export default function ContactPage() {
   const t = useTranslations('legal.contact')

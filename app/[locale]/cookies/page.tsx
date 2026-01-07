@@ -1,7 +1,15 @@
-"use client"
+import { useTranslations } from "next-intl";
+import { getTranslations } from 'next-intl/server';
+import Link from "next/link";
 
-import { useTranslations } from "next-intl"
-import Link from "next/link"
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+  const t = await getTranslations({locale: params.locale, namespace: 'legal.cookies'});
+  return {
+    title: `${t('title')} | PDF Master`,
+    description: t('whatDesc')
+  };
+}
 
 export default function CookiesPage() {
   const t = useTranslations('legal.cookies')
