@@ -26,6 +26,11 @@
     "addFiles": "Adicionar Arquivos",
     "merging": "Unindo...",
     "fileTooLarge": "Arquivo muito grande. Tamanho máximo: {size}",
+    "notFound": {
+      "title": "Página Não Encontrada",
+      "description": "Ops! A página que você está procurando não existe. Ela pode ter sido movida ou excluída.",
+      "backHome": "Voltar ao Início"
+    },
     "dropZone": {
       "dragText": "Arraste e solte arquivos aqui",
       "dropText": "Solte seus arquivos aqui",

@@ -26,6 +26,11 @@
     "addFiles": "Add Files",
     "merging": "Merging...",
     "fileTooLarge": "File too large. Maximum size: {size}",
+    "notFound": {
+      "title": "Page Not Found",
+      "description": "Oops! The page you are looking for does not exist. It might have been moved or deleted.",
+      "backHome": "Back to Home"
+    },
     "dropZone": {
       "dragText": "Drag & drop files here",
       "dropText": "Drop your files here",

@@ -25,6 +25,11 @@
     "startOver": "Reiniciar",
     "merging": "Uniendo...",
     "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {size}",
+    "notFound": {
+      "title": "Página No Encontrada",
+      "description": "¡Vaya! La página que buscas no existe. Es posible que se haya movido o eliminado.",
+      "backHome": "Volver al Inicio"
+    },
     "dropZone": {
       "dragText": "Arrastra y suelta archivos aquí",
       "dropText": "Suelta tus archivos aquí",
