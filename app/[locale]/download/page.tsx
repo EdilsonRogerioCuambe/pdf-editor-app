@@ -43,7 +43,11 @@ export default function DownloadPage() {
 
             <div className="flex flex-col gap-4 min-[400px]:flex-row pt-4">
               <Button size="lg" className="h-12 px-8 text-lg gap-2 shadow-lg shadow-primary/20" asChild>
-                <a href="/PDF-Master-Setup.exe" download>
+                <a
+                  href="https://github.com/EdilsonRogerioCuambe/pdf-editor-app/releases/download/v0.1.0/PDF%20Master%20Setup%200.1.0.exe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Download className="h-5 w-5" />
                   {t('button')}
                 </a>
