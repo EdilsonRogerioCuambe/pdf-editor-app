@@ -40,9 +40,7 @@
     "noSignup": "Sem Cadastro",
     "tagline": "Tudo o que você precisa para",
     "taglineHighlight": "seus PDFs",
-    "slogan": "Edite, converta e assine PDFs em segundos. Sem cadastro, sem pagamentos, sem marcas d'água. Totalmente gratuito e ilimitado para todos.",
-    "toggleMenu": "Alternar menu",
-    "toggleDarkMode": "Alternar modo escuro"
+    "slogan": "Edite, converta e assine PDFs em segundos. Sem cadastro, sem pagamentos, sem marcas d'água. Totalmente gratuito e ilimitado para todos."
   },
   "nav": {
     "tools": "Ferramentas",
@@ -136,29 +134,29 @@
       "tabType": "Digitar",
       "tabUpload": "Carregar",
       "delete": "Excluir",
-      "type": {
-        "text": "Texto",
-        "fontFamily": "Fonte",
-        "color": "Cor",
-        "placeholder": "Digite sua assinatura...",
-        "create": "Criar Assinatura"
-      },
-      "upload": {
-        "clickToUpload": "Clique para Enviar Imagem",
-        "preview": "Prévia",
-        "removeBackground": "Remover Fundo",
-        "threshold": "Limiar",
-        "useSignature": "Usar esta Assinatura",
-        "dragDrop": "ou Arraste e Solte (Formato: PNG, JPG)",
-        "useDifferent": "Usar outra imagem"
-      },
-      "draw": {
-        "size": "Tamanho",
-        "signHere": "Assine Aqui",
-        "create": "Criar Assinatura",
-        "undo": "Desfazer",
-        "clear": "Limpar"
-      }
+    "type": {
+      "text": "Texto",
+      "fontFamily": "Fonte",
+      "color": "Cor",
+      "placeholder": "Digite sua assinatura...",
+      "create": "Criar Assinatura"
+    },
+    "upload": {
+      "clickToUpload": "Clique para Enviar Imagem",
+      "preview": "Prévia",
+      "removeBackground": "Remover Fundo",
+      "threshold": "Limiar",
+      "useSignature": "Usar esta Assinatura",
+      "dragDrop": "ou Arraste e Solte (Formato: PNG, JPG)",
+      "useDifferent": "Usar outra imagem"
+    },
+    "draw": {
+      "size": "Tamanho",
+      "signHere": "Assine Aqui",
+      "create": "Criar Assinatura",
+      "undo": "Desfazer",
+      "clear": "Limpar"
+    }
     },
     "annotate": {
       "name": "Anotar PDF",
@@ -422,8 +420,7 @@
       "selectText": "Selecione uma caixa de texto para editar propriedades",
       "font": "Fonte",
       "size": "Tamanho"
-    },
-    "name": "Anotar PDF"
+    }
   },
   "sign": {
     "title": "Assinar PDF",
@@ -446,9 +443,7 @@
     "tabUpload": "Carregar",
     "delete": "Excluir",
     "position": "Posição",
-    "saveError": "Falha ao salvar PDF",
-    "name": "Assinar PDF",
-    "description": "Assine digitalmente seus documentos PDF."
+    "saveError": "Falha ao salvar PDF"
   },
   "page-numbers": {
     "title": "Adicionar Números de Página",
@@ -470,9 +465,7 @@
       "pageN": "Página 1, Página 2...",
       "nOfTotal": "1 de 5, 2 de 5...",
       "pageNOfTotal": "Página 1 de 5..."
-    },
-    "name": "Números de Página",
-    "description": "Adicione numeração às páginas do seu PDF."
+    }
   },
   "messages": {
     "success": "Sucesso!",
@@ -621,9 +614,7 @@
     "cannotDeleteAll": "Não é possível excluir todas as páginas. Pelo menos uma página deve permanecer.",
     "deleted": "EXCLUÍDA",
     "restorePage": "Restaurar Página",
-    "deletePage": "Excluir Página",
-    "processing": "Processando...",
-    "saveError": "Falha ao salvar PDF"
+    "deletePage": "Excluir Página"
   },
   "reorder": {
     "title": "Reordenar Páginas",
@@ -640,9 +631,7 @@
     "moveBack": "Mover para Trás",
     "moveForward": "Mover para Frente",
     "moveToStart": "Mover para o Início",
-    "moveToEnd": "Mover para o Fim",
-    "page": "Página {index}",
-    "saveError": "Falha ao salvar PDF"
+    "moveToEnd": "Mover para o Fim"
   },
   "sidebar": {
     "collapse": "Recolher",
@@ -885,95 +874,5 @@
       "businessDesc": "Embora o PDF Master esteja disponível 24/7, as consultas de suporte geralmente são respondidas dentro de 1-2 dias úteis.",
       "personalProject": "Observação: Este é um projeto pessoal mantido no meu tempo livre, então os tempos de resposta podem variar."
     }
-  },
-  "protect": {
-    "name": "Proteger PDF",
-    "description": "Adicione senha e criptografe seus arquivos PDF importantes.",
-    "addUserPassword": "Adicionar senha de usuário (recomendado)",
-    "allowAnnotations": "Permitir anotações",
-    "allowAssembly": "Permitir montagem do documento",
-    "allowCopying": "Permitir cópia de conteúdo",
-    "allowForms": "Permitir preenchimento de formulários",
-    "allowModifying": "Permitir modificação",
-    "allowScreenReaders": "Permitir leitores de tela",
-    "cancel": "Cancelar",
-    "confirmOwnerPassword": "Confirmar Senha de Proprietário",
-    "confirmPassword": "Confirmar Senha",
-    "encryption40bit": "RC4 de 40 bits",
-    "encryption40bitDesc": "(legado, fraco)",
-    "encryption128rc4": "RC4 de 128 bits",
-    "encryption128rc4Desc": "(padrão)",
-    "encryption128aes": "AES de 128 bits",
-    "encryption128aesDesc": "(recomendado) ✓",
-    "encryption256aes": "AES de 256 bits",
-    "encryption256aesDesc": "(mais forte)",
-    "encryptionInfo": "Criptografia mais forte oferece melhor segurança, mas pode ter problemas de compatibilidade com leitores de PDF antigos",
-    "encryptionLevel": "Nível de Criptografia",
-    "encryptionSettings": "Configurações de Criptografia",
-    "enterOwnerPassword": "Digite a senha de proprietário",
-    "enterPassword": "Digite a senha",
-    "errors": {
-      "noFile": "Nenhum arquivo fornecido",
-      "noPassword": "Por favor, defina pelo menos uma senha",
-      "passwordMismatch": "As senhas não coincidem",
-      "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
-      "passwordsSame": "A senha de proprietário deve ser diferente da senha de usuário"
-    },
-    "fileInfo": "Informações do Arquivo",
-    "notProtected": "Não Protegido",
-    "ownerPassword": "Senha de Proprietário (Permissões)",
-    "ownerPasswordDesc": "Controle restrições e permissões do documento",
-    "ownerPasswordWarning": "A senha de proprietário deve ser diferente da senha de usuário",
-    "password": "Senha",
-    "passwordStrength": {
-      "weak": "Fraca",
-      "fair": "Razoável",
-      "good": "Boa",
-      "strong": "Forte"
-    },
-    "permissions": "Permissões do Documento",
-    "printing": "Impressão",
-    "printingHigh": "Alta Resolução (qualidade total)",
-    "printingLow": "Baixa Resolução (150 DPI)",
-    "printingNone": "Nenhuma (sem impressão)",
-    "processing": "Processando...",
-    "protectPdf": "Proteger PDF",
-    "quickPresets": "Predefinições Rápidas",
-    "setOwnerPassword": "Definir senha de proprietário",
-    "subtitle": "Proteja seu PDF com criptografia e permissões",
-    "title": "Proteger PDF com Senha",
-    "toasts": {
-      "error": "Falha ao proteger PDF",
-      "errorDesc": "Ocorreu um erro ao proteger o PDF",
-      "success": "PDF protegido com sucesso!",
-      "successDesc": "Seu PDF criptografado foi baixado."
-    },
-    "userPassword": "Senha de Usuário (Senha de Abertura)",
-    "userPasswordDesc": "Necessária para abrir o documento PDF"
-  },
-  "unlock": {
-    "name": "Desbloquear PDF",
-    "description": "Remova a senha e proteção de arquivos PDF.",
-    "change": "Alterar",
-    "enterPasswordPlaceholder": "Digite a senha para desbloquear",
-    "enterPdfPassword": "Digite a Senha do PDF",
-    "features": {
-      "removePassword": "Remover Senha",
-      "removePasswordDesc": "Remover senha de abertura",
-      "removeRestrictions": "Remover Restrições",
-      "removeRestrictionsDesc": "Habilitar impressão e edição",
-      "secureHandling": "Processamento Seguro",
-      "secureHandlingDesc": "Arquivos processados localmente"
-    },
-    "passwordNote": "Nota: Você deve fornecer a senha correta para desbloquear o documento. Não podemos quebrar senhas desconhecidas.",
-    "subtitle": "Remova a proteção por senha e restrições dos seus arquivos PDF",
-    "supportNote": "Suportamos a remoção de senhas de proprietário e usuário se você as conhecer.",
-    "title": "Desbloquear PDF",
-    "toasts": {
-      "error": "Falha ao desbloquear PDF. Verifique a senha.",
-      "success": "PDF desbloqueado com sucesso!"
-    },
-    "unlockPdf": "Desbloquear PDF",
-    "unlocking": "Desbloqueando..."
   }
 }

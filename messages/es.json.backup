@@ -31,8 +31,7 @@
       "chooseFile": "Elegir Archivo",
       "maxFiles": "Máx {maxFiles} archivos • Todo el procesamiento ocurre en el navegador",
       "selected": "Archivos Seleccionados ({count})"
-    },
-    "addFiles": "Agregar Archivos"
+    }
   },
   "header": {
     "free": "100% Gratis",
@@ -40,9 +39,7 @@
     "noSignup": "Sin Registro",
     "tagline": "Todo lo que necesitas para",
     "taglineHighlight": "tus PDFs",
-    "slogan": "Edita, convierte y firma PDFs en segundos. Sin registro, sin pagos, sin marcas de agua. Completamente gratis e ilimitado para todos.",
-    "toggleMenu": "Alternar menú",
-    "toggleDarkMode": "Alternar modo oscuro"
+    "slogan": "Edita, convierte y firma PDFs en segundos. Sin registro, sin pagos, sin marcas de agua. Completamente gratis e ilimitado para todos."
   },
   "nav": {
     "tools": "Herramientas",
@@ -347,6 +344,7 @@
     "contactTitle": "Contacto",
     "github": "Github"
   },
+
   "messages": {
     "success": "¡Éxito!",
     "error": "¡Error!",
@@ -435,8 +433,7 @@
       "medium": "Compresión Media",
       "mediumDesc": "Buen equilibrio (Recomendado)",
       "high": "Compresión Alta",
-      "highDesc": "Menor tamaño, menor calidad",
-      "recommended": "Recomendado"
+      "highDesc": "Menor tamaño, menor calidad"
     }
   },
   "rotate": {
@@ -549,10 +546,46 @@
   "protect": {
     "title": "Proteger PDF",
     "subtitle": "Asegure su PDF con cifrado y permisos",
-    "fileInfo": "Información del Archivo",
-    "userPassword": "Contraseña de Usuario (Abrir)",
-    "ownerPassword": "Contraseña de Propietario (Permisos)",
-    "permissions": "Permisos del Documento",
+    "fileInfo": {
+      "notProtected": "No Protegido",
+      "protected": "Protegido"
+    },
+    "userPassword": {
+      "title": "Contraseña de Usuario (Abrir)",
+      "description": "Requerida para abrir el documento PDF",
+      "enable": "Agregar contraseña de usuario (recomendado)",
+      "label": "Contraseña",
+      "confirm": "Confirmar Contraseña",
+      "placeholder": "Ingrese contraseña",
+      "confirmPlaceholder": "Confirme contraseña",
+      "mismatch": "Las contraseñas no coinciden",
+      "required": "La contraseña de usuario es obligatoria",
+      "minLength": "La contraseña debe tener al menos 8 caracteres"
+    },
+    "ownerPassword": {
+      "title": "Contraseña de Propietario (Permisos)",
+      "description": "Controle restricciones y permisos del documento",
+      "enable": "Establecer contraseña de propietario",
+      "label": "Contraseña de Propietario",
+      "confirm": "Confirmar Contraseña",
+      "placeholder": "Ingrese contraseña de propietario",
+      "confirmPlaceholder": "Confirme contraseña de propietario",
+      "sameAsUser": "La contraseña de propietario debe ser diferente a la de usuario"
+    },
+    "permissions": {
+      "title": "Permisos del Documento",
+      "quickPresets": "Preajustes",
+      "printing": "Impresión",
+      "copying": "Permitir copia de contenido",
+      "modifying": "Permitir modificación",
+      "assembly": "Permitir ensamblaje de documentos",
+      "forms": "Permitir llenado de formularios",
+      "annotations": "Permitir anotaciones",
+      "accessibility": "Permitir lectores de pantalla",
+      "printNone": "Ninguna (sin impresión)",
+      "printLow": "Baja Resolución (150 DPI)",
+      "printHigh": "Alta Resolución (calidad total)"
+    },
     "encryption": {
       "title": "Configuración de Cifrado",
       "legacy": "(legado, débil)",
@@ -567,64 +600,7 @@
       "processing": "Procesando..."
     },
     "success": "¡PDF protegido exitosamente!",
-    "error": "Error al proteger PDF",
-    "name": "Proteger PDF",
-    "description": "Añade contraseña y encripta tus archivos PDF importantes.",
-    "addUserPassword": "Agregar contraseña de usuario (recomendado)",
-    "allowAnnotations": "Permitir anotaciones",
-    "allowAssembly": "Permitir ensamblaje de documentos",
-    "allowCopying": "Permitir copia de contenido",
-    "allowForms": "Permitir llenado de formularios",
-    "allowModifying": "Permitir modificación",
-    "allowScreenReaders": "Permitir lectores de pantalla",
-    "cancel": "Cancelar",
-    "confirmOwnerPassword": "Confirmar Contraseña de Propietario",
-    "confirmPassword": "Confirmar Contraseña",
-    "encryption40bit": "RC4 de 40 bits",
-    "encryption40bitDesc": "(legado, débil)",
-    "encryption128rc4": "RC4 de 128 bits",
-    "encryption128rc4Desc": "(estándar)",
-    "encryption128aes": "AES de 128 bits",
-    "encryption128aesDesc": "(recomendado) ✓",
-    "encryption256aes": "AES de 256 bits",
-    "encryption256aesDesc": "(más fuerte)",
-    "encryptionInfo": "Un cifrado más alto ofrece mejor seguridad pero puede tener problemas de compatibilidad con lectores PDF antiguos",
-    "encryptionLevel": "Nivel de Cifrado",
-    "encryptionSettings": "Configuración de Cifrado",
-    "enterOwnerPassword": "Ingrese contraseña de propietario",
-    "enterPassword": "Ingrese contraseña",
-    "errors": {
-      "noFile": "No se proporcionó archivo",
-      "noPassword": "Por favor establezca al menos una contraseña",
-      "passwordMismatch": "Las contraseñas no coinciden",
-      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
-      "passwordsSame": "La contraseña de propietario debe ser diferente a la de usuario"
-    },
-    "notProtected": "No Protegido",
-    "ownerPasswordDesc": "Controle restricciones y permisos del documento",
-    "ownerPasswordWarning": "La contraseña de propietario debe ser diferente a la de usuario",
-    "password": "Contraseña",
-    "passwordStrength": {
-      "weak": "Débil",
-      "fair": "Aceptable",
-      "good": "Buena",
-      "strong": "Fuerte"
-    },
-    "printing": "Impresión",
-    "printingHigh": "Alta Resolución (calidad total)",
-    "printingLow": "Baja Resolución (150 DPI)",
-    "printingNone": "Ninguna (sin impresión)",
-    "processing": "Procesando...",
-    "protectPdf": "Proteger PDF",
-    "quickPresets": "Preajustes Rápidos",
-    "setOwnerPassword": "Establecer contraseña de propietario",
-    "toasts": {
-      "error": "Error al proteger PDF",
-      "errorDesc": "Ocurrió un error al proteger el PDF",
-      "success": "¡PDF protegido exitosamente!",
-      "successDesc": "Su PDF cifrado ha sido descargado."
-    },
-    "userPasswordDesc": "Requerida para abrir el documento PDF"
+    "error": "Error al proteger PDF"
   },
   "unlock": {
     "title": "Desbloquear PDF",
@@ -646,20 +622,7 @@
       "removePasswordDesc": "Quitar contraseña de apertura",
       "removeRestrictionsDesc": "Habilitar impresión y edición",
       "secureHandlingDesc": "Archivos procesados localmente"
-    },
-    "name": "Desbloquear PDF",
-    "description": "Elimina la contraseña y protección de archivos PDF.",
-    "change": "Cambiar",
-    "enterPasswordPlaceholder": "Ingrese la contraseña para desbloquear",
-    "enterPdfPassword": "Ingrese la Contraseña del PDF",
-    "passwordNote": "Nota: Debe proporcionar la contraseña correcta para desbloquear el documento. No podemos descifrar contraseñas desconocidas.",
-    "supportNote": "Admitimos la eliminación de contraseñas de propietario y usuario si las conoce.",
-    "toasts": {
-      "error": "Error al desbloquear PDF. Verifique la contraseña.",
-      "success": "¡PDF desbloqueado exitosamente!"
-    },
-    "unlockPdf": "Desbloquear PDF",
-    "unlocking": "Desbloqueando..."
+    }
   },
   "imageToPdf": {
     "title": "Imagen a PDF",
@@ -715,61 +678,62 @@
     "delete": "Eliminar"
   },
   "annotate": {
-    "name": "Anotar PDF",
-    "description": "Agrega notas, resaltados y dibujos a tu PDF.",
-    "title": "Anotar PDF",
-    "subtitle": "Agrega resaltados, dibujos, formas, texto y notas a tus archivos PDF",
-    "highlight": "Resaltar",
-    "highlightDesc": "Marca texto importante con colores",
-    "draw": "Dibujar",
-    "drawDesc": "Dibujo libre y bocetos",
-    "shapes": "Formas",
-    "shapesDesc": "Agrega rectángulos, círculos, flechas",
-    "notes": "Notas",
-    "notesDesc": "Notas adhesivas y comentarios",
-    "color": "Color:",
-    "opacity": "Opacidad:",
-    "thickness": "Grosor:",
-    "shape": "Forma:",
-    "border": "Borde:",
-    "width": "Ancho:",
-    "fill": "Relleno:",
-    "fillOpacity": "Opacidad Relleno:",
-    "savePdf": "Guardar PDF",
-    "saving": "Guardando...",
-    "tools": {
-      "cursor": "Cursor (V)",
-      "hand": "Mano (P)",
-      "highlight": "Resaltar (H)",
-      "draw": "Dibujar (D)",
-      "shapes": "Formas (S)",
-      "text": "Texto (T)",
-      "note": "Nota Adhesiva (N)",
-      "undo": "Deshacer (Ctrl+Z)",
-      "redo": "Rehacer (Ctrl+Y)"
+      "name": "Anotar PDF",
+      "description": "Agrega notas, resaltados y dibujos a tu PDF.",
+      "title": "Anotar PDF",
+      "subtitle": "Agrega resaltados, dibujos, formas, texto y notas a tus archivos PDF",
+      "highlight": "Resaltar",
+      "highlightDesc": "Marca texto importante con colores",
+      "draw": "Dibujar",
+      "drawDesc": "Dibujo libre y bocetos",
+      "shapes": "Formas",
+      "shapesDesc": "Agrega rectángulos, círculos, flechas",
+      "notes": "Notas",
+      "notesDesc": "Notas adhesivas y comentarios",
+      "color": "Color:",
+      "opacity": "Opacidad:",
+      "thickness": "Grosor:",
+      "shape": "Forma:",
+      "border": "Borde:",
+      "width": "Ancho:",
+      "fill": "Relleno:",
+      "fillOpacity": "Opacidad Relleno:",
+      "savePdf": "Guardar PDF",
+      "saving": "Guardando...",
+      "tools": {
+        "cursor": "Cursor (V)",
+        "hand": "Mano (P)",
+        "highlight": "Resaltar (H)",
+        "draw": "Dibujar (D)",
+        "shapes": "Formas (S)",
+        "text": "Texto (T)",
+        "note": "Nota Adhesiva (N)",
+        "undo": "Deshacer (Ctrl+Z)",
+        "redo": "Rehacer (Ctrl+Y)"
+      },
+      "shapesOptions": {
+        "rectangle": "Rectángulo",
+        "circle": "Círculo",
+        "triangle": "Triángulo",
+        "line": "Línea",
+        "arrow": "Flecha"
+      },
+      "toasts": {
+        "loaded": "PDF cargado: {count} páginas",
+        "loadError": "Error al cargar PDF. Inténtalo de nuevo.",
+        "added": "Anotación agregada",
+        "deleted": "Anotación eliminada",
+        "saving": "Guardando anotaciones en PDF...",
+        "saved": "¡PDF anotado guardado con éxito!",
+        "saveError": "Error al guardar PDF. Inténtalo de nuevo."
+      },
+      "textToolbar": {
+        "selectText": "Selecciona un cuadro de texto para editar propiedades",
+        "font": "Fuente",
+        "size": "Tamaño"
+      }
     },
-    "shapesOptions": {
-      "rectangle": "Rectángulo",
-      "circle": "Círculo",
-      "triangle": "Triángulo",
-      "line": "Línea",
-      "arrow": "Flecha"
-    },
-    "toasts": {
-      "loaded": "PDF cargado: {count} páginas",
-      "loadError": "Error al cargar PDF. Inténtalo de nuevo.",
-      "added": "Anotación agregada",
-      "deleted": "Anotación eliminada",
-      "saving": "Guardando anotaciones en PDF...",
-      "saved": "¡PDF anotado guardado con éxito!",
-      "saveError": "Error al guardar PDF. Inténtalo de nuevo."
-    },
-    "textToolbar": {
-      "selectText": "Selecciona un cuadro de texto para editar propiedades",
-      "font": "Fuente",
-      "size": "Tamaño"
-    }
-  },
+
   "watermark": {
     "title": "Añadir Marca de Agua",
     "description": "Estampe texto o imágenes sobre sus documentos PDF.",

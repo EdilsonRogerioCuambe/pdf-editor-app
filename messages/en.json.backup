@@ -40,9 +40,7 @@
     "noSignup": "No Signup",
     "tagline": "Everything you need for",
     "taglineHighlight": "your PDFs",
-    "slogan": "Edit, convert and sign PDFs in seconds. No signup, no payment, no watermarks. Completely free and unlimited for everyone.",
-    "toggleMenu": "Toggle menu",
-    "toggleDarkMode": "Toggle dark mode"
+    "slogan": "Edit, convert and sign PDFs in seconds. No signup, no payment, no watermarks. Completely free and unlimited for everyone."
   },
   "nav": {
     "tools": "Tools",
