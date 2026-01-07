@@ -1,8 +1,9 @@
 import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Menu, Moon, Shield, Sun } from "lucide-react"
+import { Download, Menu, Moon, Shield, Sun } from "lucide-react"
 import { useTranslations } from "next-intl"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 
 interface PDFHeaderProps {
@@ -44,6 +45,13 @@ export function PDFHeader({ sidebarCollapsed, onMobileMenuToggle }: PDFHeaderPro
       </div>
 
       <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" className="hidden sm:flex gap-2" asChild>
+          <Link href="/download">
+            <Download className="h-4 w-4" />
+            <span className="hidden md:inline">{t('downloadApp')}</span>
+          </Link>
+        </Button>
+
         <LanguageSelector />
         <Button
           variant="ghost"

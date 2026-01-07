@@ -4,6 +4,7 @@
     "loading": "Loading...",
     "processing": "Processing...",
     "download": "Download",
+    "downloadApp": "Download App",
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
@@ -48,7 +49,8 @@
     "taglineHighlight": "your PDFs",
     "slogan": "Edit, convert and sign PDFs in seconds. No signup, no payment, no watermarks. Completely free and unlimited for everyone.",
     "toggleMenu": "Toggle menu",
-    "toggleDarkMode": "Toggle dark mode"
+    "toggleDarkMode": "Toggle dark mode",
+    "downloadApp": "Download App"
   },
   "nav": {
     "tools": "Tools",
@@ -320,6 +322,26 @@
     "mergeSuccessDesc": "Your {{count}} PDF files have been combined into one document. The download has started automatically.",
     "downloadAgain": "Download Again",
     "mergeMore": "Merge More Files"
+  },
+  "download": {
+    "title": "Download PDF Master for Desktop",
+    "subtitle": "Get the full power of PDF Master on your Windows PC. Work offline, process files faster, and enjoy a seamless experience.",
+    "button": "Download for Windows",
+    "security": {
+      "verified": "Verified Safe",
+      "noVirus": "Virus Free",
+      "secure": "Secure Download"
+    },
+    "features": {
+      "offline": "Work Offline",
+      "offlineDesc": "No internet connection required",
+      "unlimited": "Unlimited Access",
+      "unlimitedDesc": "No file size or daily limits",
+      "faster": "Faster Processing",
+      "fasterDesc": "Native performance on your device",
+      "privacy": "100% Private",
+      "privacyDesc": "Your files never leave your computer"
+    }
   },
   "split": {
     "modeSelected": "Extract Selected",

@@ -4,6 +4,7 @@
     "loading": "Cargando...",
     "processing": "Procesando...",
     "download": "Descargar",
+    "downloadApp": "Descargar App",
     "cancel": "Cancelar",
     "save": "Guardar",
     "delete": "Eliminar",
@@ -48,7 +49,8 @@
     "taglineHighlight": "tus PDFs",
     "slogan": "Edita, convierte y firma PDFs en segundos. Sin registro, sin pagos, sin marcas de agua. Completamente gratis e ilimitado para todos.",
     "toggleMenu": "Alternar menú",
-    "toggleDarkMode": "Alternar modo oscuro"
+    "toggleDarkMode": "Alternar modo oscuro",
+    "downloadApp": "Descargar App"
   },
   "nav": {
     "tools": "Herramientas",
@@ -317,6 +319,26 @@
     "mergeSuccessDesc": "Sus {{count}} archivos PDF se han combinado en un solo documento. La descarga ha comenzado automáticamente.",
     "downloadAgain": "Descargar Nuevamente",
     "mergeMore": "Unir Más Archivos"
+  },
+  "download": {
+    "title": "Descargar PDF Master para Escritorio",
+    "subtitle": "Obtén todo el poder de PDF Master en tu PC con Windows. Trabaja sin conexión, procesa archivos más rápido y disfruta de una experiencia fluida.",
+    "button": "Descargar para Windows",
+    "security": {
+      "verified": "Verificado Seguro",
+      "noVirus": "Sin Virus",
+      "secure": "Descarga Segura"
+    },
+    "features": {
+      "offline": "Trabaja Sin Conexión",
+      "offlineDesc": "No se requiere conexión a internet",
+      "unlimited": "Acceso Ilimitado",
+      "unlimitedDesc": "Sin límites de tamaño de archivo o diarios",
+      "faster": "Procesamiento Más Rápido",
+      "fasterDesc": "Rendimiento nativo en tu dispositivo",
+      "privacy": "100% Privado",
+      "privacyDesc": "Tus archivos nunca salen de tu computadora"
+    }
   },
   "split": {
     "modeSelected": "Extraer Seleccionados",

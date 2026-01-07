@@ -4,6 +4,7 @@
     "loading": "Carregando...",
     "processing": "Processando...",
     "download": "Baixar",
+    "downloadApp": "Baixar App",
     "cancel": "Cancelar",
     "save": "Salvar",
     "delete": "Excluir",
@@ -48,7 +49,8 @@
     "taglineHighlight": "seus PDFs",
     "slogan": "Edite, converta e assine PDFs em segundos. Sem cadastro, sem pagamentos, sem marcas d'água. Totalmente gratuito e ilimitado para todos.",
     "toggleMenu": "Alternar menu",
-    "toggleDarkMode": "Alternar modo escuro"
+    "toggleDarkMode": "Alternar modo escuro",
+    "downloadApp": "Baixar App"
   },
   "nav": {
     "tools": "Ferramentas",
@@ -445,6 +447,26 @@
     "mergeSuccessDesc": "Seus {{count}} arquivos PDF foram combinados em um único documento. O download começou automaticamente.",
     "downloadAgain": "Baixar Novamente",
     "mergeMore": "Unir Mais Arquivos"
+  },
+  "download": {
+    "title": "Baixar PDF Master para Desktop",
+    "subtitle": "Tenha todo o poder do PDF Master no seu PC Windows. Trabalhe offline, processe arquivos mais rápido e aproveite uma experiência perfeita.",
+    "button": "Baixar para Windows",
+    "security": {
+      "verified": "Verificado Seguro",
+      "noVirus": "Livre de Vírus",
+      "secure": "Download Seguro"
+    },
+    "features": {
+      "offline": "Trabalhe Offline",
+      "offlineDesc": "Não requer conexão com internet",
+      "unlimited": "Acesso Ilimitado",
+      "unlimitedDesc": "Sem limites de tamanho ou diários",
+      "faster": "Processamento Rápido",
+      "fasterDesc": "Desempenho nativo no seu dispositivo",
+      "privacy": "100% Privado",
+      "privacyDesc": "Seus arquivos nunca saem do seu computador"
+    }
   },
   "split": {
     "modeSelected": "Extrair Selecionados",

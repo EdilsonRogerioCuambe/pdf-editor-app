@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { getPDFTools } from "@/lib/pdf-tools"
 import { cn } from "@/lib/utils"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, Download, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
@@ -115,6 +115,22 @@ export function PDFSidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileCl
               })}
             </div>
           </nav>
+
+          <div className="border-t border-sidebar-border px-2 py-2">
+            <Link
+              href="/download"
+              onClick={onMobileClose}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                pathname === "/download" && "bg-sidebar-accent text-sidebar-accent-foreground"
+              )}
+            >
+              <Download className="h-5 w-5 shrink-0" />
+              {(!collapsed || mobileOpen) && (
+                <span className="truncate">{tCommon('downloadApp') || "Download App"}</span>
+              )}
+            </Link>
+          </div>
 
           {/* Collapse Toggle (Desktop Only) */}
           <div className="hidden border-t border-sidebar-border p-2 lg:block">

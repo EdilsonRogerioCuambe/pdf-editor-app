@@ -3,7 +3,7 @@
 import { LanguageSelector } from "@/components/language-selector"
 import { Button } from "@/components/ui/button"
 import { getPDFTools } from "@/lib/pdf-tools"
-import { ArrowRight, Check, FileText, Github, Globe, Mail, Menu, Phone, Shield, X, Zap } from "lucide-react"
+import { ArrowRight, Check, Download, FileText, Github, Globe, Mail, Menu, Phone, Shield, X, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
@@ -138,6 +138,12 @@ export function LandingPage() {
             <Link href="#tools">
                <Button size="lg" variant="outline" className="h-12 rounded-xl border-zinc-700 bg-black/50 px-8 text-base font-semibold text-white transition-all hover:bg-zinc-800">
                 {tNav('viewTools')}
+              </Button>
+            </Link>
+            <Link href={`/${locale}/download`}>
+               <Button size="lg" className="h-12 rounded-xl bg-white px-8 text-base font-semibold text-black transition-all hover:bg-zinc-200 hover:scale-105 shadow-lg shadow-white/10">
+                <Download className="mr-2 h-4 w-4" />
+                {tCommon('downloadApp') || "Download App"}
               </Button>
             </Link>
           </div>
