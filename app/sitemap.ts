@@ -1,7 +1,7 @@
 import { ToolId } from '@/lib/pdf-tools'
 import { MetadataRoute } from 'next'
 
-const baseUrl = 'https://pdfmaster.com' // Substitua pelo seu domínio real
+const baseUrl = 'https://pdfacil.site'
 
 const locales = ['en', 'pt-BR', 'es']
 
