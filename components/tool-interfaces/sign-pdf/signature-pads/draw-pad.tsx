@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Trash2 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface SignatureDrawPadProps {
@@ -209,6 +210,8 @@ export function SignatureDrawPad({ onSave, onCancel }: SignatureDrawPadProps) {
     }
   };
 
+  const t = useTranslations('sign.draw');
+
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex-1 border rounded-lg bg-white relative overflow-hidden touch-none">
@@ -226,7 +229,7 @@ export function SignatureDrawPad({ onSave, onCancel }: SignatureDrawPadProps) {
         />
         {strokes.length === 0 && !isDrawing && (
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-300">
-                Sign Here
+                {t('signHere')}
              </div>
         )}
       </div>
@@ -251,7 +254,7 @@ export function SignatureDrawPad({ onSave, onCancel }: SignatureDrawPadProps) {
 
             {/* Size Slider */}
             <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500">Size</span>
+                <span className="text-xs text-gray-500">{t('size')}</span>
                 <input
                     type="range"
                     min="1" max="10"
@@ -264,13 +267,13 @@ export function SignatureDrawPad({ onSave, onCancel }: SignatureDrawPadProps) {
 
         <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={undo} disabled={strokes.length === 0}>
-                <RotateCcw className="w-4 h-4 mr-1" /> Undo
+                <RotateCcw className="w-4 h-4 mr-1" /> {t('undo')}
             </Button>
             <Button variant="destructive" size="sm" onClick={clear}>
-                <Trash2 className="w-4 h-4 mr-1" /> Clear
+                <Trash2 className="w-4 h-4 mr-1" /> {t('clear')}
             </Button>
             <Button onClick={saveSignature} disabled={strokes.length === 0}>
-                Create Signature
+                {t('create')}
             </Button>
         </div>
       </div>

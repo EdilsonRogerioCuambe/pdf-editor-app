@@ -17,7 +17,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: {
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
@@ -31,66 +31,115 @@ export async function generateMetadata({
     'es': 'es_ES'
   }
 
+  const baseUrl = 'https://pdfmaster.com' // Substitua pelo seu domínio real
+  const title = `${tCommon('appName')} - Free Online PDF Editor & Converter`
+  const description = t('heroDescription')
+
   return {
     title: {
-      default: `${tCommon('appName')} - ${t('heroDescription')}`,
+      default: title,
       template: `%s | ${tCommon('appName')}`,
     },
-    metadataBase: new URL('https://pdf-master.app'),
-    description: t('heroDescription'),
-    keywords: ["pdf", "editor", "merge", "split", "compress", "convert", "free", "offline", "secure", "pdf tools"],
-    authors: [{ name: `${tCommon('appName')} Team` }],
-    creator: tCommon('appName'),
-    openGraph: {
-      type: "website",
-      locale: localeMap[locale] || 'en_US',
-      url: "https://pdf-master.app",
-      siteName: tCommon('appName'),
-      title: `${tCommon('appName')} - ${t('heroDescription')}`,
-      description: t('heroDescription'),
-      images: [
-        {
-          url: "/og-image.png",
-          width: 1200,
-          height: 630,
-          alt: `${tCommon('appName')} Preview`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${tCommon('appName')} - ${t('heroDescription')}`,
-      description: t('heroDescription'),
-      images: ["/og-image.png"],
-      creator: "@pdfmaster",
-    },
-    icons: {
-      icon: [
-        {
-          url: "/icon-light-32x32.png",
-          media: "(prefers-color-scheme: light)",
-        },
-        {
-          url: "/icon-dark-32x32.png",
-          media: "(prefers-color-scheme: dark)",
-        },
-        {
-          url: "/icon.svg",
-          type: "image/svg+xml",
-        },
-      ],
-      apple: "/apple-icon.png",
-    },
+    metadataBase: new URL(baseUrl),
+    description,
+    keywords: [
+      'PDF editor',
+      'PDF converter',
+      'merge PDF',
+      'split PDF',
+      'compress PDF',
+      'sign PDF',
+      'annotate PDF',
+      'free PDF tools',
+      'online PDF editor',
+      'PDF watermark',
+      'rotate PDF',
+      'PDF to image',
+      'image to PDF',
+      'protect PDF',
+      'unlock PDF',
+      'editor de PDF',
+      'conversor de PDF',
+      'ferramentas PDF grátis',
+    ],
+    authors: [{ name: 'Edilson Rogério Cuambe', url: 'https://github.com/EdilsonRogerioCuambe' }],
+    creator: 'Edilson Rogério Cuambe',
+    publisher: tCommon('appName'),
     robots: {
       index: true,
       follow: true,
       googleBot: {
         index: true,
         follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
+    },
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+      languages: {
+        'en': `${baseUrl}/en`,
+        'pt-BR': `${baseUrl}/pt-BR`,
+        'es': `${baseUrl}/es`,
+      },
+    },
+    openGraph: {
+      type: 'website',
+      locale: localeMap[locale] || 'en_US',
+      alternateLocale: Object.keys(localeMap).filter(l => l !== locale).map(l => localeMap[l]),
+      url: `${baseUrl}/${locale}`,
+      title,
+      description,
+      siteName: tCommon('appName'),
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: `${tCommon('appName')} - Free Online PDF Editor`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/og-image.png'],
+      creator: '@pdfmaster',
+    },
+    verification: {
+      google: 'google3462bb9e5384e530',
+      other: {
+        'msvalidate.01': 'C4520CB409BDDABF509D7E41ADE3DFA9',
+      },
+    },
+    category: 'technology',
+    applicationName: tCommon('appName'),
+    appleWebApp: {
+      capable: true,
+      title: tCommon('appName'),
+      statusBarStyle: 'black-translucent',
+    },
+    formatDetection: {
+      telephone: false,
+    },
+    icons: {
+      icon: [
+        {
+          url: '/icon-light-32x32.png',
+          media: '(prefers-color-scheme: light)',
+        },
+        {
+          url: '/icon-dark-32x32.png',
+          media: '(prefers-color-scheme: dark)',
+        },
+        {
+          url: '/icon.svg',
+          type: 'image/svg+xml',
+        },
+      ],
+      apple: '/apple-icon.png',
     },
   }
 }

@@ -1,40 +1,65 @@
-import { locales } from '@/i18n/request'
-import { pdfTools } from '@/lib/pdf-tools'
+import { ToolId } from '@/lib/pdf-tools'
 import { MetadataRoute } from 'next'
 
-const BASE_URL = 'https://pdf-master.app'
+const baseUrl = 'https://pdfmaster.com' // Substitua pelo seu domínio real
+
+const locales = ['en', 'pt-BR', 'es']
+
+const tools: ToolId[] = [
+  'merge',
+  'split',
+  'compress',
+  'rotate',
+  'delete',
+  'reorder',
+  'pdf-to-image',
+  'image-to-pdf',
+  'watermark',
+  'page-numbers',
+  'sign',
+  'annotate',
+  'protect',
+  'unlock',
+]
+
+const legalPages = ['privacy', 'terms', 'cookies', 'contact']
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const sitemapEntries: MetadataRoute.Sitemap = []
+  const routes: MetadataRoute.Sitemap = []
 
-  // Add root URL
-  sitemapEntries.push({
-    url: BASE_URL,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 1,
+  // Homepage para cada locale
+  locales.forEach((locale) => {
+    routes.push({
+      url: `${baseUrl}/${locale}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1.0,
+    })
   })
 
-  // Add locales and tools
+  // Páginas de ferramentas para cada locale
   locales.forEach((locale) => {
-    // Landing page for locale
-    sitemapEntries.push({
-      url: `${BASE_URL}/${locale}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    })
-
-    // Tools pages for locale
-    pdfTools.forEach((tool) => {
-      sitemapEntries.push({
-        url: `${BASE_URL}/${locale}/${tool.id}`,
+    tools.forEach((tool) => {
+      routes.push({
+        url: `${baseUrl}/${locale}/${tool}`,
         lastModified: new Date(),
-        changeFrequency: 'monthly',
-        priority: 0.8,
+        changeFrequency: 'weekly',
+        priority: 0.9,
       })
     })
   })
 
-  return sitemapEntries
+  // Páginas legais para cada locale
+  locales.forEach((locale) => {
+    legalPages.forEach((page) => {
+      routes.push({
+        url: `${baseUrl}/${locale}/${page}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.5,
+      })
+    })
+  })
+
+  return routes
 }

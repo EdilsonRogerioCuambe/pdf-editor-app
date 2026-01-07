@@ -86,7 +86,7 @@ export default function CookiesPage() {
           <h2 className="text-2xl font-semibold mb-4">8. {t('moreInfo')}</h2>
           <p>
             {t('seePrivacy')}{' '}
-            <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+            <Link href="/privacy" className="text-primary hover:underline">{t('privacyLink')}</Link>.
           </p>
           <p className="mt-4">
             {t('contactDesc')}{' '}

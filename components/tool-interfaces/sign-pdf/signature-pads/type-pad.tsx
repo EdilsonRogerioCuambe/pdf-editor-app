@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 interface SignatureTypePadProps {
@@ -115,15 +116,18 @@ export function SignatureTypePad({ onSave, onCancel }: SignatureTypePadProps) {
      }
   };
 
+
+  const t = useTranslations('sign.type');
+
   return (
     <div className="flex flex-col gap-6 w-full h-full p-2">
       <div className="flex flex-col gap-2">
-         <label className="text-sm font-medium">Text</label>
+         <label className="text-sm font-medium">{t('text')}</label>
          <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
             className="text-lg"
-            placeholder="Type your signature..."
+            placeholder={t('placeholder')}
          />
       </div>
 
@@ -133,7 +137,7 @@ export function SignatureTypePad({ onSave, onCancel }: SignatureTypePadProps) {
 
       <div className="grid grid-cols-2 gap-4">
          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">Font Family</label>
+            <label className="text-sm font-medium">{t('fontFamily')}</label>
             <div className="flex flex-wrap gap-2">
                 {FONTS.map(f => (
                     <button
@@ -150,7 +154,7 @@ export function SignatureTypePad({ onSave, onCancel }: SignatureTypePadProps) {
 
          <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Color</label>
+                <label className="text-sm font-medium">{t('color')}</label>
                 <div className="flex gap-2">
                     {['#000000', '#0000FF', '#FF0000', '#008000'].map(c => (
                         <button
@@ -166,7 +170,7 @@ export function SignatureTypePad({ onSave, onCancel }: SignatureTypePadProps) {
       </div>
 
       <div className="flex justify-end pt-4 border-t">
-         <Button onClick={handleSave} size="lg">Create Signature</Button>
+         <Button onClick={handleSave} size="lg">{t('create')}</Button>
       </div>
     </div>
   );

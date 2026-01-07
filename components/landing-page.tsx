@@ -289,7 +289,7 @@ export function LandingPage() {
               </div>
 
              <div>
-                <h3 className="mb-4 text-sm font-semibold text-white">Contact</h3>
+                <h3 className="mb-4 text-sm font-semibold text-white">{tFooter('contactTitle')}</h3>
                 <ul className="space-y-4 text-sm text-zinc-500">
                    <li className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-zinc-400" />
@@ -297,7 +297,7 @@ export function LandingPage() {
                    </li>
                    <li className="flex items-center gap-2">
                       <Github className="h-4 w-4 text-zinc-400" />
-                      <a href="https://github.com/EdilsonRogerioCuambe" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Github</a>
+                      <a href="https://github.com/EdilsonRogerioCuambe" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{tFooter('github')}</a>
                    </li>
                    <li className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-zinc-400" />

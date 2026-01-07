@@ -10,28 +10,65 @@ import { PDFDocument } from "pdf-lib"
 import type React from "react"
 import { useRef, useState } from "react"
 import { toast } from "sonner"
+import { generatePageThumbnail, loadPDFDocument } from "./annotate/pdf-renderer"
+
+interface MergeFile extends UploadedFile {
+  thumbnail?: string
+}
 
 export function MergeInterface() {
   const t = useTranslations('tools.merge')
   const tCommon = useTranslations('common')
   const tMsg = useTranslations('messages')
-  const [files, setFiles] = useState<UploadedFile[]>([])
+  const [files, setFiles] = useState<MergeFile[]>([])
   const [isMerging, setIsMerging] = useState(false)
   const [mergeProgress, setMergeProgress] = useState(0)
   const [mergedPdfUrl, setMergedPdfUrl] = useState<string | null>(null)
+
+  // Track if we are currently generating thumbnails to avoid double processing if needed
+  // implementation below handles it per file addition
 
   // Drag and drop reordering state
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const dragOverItem = useRef<number | null>(null)
 
-  const handleFilesSelected = (newFiles: UploadedFile[]) => {
+  const generateThumbnails = async (newFiles: MergeFile[]) => {
+    for (const fileItem of newFiles) {
+      if (fileItem.thumbnail) continue // Already has thumbnail
+
+      try {
+        const pdfDoc = await loadPDFDocument(fileItem.file)
+        const page = await pdfDoc.getPage(1)
+        const thumbnail = await generatePageThumbnail(page, 100) // 100px width for thumbnail
+
+        // Update state with new thumbnail
+        setFiles(prev => prev.map(f =>
+          f.id === fileItem.id ? { ...f, thumbnail } : f
+        ))
+
+        // Cleanup
+        // In a real app we might want to keep the doc open if we process it immediately,
+        // but here we just want the thumb.
+        // pdfDoc.destroy() // Note: pdfjs-dist proxy doesn't strictly need manual destroy always but good practice if heavy.
+        // The helper 'cleanupPDFDocument' could be used, but we just let GC handle it as we only grabbed one page.
+      } catch (error) {
+        console.error("Error generating thumbnail for", fileItem.name, error)
+      }
+    }
+  }
+
+  const handleFilesSelected = (incomingFiles: UploadedFile[]) => {
+    const newMergeFiles: MergeFile[] = incomingFiles.map(f => ({ ...f }))
+
     setFiles((prev) => {
-      // Create a set of existing file names to avoid duplicates if that's a concern,
-      // but simplistic appending is usually fine for a merge tool unless the user adds the exact same file twice intentionally.
-      // We will just append.
-      return [...prev, ...newFiles]
+      const updated = [...prev, ...newMergeFiles]
+      return updated
     })
+
     setMergedPdfUrl(null)
+
+    // Trigger thumbnail generation
+    generateThumbnails(newMergeFiles)
   }
 
   const removeFile = (id: string) => {
@@ -57,6 +94,15 @@ export function MergeInterface() {
     // HACK: for Firefox, need to set some data
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     e.dataTransfer.setData("text/html", (e.currentTarget.parentNode as any) as string)
+
+    // Create a custom drag image from the thumbnail if it exists
+    const file = files[index];
+    if (file.thumbnail) {
+        const img = new Image();
+        img.src = file.thumbnail;
+        img.width = 50; // Scale it down for the drag ghost
+        e.dataTransfer.setDragImage(img, 25, 25);
+    }
   }
 
   const onDragOver = (e: React.DragEvent, index: number) => {
@@ -240,67 +286,91 @@ export function MergeInterface() {
                 <span>{tCommon('fileOrder')}</span>
                 <span>{tCommon('actions')}</span>
              </div>
-            {files.map((file, index) => (
-              <div
-                key={file.id}
-                draggable={!isMerging}
-                onDragStart={(e) => onDragStart(e, index)}
-                onDragOver={(e) => onDragOver(e, index)}
-                onDragEnd={onDragEnd}
-                className={cn(
-                  "flex items-center gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-all select-none group",
-                  draggedIndex === index ? "opacity-50 border-primary border-dashed ring-2 ring-primary/10" : "hover:border-primary/30 hover:shadow-md",
-                  isMerging ? "cursor-not-allowed opacity-80" : "cursor-grab active:cursor-grabbing"
-                )}
-              >
-                <div className="cursor-grab active:cursor-grabbing text-muted-foreground/50 hover:text-foreground shrink-0 transition-colors">
-                  <GripVertical className="h-5 w-5" />
-                </div>
 
-                <div className="h-10 w-10 shrink-0 bg-red-500/10 rounded-lg flex items-center justify-center">
-                    <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
-                </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {files.map((file, index) => (
+                <div
+                  key={file.id}
+                  draggable={!isMerging}
+                  onDragStart={(e) => onDragStart(e, index)}
+                  onDragOver={(e) => onDragOver(e, index)}
+                  onDragEnd={onDragEnd}
+                  className={cn(
+                    "relative flex flex-col aspect-[3/4] rounded-xl border border-border bg-card shadow-sm transition-all select-none overflow-hidden group",
+                    draggedIndex === index ? "opacity-50 border-primary border-dashed ring-2 ring-primary/10" : "hover:border-primary/50 hover:shadow-md",
+                    isMerging ? "cursor-not-allowed opacity-80" : "cursor-grab active:cursor-grabbing"
+                  )}
+                >
+                  {/* Thumbnail / Preview Area */}
+                  <div className="flex-1 bg-muted/30 relative flex items-center justify-center overflow-hidden">
+                      {file.thumbnail ? (
+                          <img
+                              src={file.thumbnail}
+                              alt={`Preview ${file.name}`}
+                              className="w-full h-full object-contain p-2"
+                          />
+                      ) : (
+                          <div className="flex flex-col items-center gap-2 text-muted-foreground/50">
+                              <FileText className="h-10 w-10" />
+                              <span className="text-xs">PDF</span>
+                          </div>
+                      )}
 
-                <div className="flex-1 min-w-0 grid gap-1">
-                   <div className="flex items-center gap-2">
-                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground shrink-0">
-                          {index + 1}
-                       </span>
-                       <p className="truncate font-medium text-foreground">{file.name}</p>
+                      {/* Hover Overlay for Drag Handle */}
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <GripVertical className="h-8 w-8 text-foreground/50" />
+                      </div>
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="p-3 bg-card border-t border-border z-10">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary shrink-0">
+                             {index + 1}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground shrink-0">{formatFileSize(file.size)}</span>
+                      </div>
+                      <p className="truncate text-xs font-medium text-foreground w-full py-1" title={file.name}>{file.name}</p>
+                  </div>
+
+                  {/* Actions Overlay - Top Right */}
+                   <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                       <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => removeFile(file.id)}
+                          disabled={isMerging}
+                          className="h-7 w-7 rounded-lg shadow-sm"
+                          title={tCommon('remove')}
+                       >
+                          <X className="h-3 w-3" />
+                       </Button>
                    </div>
-                  <p className="text-xs text-muted-foreground ml-7">{formatFileSize(file.size)}</p>
-                </div>
 
-                 <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100">
-                     <Button
-                       variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
-                       disabled={index === 0 || isMerging}
-                       onClick={() => moveFile(index, index - 1)}
-                       title={tCommon('previous')}
-                     >
-                       <MoveUp className="h-4 w-4" />
-                     </Button>
-                     <Button
-                       variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hidden sm:flex"
-                       disabled={index === files.length - 1 || isMerging}
-                       onClick={() => moveFile(index, index + 1)}
-                       title={tCommon('next')}
-                     >
-                       <MoveDown className="h-4 w-4" />
-                     </Button>
-                     <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
-                     <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeFile(file.id)}
-                        disabled={isMerging}
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8"
-                     >
-                        <X className="h-4 w-4" />
-                     </Button>
-                 </div>
-              </div>
-            ))}
+                   {/* Move Actions Overlay - Bottom (Optional, if drag is hard) */}
+                    <div className="absolute top-2 left-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                         <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-lg p-0.5 border shadow-sm">
+                             <Button
+                               variant="ghost" size="icon" className="h-6 w-6"
+                               disabled={index === 0 || isMerging}
+                               onClick={() => moveFile(index, index - 1)}
+                               title={tCommon('previous')}
+                             >
+                               <MoveUp className="h-3 w-3" />
+                             </Button>
+                             <Button
+                               variant="ghost" size="icon" className="h-6 w-6"
+                               disabled={index === files.length - 1 || isMerging}
+                               onClick={() => moveFile(index, index + 1)}
+                               title={tCommon('next')}
+                             >
+                               <MoveDown className="h-3 w-3" />
+                             </Button>
+                         </div>
+                    </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -387,10 +387,10 @@ export function ImageToPdfInterface() {
                              <SelectTrigger><SelectValue /></SelectTrigger>
                              <SelectContent>
                                  <SelectItem value="A4">A4 (Standard)</SelectItem>
-                                 <SelectItem value="Letter">Letter</SelectItem>
-                                 <SelectItem value="Legal">Legal</SelectItem>
-                                 <SelectItem value="A3">A3 (Large)</SelectItem>
-                                 <SelectItem value="A5">A5 (Small)</SelectItem>
+                                 <SelectItem value="Letter">{t('sizes.letter')}</SelectItem>
+                                 <SelectItem value="Legal">{t('sizes.legal')}</SelectItem>
+                                 <SelectItem value="A3">{t('sizes.a3')}</SelectItem>
+                                 <SelectItem value="A5">{t('sizes.a5')}</SelectItem>
                              </SelectContent>
                          </Select>
                      </div>

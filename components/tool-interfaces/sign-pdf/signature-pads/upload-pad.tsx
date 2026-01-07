@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Upload, X } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface SignatureUploadPadProps {
@@ -90,6 +91,9 @@ export function SignatureUploadPad({ onSave, onCancel }: SignatureUploadPadProps
     }
   };
 
+
+  const t = useTranslations('sign.upload');
+
   if (!image) {
       return (
           <div
@@ -102,8 +106,8 @@ export function SignatureUploadPad({ onSave, onCancel }: SignatureUploadPadProps
              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                  <Upload className="w-8 h-8 text-primary" />
              </div>
-             <p className="font-medium text-lg">Click to Upload Image</p>
-             <p className="text-sm text-gray-500">or Drag & Drop (Format: PNG, JPG)</p>
+             <p className="font-medium text-lg">{t('clickToUpload')}</p>
+             <p className="text-sm text-gray-500">{t('dragDrop')}</p>
           </div>
       );
   }
@@ -111,9 +115,9 @@ export function SignatureUploadPad({ onSave, onCancel }: SignatureUploadPadProps
   return (
     <div className="flex flex-col gap-4 h-full">
        <div className="flex justify-between items-center pb-2 border-b">
-          <p className="text-sm font-medium text-gray-700">Preview</p>
+          <p className="text-sm font-medium text-gray-700">{t('preview')}</p>
           <Button variant="ghost" size="sm" onClick={() => setImage(null)}>
-             <X className="w-4 h-4 mr-1" /> Use different image
+             <X className="w-4 h-4 mr-1" /> {t('useDifferent')}
           </Button>
        </div>
 
@@ -124,18 +128,18 @@ export function SignatureUploadPad({ onSave, onCancel }: SignatureUploadPadProps
        <div className="flex flex-col gap-4 py-2">
           <div className="flex items-center gap-2">
              <input type="checkbox" id="rm-bg" checked={removeBg} onChange={e => setRemoveBg(e.target.checked)} className="rounded border-gray-300" />
-             <label htmlFor="rm-bg" className="text-sm font-medium">Remove Background</label>
+             <label htmlFor="rm-bg" className="text-sm font-medium">{t('removeBackground')}</label>
           </div>
 
           {removeBg && (
               <div className="flex items-center gap-4">
-                 <span className="text-xs w-20">Threshold</span>
+                 <span className="text-xs w-20">{t('threshold')}</span>
                  <Slider value={[threshold]} max={50} min={5} step={1} onValueChange={(val) => setThreshold(val[0])} className="flex-1" />
               </div>
           )}
        </div>
 
-       <Button size="lg" onClick={handleSave} className="mt-2">Use This Signature</Button>
+       <Button size="lg" onClick={handleSave} className="mt-2">{t('useSignature')}</Button>
     </div>
   );
 }

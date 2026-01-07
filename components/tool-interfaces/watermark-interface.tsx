@@ -234,7 +234,7 @@ export function WatermarkInterface() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={settings.imagePreview} alt="Watermark" className="max-w-full max-h-full object-contain" />
                 ) : (
-                    <span className="text-xs">Image</span>
+                    <span className="text-xs">{t('image')}</span>
                 )}
             </div>
         </div>
@@ -350,7 +350,7 @@ export function WatermarkInterface() {
                             <div/>
 
                             <Button variant={settings.position === 'bl' ? 'default' : 'outline'} size="sm" onClick={() => setSettings(s => ({...s, position: 'bl'}))}><ArrowDown className="rotate-45deg w-3 h-3"/></Button>
-                            <Button variant={settings.position === 'center' ? 'default' : 'outline'} size="sm" onClick={() => setSettings(s => ({...s, position: 'center'}))} className="text-xs">Center</Button>
+                            <Button variant={settings.position === 'center' ? 'default' : 'outline'} size="sm" onClick={() => setSettings(s => ({...s, position: 'center'}))} className="text-xs">{t('center')}</Button>
                             <Button variant={settings.position === 'tr' ? 'default' : 'outline'} size="sm" onClick={() => setSettings(s => ({...s, position: 'tr'}))}><ArrowUp className="rotate-45deg w-3 h-3"/></Button>
 
                             <div/>

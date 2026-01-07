@@ -34,7 +34,7 @@ export function PDFHeader({ sidebarCollapsed, onMobileMenuToggle }: PDFHeaderPro
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMobileMenuToggle}>
           <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
+          <span className="sr-only">{t('toggleMenu')}</span>
         </Button>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Shield className="hidden h-4 w-4 text-primary sm:block" />
@@ -52,7 +52,7 @@ export function PDFHeader({ sidebarCollapsed, onMobileMenuToggle }: PDFHeaderPro
           className="text-muted-foreground hover:text-foreground"
         >
           {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          <span className="sr-only">Toggle dark mode</span>
+          <span className="sr-only">{t('toggleDarkMode')}</span>
         </Button>
       </div>
     </header>
