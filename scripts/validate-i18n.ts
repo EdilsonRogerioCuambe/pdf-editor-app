@@ -78,61 +78,55 @@ function extractKeys(obj: TranslationStructure, prefix = ''): string[] {
 }
 
 /**
- * Extrai todas as chaves usadas no código usando regex
- * Procura por padrões como:
- * - useTranslations('namespace')
- * - t('key')
- * - getTranslations({ namespace: '...' })
+ * Extrai todas as chaves usadas no código usando rastreamento de variáveis
  */
-function extractUsedKeys(directories: string[]): Set<string> {
+function extractUsedKeysFromContent(content: string, filePath: string): Set<string> {
   const usedKeys = new Set<string>();
-  const patterns = [
-    // useTranslations hook: useTranslations('common')
-    /useTranslations\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g,
-    // t function calls: t('header.toggleMenu')
-    /\bt\s*\(\s*['"`]([^'"`]+)['"`]/g,
-    // getTranslations calls: getTranslations({ locale, namespace: 'landing' })
-    /getTranslations\s*\(\s*\{[^}]*namespace:\s*['"`]([^'"`]+)['"`]/g,
-  ];
 
-  function processFile(filePath: string) {
-    if (!filePath.match(/\.(tsx?|jsx?)$/)) return;
+  // Map variable name to namespace(s)
+  // const t = useTranslations('common') -> t: ['common']
+  // const t = await getTranslations({ namespace: 'landing' }) -> t: ['landing']
+  const varToNamespaces = new Map<string, string[]>();
 
-    try {
-      const content = fs.readFileSync(filePath, 'utf-8');
+  // 1. Encontrar definições de tradutores (useTranslations / getTranslations)
+  // Captura: varName, namespace
+  const hookPattern = /(?:const|let|var)\s+(\w+)\s*=\s*(?:await\s+)?(?:useTranslations|getTranslations)\s*\(\s*(?:\{[^}]*namespace:\s*)?['"`]([^'"`]+)['"`]/g;
 
-      // Encontrar namespaces usados
-      const namespaces = new Set<string>();
-      const namespacePattern = /useTranslations\s*\(\s*['"`]([^'"`]+)['"`]\s*\)|getTranslations\s*\(\s*\{[^}]*namespace:\s*['"`]([^'"`]+)['"`]/g;
-      let match;
-
-      while ((match = namespacePattern.exec(content)) !== null) {
-        const namespace = match[1] || match[2];
-        if (namespace) namespaces.add(namespace);
-      }
-
-      // Encontrar chaves de tradução
-      const keyPattern = /\bt\s*\(\s*['"`]([^'"`]+)['"`]/g;
-      while ((match = keyPattern.exec(content)) !== null) {
-        const key = match[1];
-        // Se temos namespaces no arquivo, adicionar com namespace
-        if (namespaces.size > 0) {
-          namespaces.forEach(ns => {
-            usedKeys.add(`${ns}.${key}`);
-          });
-        } else {
-          // Adicionar a chave isolada para verificação manual
-          usedKeys.add(key);
-        }
-      }
-
-      // Também adicionar os namespaces como chaves base
-      namespaces.forEach(ns => usedKeys.add(ns));
-
-    } catch (error) {
-      // Ignorar erros de leitura
-    }
+  let match;
+  while ((match = hookPattern.exec(content)) !== null) {
+     const [_, varName, namespace] = match;
+     if (!varToNamespaces.has(varName)) {
+        varToNamespaces.set(varName, []);
+     }
+     varToNamespaces.get(varName)?.push(namespace);
   }
+
+  // 2. Encontrar uso: t('key') ou t("key")
+  // Captura: varName, key
+  const usagePattern = /\b(\w+)\s*\(\s*['"`]([^'"`]+)['"`]/g;
+  while ((match = usagePattern.exec(content)) !== null) {
+      const [_, varName, key] = match;
+
+      // Ignorar template literals complexos por enquanto
+      if (key.includes('${')) continue;
+
+      if (varToNamespaces.has(varName)) {
+          const namespaces = varToNamespaces.get(varName)!;
+          namespaces.forEach(ns => {
+              if (ns) {
+                usedKeys.add(`${ns}.${key}`);
+              } else {
+                usedKeys.add(key);
+              }
+          });
+      }
+  }
+
+  return usedKeys;
+}
+
+function extractUsedKeys(directories: string[]): Set<string> {
+  const allUsedKeys = new Set<string>();
 
   function walkDirectory(dir: string) {
     try {
@@ -143,16 +137,17 @@ function extractUsedKeys(directories: string[]): Set<string> {
         const stat = fs.statSync(filePath);
 
         if (stat.isDirectory()) {
-          // Ignorar node_modules e .next
           if (!file.startsWith('.') && file !== 'node_modules') {
             walkDirectory(filePath);
           }
-        } else {
-          processFile(filePath);
+        } else if (file.match(/\.(tsx?|jsx?)$/)) {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          const fileKeys = extractUsedKeysFromContent(content, filePath);
+          fileKeys.forEach(key => allUsedKeys.add(key));
         }
       }
     } catch (error) {
-      // Ignorar erros de leitura de diretório
+      // Ignorar erros
     }
   }
 
@@ -162,7 +157,7 @@ function extractUsedKeys(directories: string[]): Set<string> {
     }
   });
 
-  return usedKeys;
+  return allUsedKeys;
 }
 
 /**
@@ -179,11 +174,11 @@ function validateConsistency(): ValidationError[] {
     allKeys[locale] = extractKeys(allMessages[locale]);
   }
 
-  // Usar o inglês como referência (geralmente mais completo)
+  // Usar o inglês como referência
   const referenceLocale = 'en';
   const referenceKeys = new Set(allKeys[referenceLocale]);
 
-  // Verificar se todos os locales têm as mesmas chaves
+  // Verificar consistência
   for (const locale of LOCALES) {
     if (locale === referenceLocale) continue;
 
@@ -227,9 +222,17 @@ function validateUsage(): ValidationError[] {
   const availableKeys = new Set(extractKeys(enMessages));
 
   for (const usedKey of usedKeys) {
-    // Verificar se a chave existe exatamente ou como prefixo (namespace)
-    const exists = availableKeys.has(usedKey) ||
-                   Array.from(availableKeys).some(k => k.startsWith(usedKey + '.'));
+    // Verificar se a chave existe exatamente
+    // Também permitir acesso a objetos (ex: tools.merge para iterar) se suportado, mas nossa extração de chaves flatten all.
+    // Se usedKey é "tools", e temos "tools.merge.name", é válido se o código usar o objeto?
+    // Nosso regex extractKeys retorna todas as folhas.
+    // Se o código faz t('tools'), isso geralmente espera um retorno de objeto ou string.
+    // Se "tools" é um objeto no JSON, ele não aparece no Set availableKeys (que só tem folhas),
+    // a menos que mudemos extractKeys para incluir nós intermediários.
+
+    // Vamos verificar se usedKey é prefixo de alguma chave existente (significa que é um objeto)
+    const isObject = Array.from(availableKeys).some(k => k.startsWith(usedKey + '.'));
+    const exists = availableKeys.has(usedKey) || isObject;
 
     if (!exists) {
       errors.push({
@@ -243,63 +246,20 @@ function validateUsage(): ValidationError[] {
   return errors;
 }
 
-/**
- * Encontra chaves não utilizadas (opcional - pode gerar falsos positivos)
- */
-function findUnusedKeys(): ValidationError[] {
-  const errors: ValidationError[] = [];
-  const usedKeys = extractUsedKeys(SRC_DIRS);
-  const enMessages = loadMessages('en');
-  const availableKeys = extractKeys(enMessages);
-
-  // Criar set de prefixos usados (namespaces)
-  const usedPrefixes = new Set<string>();
-  usedKeys.forEach(key => {
-    const parts = key.split('.');
-    for (let i = 1; i <= parts.length; i++) {
-      usedPrefixes.add(parts.slice(0, i).join('.'));
-    }
-  });
-
-  for (const availableKey of availableKeys) {
-    // Verificar se a chave ou algum de seus prefixos é usado
-    const parts = availableKey.split('.');
-    let isUsed = false;
-
-    for (let i = parts.length; i > 0; i--) {
-      const prefix = parts.slice(0, i).join('.');
-      if (usedPrefixes.has(prefix)) {
-        isUsed = true;
-        break;
-      }
-    }
-
-    if (!isUsed) {
-      errors.push({
-        type: 'unused-key',
-        key: availableKey,
-        message: `Key "${availableKey}" exists in translations but may not be used in code`,
-      });
-    }
-  }
-
-  return errors;
-}
 
 /**
  * Imprime o relatório de erros
  */
-function printReport(errors: ValidationError[], showUnused = false) {
+function printReport(errors: ValidationError[]) {
   const grouped = {
     'missing-key': errors.filter(e => e.type === 'missing-key'),
     'extra-key': errors.filter(e => e.type === 'extra-key'),
     'key-not-found': errors.filter(e => e.type === 'key-not-found'),
-    'unused-key': errors.filter(e => e.type === 'unused-key'),
   };
 
   console.log('\n');
   console.log('='.repeat(80));
-  console.log(`${colors.cyan}${colors.cyan}  i18n Validation Report${colors.reset}`);
+  console.log(`${colors.cyan}  i18n Validation Report${colors.reset}`);
   console.log('='.repeat(80));
   console.log('\n');
 
@@ -356,20 +316,6 @@ function printReport(errors: ValidationError[], showUnused = false) {
     console.log('');
   }
 
-  // Unused Keys (informativo)
-  if (showUnused && grouped['unused-key'].length > 0) {
-    console.log(`${colors.blue}ℹ️  Potentially Unused Keys (${grouped['unused-key'].length})${colors.reset}`);
-    console.log(`${colors.blue}These keys may not be used in code (this can include false positives):${colors.reset}\n`);
-
-    grouped['unused-key'].slice(0, 15).forEach(err => {
-      console.log(`  - ${err.key}`);
-    });
-    if (grouped['unused-key'].length > 15) {
-      console.log(`  ... and ${grouped['unused-key'].length - 15} more`);
-    }
-    console.log('');
-  }
-
   // Summary
   console.log('='.repeat(80));
   const criticalErrors = grouped['missing-key'].length + grouped['key-not-found'].length;
@@ -384,9 +330,6 @@ function printReport(errors: ValidationError[], showUnused = false) {
   console.log(`  Missing keys: ${grouped['missing-key'].length}`);
   console.log(`  Keys not found: ${grouped['key-not-found'].length}`);
   console.log(`  Extra keys: ${grouped['extra-key'].length}`);
-  if (showUnused) {
-    console.log(`  Potentially unused: ${grouped['unused-key'].length}`);
-  }
   console.log('='.repeat(80));
   console.log('\n');
 
@@ -398,12 +341,10 @@ function printReport(errors: ValidationError[], showUnused = false) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const showUnused = args.includes('--unused');
   const exitOnError = !args.includes('--no-exit');
 
   console.log(`${colors.cyan}Starting i18n validation...${colors.reset}\n`);
   console.log(`Locales: ${LOCALES.join(', ')}`);
-  console.log(`Source directories: ${SRC_DIRS.join(', ')}\n`);
 
   const errors: ValidationError[] = [];
 
@@ -415,20 +356,13 @@ function main() {
   console.log('Checking keys used in code...');
   errors.push(...validateUsage());
 
-  // 3. Encontrar chaves não usadas (opcional)
-  if (showUnused) {
-    console.log('Finding unused keys...');
-    errors.push(...findUnusedKeys());
-  }
+  // 3. Imprimir relatório
+  const criticalErrors = printReport(errors);
 
-  // 4. Imprimir relatório
-  const criticalErrors = printReport(errors, showUnused);
-
-  // 5. Sair com erro se houver problemas críticos
+  // 4. Sair com erro se houver problemas críticos
   if (exitOnError && criticalErrors > 0) {
     process.exit(1);
   }
 }
 
-// Executar
 main();

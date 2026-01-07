@@ -24,6 +24,7 @@
     "actions": "Acciones",
     "startOver": "Reiniciar",
     "merging": "Uniendo...",
+    "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {size}",
     "dropZone": {
       "dragText": "Arrastra y suelta archivos aquí",
       "dropText": "Suelta tus archivos aquí",
@@ -162,59 +163,7 @@
     },
     "annotate": {
       "name": "Anotar PDF",
-      "description": "Agrega notas, resaltados y dibujos a tu PDF.",
-      "title": "Anotar PDF",
-      "subtitle": "Agrega resaltados, dibujos, formas, texto y notas a tus archivos PDF",
-      "highlight": "Resaltar",
-      "highlightDesc": "Marca texto importante con colores",
-      "draw": "Dibujar",
-      "drawDesc": "Dibujo libre y bocetos",
-      "shapes": "Formas",
-      "shapesDesc": "Agrega rectángulos, círculos, flechas",
-      "notes": "Notas",
-      "notesDesc": "Notas adhesivas y comentarios",
-      "color": "Color:",
-      "opacity": "Opacidad:",
-      "thickness": "Grosor:",
-      "shape": "Forma:",
-      "border": "Borde:",
-      "width": "Ancho:",
-      "fill": "Relleno:",
-      "fillOpacity": "Opacidad Relleno:",
-      "savePdf": "Guardar PDF",
-      "saving": "Guardando...",
-      "tools": {
-        "cursor": "Cursor (V)",
-        "hand": "Mano (P)",
-        "highlight": "Resaltar (H)",
-        "draw": "Dibujar (D)",
-        "shapes": "Formas (S)",
-        "text": "Texto (T)",
-        "note": "Nota Adhesiva (N)",
-        "undo": "Deshacer (Ctrl+Z)",
-        "redo": "Rehacer (Ctrl+Y)"
-      },
-      "shapesOptions": {
-        "rectangle": "Rectángulo",
-        "circle": "Círculo",
-        "triangle": "Triángulo",
-        "line": "Línea",
-        "arrow": "Flecha"
-      },
-      "toasts": {
-        "loaded": "PDF cargado: {count} páginas",
-        "loadError": "Error al cargar PDF. Inténtalo de nuevo.",
-        "added": "Anotación agregada",
-        "deleted": "Anotación eliminada",
-        "saving": "Guardando anotaciones en PDF...",
-        "saved": "¡PDF anotado guardado con éxito!",
-        "saveError": "Error al guardar PDF. Inténtalo de nuevo."
-      },
-      "textToolbar": {
-        "selectText": "Selecciona un cuadro de texto para editar propiedades",
-        "font": "Fuente",
-        "size": "Tamaño"
-      }
+      "description": "Agrega notas, resaltados y dibujos a tu PDF."
     },
     "protect": {
       "name": "Proteger PDF",
@@ -352,7 +301,6 @@
     "error": "¡Error!",
     "warning": "¡Advertencia!",
     "info": "Información",
-    "fileUploaded": "Archivo subido con éxito",
     "fileTooLarge": "Archivo demasiado grande. Tamaño máximo: {{size}}",
     "invalidFileType": "Tipo de archivo inválido. Solo se permiten {{types}}",
     "processingComplete": "Procesamiento completo",
@@ -712,7 +660,32 @@
     "tabDraw": "Dibujar",
     "tabType": "Escribir",
     "tabUpload": "Subir",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "position": "Posición",
+    "saveError": "Error al guardar PDF",
+    "type": {
+      "text": "Texto",
+      "fontFamily": "Fuente",
+      "color": "Color",
+      "placeholder": "Escriba su firma...",
+      "create": "Crear Firma"
+    },
+    "upload": {
+      "clickToUpload": "Clic para Subir Imagen",
+      "preview": "Vista Previa",
+      "removeBackground": "Eliminar Fondo",
+      "threshold": "Umbral",
+      "useSignature": "Usar esta Firma",
+      "dragDrop": "o Arrastrar y Soltar (Formato: PNG, JPG)",
+      "useDifferent": "Usar otra imagen"
+    },
+    "draw": {
+      "size": "Tamaño",
+      "signHere": "Firme Aquí",
+      "create": "Crear Firma",
+      "undo": "Deshacer",
+      "clear": "Limpiar"
+    }
   },
   "annotate": {
     "name": "Anotar PDF",

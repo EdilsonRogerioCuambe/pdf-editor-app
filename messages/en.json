@@ -25,6 +25,7 @@
     "startOver": "Start Over",
     "addFiles": "Add Files",
     "merging": "Merging...",
+    "fileTooLarge": "File too large. Maximum size: {size}",
     "dropZone": {
       "dragText": "Drag & drop files here",
       "dropText": "Drop your files here",
@@ -547,7 +548,32 @@
     "tabDraw": "Draw",
     "tabType": "Type",
     "tabUpload": "Upload",
-    "delete": "Delete"
+    "delete": "Delete",
+    "position": "Position",
+    "saveError": "Failed to save PDF",
+    "type": {
+      "text": "Text",
+      "fontFamily": "Font Family",
+      "color": "Color",
+      "placeholder": "Type your signature...",
+      "create": "Create Signature"
+    },
+    "upload": {
+      "clickToUpload": "Click to Upload Image",
+      "preview": "Preview",
+      "removeBackground": "Remove Background",
+      "threshold": "Threshold",
+      "useSignature": "Use This Signature",
+      "dragDrop": "or Drag & Drop (Format: PNG, JPG)",
+      "useDifferent": "Use different image"
+    },
+    "draw": {
+      "size": "Size",
+      "signHere": "Sign Here",
+      "create": "Create Signature",
+      "undo": "Undo",
+      "clear": "Clear"
+    }
   },
   "annotate": {
       "name": "Annotate PDF",
